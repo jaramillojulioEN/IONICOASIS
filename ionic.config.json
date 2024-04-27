@@ -1,0 +1,7 @@
+{
+  "name": "IONICAPP",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
