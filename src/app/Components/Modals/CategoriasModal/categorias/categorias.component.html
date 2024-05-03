@@ -1,0 +1,22 @@
+<!-- my-modal.component.html -->
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{titulo}} Categoria</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-label position="floating">Categoría</ion-label>
+      <ion-input [(ngModel)]="categoria" name="categoria" type="text"></ion-input>
+    </ion-item>
+  </ion-list>
+  <ion-footer>
+    <ion-button expand="full" (click)="confirm(id)">{{titulo}} Categoria</ion-button>
+  </ion-footer>

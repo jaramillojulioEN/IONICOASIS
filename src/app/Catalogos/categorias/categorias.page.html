@@ -1,0 +1,43 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Categorias</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Categorias</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+
+  <div class="container ion-padding">
+
+    <ion-accordion-group class="ion-margin-top" *ngFor="let subcategoria of subcategorias;">
+      <ion-accordion value="first">
+        <ion-item slot="header" color="light">
+          <ion-label>{{subcategoria.subcategoria}}</ion-label>
+          <ion-button size="small" (click) = "AbrirModal(subcategoria.id, 'Nueva')" fill="clear">
+            <ion-icon name="add"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <div *ngFor="let categoria of filterCategoriesBySubcategory(categorias, subcategoria.id);" class="ion-padding"
+          slot="content">
+          {{categoria.categoria}}
+          <div class="butons">
+            <ion-button size="small" fill="clear" color="success" (click) = "AbrirModal(categoria.id, 'Actualizar')">
+              <ion-icon name="pencil"></ion-icon>
+            </ion-button>
+            <ion-button size="small" fill="clear" color="danger" (click)="eliminarCategoria(categoria.id)">
+              <ion-icon name="trash"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
+
+
+  </div>
+
+</ion-content>

@@ -7,9 +7,25 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
   },
   {
+    path: 'login',
+    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
+  },
+  {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'login',
     pathMatch: 'full'
+  },
+  {
+    path: 'admin-dash-board',
+    loadChildren: () => import('./admin-dash-board/admin-dash-board.module').then( m => m.AdminDashBoardPageModule)
+  },
+  {
+    path: 'inicio',
+    loadChildren: () => import('./Catalogos/inicio/inicio.module').then( m => m.InicioPageModule)
+  },
+  {
+    path: 'categorias',
+    loadChildren: () => import('./Catalogos/categorias/categorias.module').then( m => m.CategoriasPageModule)
   },
 ];
 
