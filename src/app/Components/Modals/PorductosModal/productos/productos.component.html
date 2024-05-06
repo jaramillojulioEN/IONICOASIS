@@ -1,0 +1,33 @@
+
+
+<!-- my-modal.component.html -->
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{titulo}} Producto</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-label position="floating">Nombre</ion-label>
+    <ion-input type="text" [(ngModel)]="nombre"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Cantidad</ion-label>
+    <ion-input type="number" [(ngModel)]="cantidad"></ion-input>
+  </ion-item>
+
+  <ion-item >
+    <ion-label>Categoría</ion-label>
+    <ion-select [(ngModel)]="categoria" [disabled]="idcategoria !== 0">
+      <ion-select-option *ngFor="let categoria of categorias" [value]="categoria.id">{{ categoria.categoria }}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-button expand="block" (click)="guardarProducto()">Guardar</ion-button>
+</ion-content>

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CategoriaServiceService } from '../../services/Categorias/categoria-service.service'
 import { ModalController } from '@ionic/angular';
 import { CategoriasComponent } from '../../Components/Modals/CategoriasModal/categorias/categorias.component';
+import { ProductosComponent } from '../../Components/Modals/PorductosModal/productos/productos.component'
+
 @Component({
   selector: 'app-categorias',
   templateUrl: './categorias.page.html',
@@ -10,8 +12,6 @@ import { CategoriasComponent } from '../../Components/Modals/CategoriasModal/cat
 export class CategoriasPage implements OnInit {
   subcategorias: any;
   categorias: any;
-
-
   constructor(private CategoriasService: CategoriaServiceService, private ModalController: ModalController) { }
 
   ngOnInit() {
@@ -21,6 +21,18 @@ export class CategoriasPage implements OnInit {
     window.addEventListener('categoriasActualizadas', () => {
       this.ObtenerCategorias();
     })
+  }
+
+  async AbrirModalProducto(id:number, titulo:string) {
+    const modal = await this.ModalController.create({
+      component: ProductosComponent,
+      componentProps: {
+        idcategoria: id,
+        titulo : titulo
+      },
+    });
+
+    return await modal.present();
   }
 
   async AbrirModal(id: number, titulo: string) {
@@ -60,9 +72,6 @@ export class CategoriasPage implements OnInit {
   eliminarCategoria(categoriaId: number) {
     console.log('Eliminar categoría con ID:', categoriaId);
   }
-
-
-
 
   ObtenerSubCategorias(): void {
     this.CategoriasService.SubCategorias().subscribe(

@@ -5,6 +5,8 @@ import { CategoriasComponent } from './Modals/CategoriasModal/categorias/categor
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
+import { ProductosComponent } from './Modals/PorductosModal/productos/productos.component';
+import { LoaderComponent } from './Modals/LoadingModal/loader/loader.component';
 
 
 
@@ -12,11 +14,15 @@ import { IonicModule } from '@ionic/angular';
   declarations:
   [
     CardComponent,
-    CategoriasComponent
+    CategoriasComponent,
+    ProductosComponent,
+    LoaderComponent
   ],
   exports: [
     CardComponent,
-    CategoriasComponent
+    CategoriasComponent,
+    ProductosComponent,
+    LoaderComponent
   ],
   imports: [
     CommonModule,

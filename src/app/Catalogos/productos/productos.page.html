@@ -1,0 +1,40 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Productos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Productos</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="productos">
+    <ion-button size="small" fill="clear" color="success" style="width: 100%;" (click)="AbrirModalProducto(0, 'Nuevo')">Nuevo</ion-button>
+    <ion-list [inset]="true">
+      <ion-item *ngFor="let producto of productos;">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="10">
+              <ion-text>Producto: {{producto.nombre}}</ion-text><br>
+              <ion-text class="subtext">Cantidad: {{producto.cantidad}}</ion-text><br>
+              <ion-text class="subtext">Vendidos: {{producto.vendidos}}</ion-text><br>
+              <ion-text class="subtext">Categoria: {{producto.categorias.categoria}}</ion-text><br>
+            </ion-col>
+            <ion-col size="2">
+              <ion-button size="small" fill="clear" color="success" (click)="AbrirModalProducto(producto.id, 'Actualizar')">
+                <ion-icon name="pencil"></ion-icon>
+              </ion-button>
+              <ion-button size="small" fill="clear" color="danger" (click)="EliminarProducto(producto.id)">
+                <ion-icon name="trash"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
+
+  </div>
+</ion-content>
