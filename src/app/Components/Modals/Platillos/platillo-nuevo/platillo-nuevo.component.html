@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Formulario de Platillos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="ion-padding">
+      <ion-list >
+        <ion-item>
+          <ion-input labelPlacement="floating" label="Nombre del platillo" name="nombre" placeholder="Nombre" [(ngModel)]="platillos.nombre" clearInput></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-select labelPlacement="floating" label="Categoria" name="idcategoria" placeholder="ID Categoría" [(ngModel)]="platillos.idcategoria">
+            <ion-select-option value="1">Categoría 1</ion-select-option>
+            <ion-select-option value="2">Categoría 2</ion-select-option>
+            <ion-select-option value="3">Categoría 3</ion-select-option>
+          </ion-select>
+        </ion-item>
+  
+        <ion-item>
+          <ion-select labelPlacement="floating" label="Receta" name="idreceta" placeholder="ID Receta" [(ngModel)]="platillos.idreceta">
+            <ion-select-option value="101">Receta 101</ion-select-option>
+            <ion-select-option value="102">Receta 102</ion-select-option>
+            <ion-select-option value="103">Receta 103</ion-select-option>
+          </ion-select>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input labelPlacement="floating" label="Precio" name="precio" placeholder="Precio" [(ngModel)]="platillos.precio" type="number" clearInput></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input labelPlacement="floating" label="Precio Empleado" name="precioempleado" placeholder="Precio Empleado" [(ngModel)]="platillos.precioempleado" type="number" clearInput></ion-input>
+        </ion-item>
+  
+        <ion-button expand="full" type="submit">Guardar</ion-button>
+      </ion-list>
+    </div>
+</ion-content>

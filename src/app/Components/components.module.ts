@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { ProductosComponent } from './Modals/PorductosModal/productos/productos.component';
 import { LoaderComponent } from './Modals/LoadingModal/loader/loader.component';
 import { RecetasComponent } from './Modals/RecetasModals/recetas/recetas.component';
+import { PlatilloNuevoComponent } from './Modals/Platillos/platillo-nuevo/platillo-nuevo.component';
 
 
 
@@ -18,14 +19,17 @@ import { RecetasComponent } from './Modals/RecetasModals/recetas/recetas.compone
     CategoriasComponent,
     ProductosComponent,
     LoaderComponent,
-    RecetasComponent
+    RecetasComponent,
+    PlatilloNuevoComponent
+
   ],
   exports: [
     CardComponent,
     CategoriasComponent,
     ProductosComponent,
     LoaderComponent,
-    RecetasComponent
+    RecetasComponent,
+    PlatilloNuevoComponent
   ],
   imports: [
     CommonModule,

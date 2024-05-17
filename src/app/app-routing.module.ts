@@ -35,6 +35,10 @@ const routes: Routes = [
     path: 'recetas',
     loadChildren: () => import('./Catalogos/recetas/recetas.module').then( m => m.RecetasPageModule)
   },
+  {
+    path: 'platillos',
+    loadChildren: () => import('./Catalogos/platillos/platillos.module').then( m => m.PlatillosPageModule)
+  },
 ];
 
 @NgModule({

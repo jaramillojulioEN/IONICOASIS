@@ -1,0 +1,123 @@
+.container {
+    padding: 16px;
+  }
+
+  .main{
+    --background: #fff  
+  }  
+  
+  .header {
+    --background: #2c507c; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 110px;
+  }
+  
+  .header ion-title {
+    font-size: 24px; 
+  }
+  .crear {
+    --background: #2c507c;
+    --color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .btn-crear ion-icon {
+    font-size: 24px; 
+  }
+  
+  .btn-crear .button-text {
+    font-size: 10px;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+
+
+  .container {
+    padding: 16px;
+  }
+  
+  .header-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .btn-crear {
+    --background: transparent;
+    --color: #3880ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    text-align: center;
+    padding: 8px 16px;
+    margin: 0;
+  }
+  
+  .btn-crear:hover {
+    --background: #dfdfdf;
+  }
+  
+  .btn-crear ion-icon {
+    font-size: 24px;
+  }
+  
+  .btn-crear .button-text {
+    font-size: 10px;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tabla {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+  }
+  
+  .tabla th,
+  .tabla td {
+    padding: 12px;
+  }
+  
+  .tabla th {
+    background-color: #2c507c;
+    color: white;
+  }
+  
+  .tabla td {
+    background-color: #fff;
+    color: #000;
+  }
+  
+  
+  .tabla tr:hover td {
+    background-color: #8ab4e9;
+    color: #fff;
+  }
+  
+  .tabla tr:last-child td {
+    border-bottom: 0;
+  }
+  
+
+
+
