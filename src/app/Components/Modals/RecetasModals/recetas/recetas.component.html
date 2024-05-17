@@ -1,0 +1,109 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{titulo}} Producto</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="stacked">Nombre receta:</ion-label>
+          <ion-input [(ngModel)]="nombrereceta" type="text" name="nombrereceta" id="nombrereceta"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="stacked">Duración:</ion-label>
+          <ion-input [(ngModel)]="dura" name="dura" type="number" id="dura"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="stacked">Paso:</ion-label>
+          <ion-input type="text" id="pasos" name="pasos" [(ngModel)]="pasos"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12">
+        <ion-button expand="block" (click)="agregaPaso()" style="width: 100%;">
+          <ion-icon name="add-outline"></ion-icon> Agregar paso
+        </ion-button>
+      </ion-col>
+      <ion-col size="12">
+        <ion-list>
+          <ion-item *ngFor="let paso of pasosArray; let index = index">
+            <ion-label>{{index + 1}}. {{ paso }}</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+
+    </ion-row>
+    <ion-row>
+      <ion-col size="6">
+        <ion-item>
+          <ion-label position="stacked">Ingrediente:</ion-label>
+          <ion-select [(ngModel)]="producto" name="producto">
+            <ion-select-option [value]="0">Selecciona un ingrediente</ion-select-option>
+            <ion-select-option *ngFor="let producto of productos" [value]="producto.id">{{
+              producto.nombre}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+      <ion-col size="6">
+        <ion-item>
+          <ion-label position="stacked">Cantidad:</ion-label>
+          <ion-input type="number" id="cantidadi" name="cantidadi" [(ngModel)]="cantidadi"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-button expand="block" (click)="agregarIngrediente()">
+          <ion-icon name="add-circle-outline"></ion-icon> Agregar ingrediente
+        </ion-button>
+      </ion-col>
+      <ion-col size="12">
+        <ion-list>
+          <ion-item *ngFor="let prd of prodsArray; let index = index">
+            <ion-label>{{ prd.productos.nombre }} {{ prd.cantidad }}</ion-label>
+            <ion-button fill="clear" color="danger" (click)="eliminaringrediente(prd.id, prd.idlistaingredientes)">
+              <ion-icon name="trash-outline"></ion-icon> Eliminar
+            </ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-col>      
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="stacked">Selecciona imágenes:</ion-label>
+          <input type="file" accept="image/*" multiple (change)="onFileSelected($event)">
+        </ion-item>
+        <ion-list>
+          <ion-item *ngFor="let image of Imagenes; let i = index">
+            <img [src]="image.cadenab64" alt="Imagen" />
+            <ion-button fill="clear" color="danger" (click)="eliminarImagen(image.id, image.idlistaimagen)">
+              <ion-icon name="trash-outline"></ion-icon> Eliminar
+            </ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-button expand="block" (click)="guardar()">
+          <ion-icon name="save-outline"></ion-icon> Guardar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

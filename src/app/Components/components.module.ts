@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { ProductosComponent } from './Modals/PorductosModal/productos/productos.component';
 import { LoaderComponent } from './Modals/LoadingModal/loader/loader.component';
+import { RecetasComponent } from './Modals/RecetasModals/recetas/recetas.component';
 
 
 
@@ -16,13 +17,15 @@ import { LoaderComponent } from './Modals/LoadingModal/loader/loader.component';
     CardComponent,
     CategoriasComponent,
     ProductosComponent,
-    LoaderComponent
+    LoaderComponent,
+    RecetasComponent
   ],
   exports: [
     CardComponent,
     CategoriasComponent,
     ProductosComponent,
-    LoaderComponent
+    LoaderComponent,
+    RecetasComponent
   ],
   imports: [
     CommonModule,

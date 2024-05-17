@@ -1,0 +1,40 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Recetas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Recetas</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-button size="small" fill="clear" color="success" style="width: 100%;"
+    (click)="AbrirModalRecetas(0, 'Nuevo')">Nuevo</ion-button>
+
+    <ion-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6" *ngFor="let receta of recetas">
+            <ion-card>
+              <ion-card-header>
+                {{ receta.listaingredientes.descripcion }}
+              </ion-card-header>
+              <ion-card-content class="ion-text-center">
+                <div class="ion-align-items-center">
+                  <img [src]="receta.listaimagenes.imagenes[0].cadenab64" alt="Imagen de la receta">
+                </div>
+                <p>Tiempo de preparación: {{ receta.tiempopreparacion }} minutos</p>
+                <ion-button expand="block" (click)="verRecetaCompleta(receta.id)">Ver receta completa</ion-button>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-content>
+    
+
+
+</ion-content>
