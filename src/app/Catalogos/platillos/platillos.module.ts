@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { PlatillosPageRoutingModule } from './platillos-routing.module';
 
 import { PlatillosPage } from './platillos.page';
+import { ComponentsModule } from '../../Components/components.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    PlatillosPageRoutingModule
+    PlatillosPageRoutingModule,
+    ComponentsModule
   ],
   declarations: [PlatillosPage]
 })

@@ -39,6 +39,14 @@ const routes: Routes = [
     path: 'platillos',
     loadChildren: () => import('./Catalogos/platillos/platillos.module').then( m => m.PlatillosPageModule)
   },
+  {
+    path: 'bebidas',
+    loadChildren: () => import('./Catalogos/bebidas/bebidas.module').then( m => m.BebidasPageModule)
+  },
+  {
+    path: 'mesas',
+    loadChildren: () => import('./Catalogos/mesas/mesas.module').then( m => m.MesasPageModule)
+  },
 ];
 
 @NgModule({

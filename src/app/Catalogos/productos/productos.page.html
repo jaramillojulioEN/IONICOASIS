@@ -1,40 +1,50 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Productos</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Productos</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div class="productos">
-    <ion-button size="small" fill="clear" color="success" style="width: 100%;" (click)="AbrirModalProducto(0, 'Nuevo')">Nuevo</ion-button>
-    <ion-list [inset]="true">
-      <ion-item *ngFor="let producto of productos;">
-        <ion-grid>
-          <ion-row>
-            <ion-col size="10">
-              <ion-text>Producto: {{producto.nombre}}</ion-text><br>
-              <ion-text class="subtext">Cantidad: {{producto.cantidad}}</ion-text><br>
-              <ion-text class="subtext">Vendidos: {{producto.vendidos}}</ion-text><br>
-              <ion-text class="subtext">Categoria: {{producto.categorias.categoria}}</ion-text><br>
-            </ion-col>
-            <ion-col size="2">
+<app-main-header titulo="Productos"></app-main-header>
+<ion-content [fullscreen]="true" id="main-content">
+  <div class="productos ion-padding">
+    <div class="ion-grid">
+      <ion-row>
+        <ion-col size-lg="11" size-sm="8"></ion-col>
+        <ion-col size-lg="1" size-sm="4">
+          <div class="header-cotainer">
+            <ion-button (click)="AbrirModalProducto(0, 'Nuevo')" class="crear">
+              <ion-icon name="add-circle-outline"></ion-icon>
+              <div class="button-text" >Crear</div>
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </div>
+    <div class="table-container">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Vendidos</th>
+            <th>Categoria</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let producto of productos;">
+            <td>{{producto.nombre}}</td>
+            <td>{{producto.cantidad}}</td>
+            <td>{{producto.vendidos}}</td>
+            <td>{{producto.categorias.categoria}}</td>
+            <td>
               <ion-button size="small" fill="clear" color="success" (click)="AbrirModalProducto(producto.id, 'Actualizar')">
                 <ion-icon name="pencil"></ion-icon>
               </ion-button>
-              <ion-button size="small" fill="clear" color="danger" (click)="EliminarProducto(producto.id)">
+              <ion-button size="small" fill="clear" color="danger" (click)="EliminarProducto(producto)">
                 <ion-icon name="trash"></ion-icon>
               </ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-item>
-    </ion-list>
-
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="no-productos" *ngIf="!productos || productos.length === 0">
+      <p>Aún no has registrado productos</p>
+    </div>
   </div>
 </ion-content>

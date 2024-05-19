@@ -74,6 +74,7 @@ export class ProductosComponent implements OnInit {
           console.error('Error en la solicitud:', error);
         }
       );
+      this.dismissModal()
     } else {
       const data = {
         cantidad: this.cantidad,
@@ -91,6 +92,7 @@ export class ProductosComponent implements OnInit {
           console.error('Error en la solicitud:', error);
         }
       );
+      this.dismissModal()
     }
 
   }

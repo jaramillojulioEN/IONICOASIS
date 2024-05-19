@@ -1,46 +1,50 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Categorias</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-main-header titulo="Categorias"></app-main-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Categorias</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-
+<ion-content [fullscreen]="true" id="main-content">
   <div class="container ion-padding">
-
-    <ion-accordion-group class="ion-margin-top" *ngFor="let subcategoria of subcategorias;">
-      <ion-accordion value="first">
-        <ion-item slot="header" color="light">
-          <ion-label>{{subcategoria.subcategoria}}</ion-label>
-          <ion-button size="small" (click) = "AbrirModal(subcategoria.id, 'Nueva')" fill="clear">
-            <ion-icon name="add"></ion-icon>
-          </ion-button>
-        </ion-item>
-        <div *ngFor="let categoria of filterCategoriesBySubcategory(categorias, subcategoria.id);" class="ion-padding"
-          slot="content">
-          {{categoria.categoria}}
-          <div class="butons">
-            <ion-button size="small" fill="clear" color="success" (click) = "AbrirModal(categoria.id, 'Actualizar')">
-              <ion-icon name="pencil"></ion-icon>
+    <ng-container *ngFor="let subcategoria of subcategorias; let i = index;">
+      <ion-accordion-group>
+        <ion-accordion value="{{ subcategoria.id }}">
+          <ion-item slot="header" color="light">
+            <ion-label>{{ subcategoria.subcategoria }}</ion-label>
+            <ion-button (click)="AbrirModal(subcategoria.id, 'Nueva')" class="crear">
+              <ion-icon name="add-circle-outline"></ion-icon>
+              <div class="button-text">Crear</div>
             </ion-button>
-            <ion-button size="small" fill="clear" color="success" (click) = "AbrirModalProducto(categoria.id, 'Nuevo')">
-              <ion-icon name="fast-food-outline"></ion-icon>
-            </ion-button>
-            <ion-button size="small" fill="clear" color="danger" (click)="eliminarCategoria(categoria.id)">
-              <ion-icon name="trash"></ion-icon>
-            </ion-button>
+          </ion-item>
+          
+          <div slot="content">
+            <table class="categories-table tabla">
+              <thead>
+                <tr>
+                  <th>Subcategoría</th>
+                  <th>Categoría</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let categoria of filterCategoriesBySubcategory(categorias, subcategoria.id);">
+                  <tr>
+                    <td>{{ subcategoria.subcategoria }}</td>
+                    <td>{{ categoria.categoria }}</td>
+                    <td>
+                      <ion-button size="small" fill="clear" color="success" (click)="AbrirModal(categoria.id, 'Actualizar')">
+                        <ion-icon name="pencil"></ion-icon>
+                      </ion-button>
+                      <ion-button size="small" fill="clear" color="success" (click)="AbrirModalProducto(categoria.id, 'Nuevo')">
+                        <ion-icon name="fast-food-outline"></ion-icon>
+                      </ion-button>
+                      <ion-button size="small" fill="clear" color="danger" (click)="eliminarCategoria(categoria)">
+                        <ion-icon name="trash"></ion-icon>
+                      </ion-button>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
           </div>
-        </div>
-      </ion-accordion>
-    </ion-accordion-group>
-
-
+        </ion-accordion>
+      </ion-accordion-group>
+    </ng-container>
   </div>
-
 </ion-content>

@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Formulario de Platillos</ion-title>
+    <ion-title>{{titulo}} Platillos</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -12,18 +12,16 @@
         </ion-item>
   
         <ion-item>
-          <ion-select labelPlacement="floating" label="Categoria" name="idcategoria" placeholder="ID Categoría" [(ngModel)]="platillos.idcategoria">
-            <ion-select-option value="1">Categoría 1</ion-select-option>
-            <ion-select-option value="2">Categoría 2</ion-select-option>
-            <ion-select-option value="3">Categoría 3</ion-select-option>
+          <ion-select labelPlacement="floating"  interface="action-sheet" label="Categoria" name="idcategoria" placeholder="ID Categoría" [(ngModel)]="platillos.idcategoria">
+            <ion-select-option value="0">Selecciona una categoria</ion-select-option>
+            <ion-select-option *ngFor="let categoria of categorias" value="{{categoria.id}}">{{categoria.categoria}}</ion-select-option>
           </ion-select>
         </ion-item>
   
         <ion-item>
-          <ion-select labelPlacement="floating" label="Receta" name="idreceta" placeholder="ID Receta" [(ngModel)]="platillos.idreceta">
-            <ion-select-option value="101">Receta 101</ion-select-option>
-            <ion-select-option value="102">Receta 102</ion-select-option>
-            <ion-select-option value="103">Receta 103</ion-select-option>
+          <ion-select labelPlacement="floating"  interface="action-sheet" label="Receta" name="idreceta" placeholder="ID Receta" [(ngModel)]="platillos.idreceta">
+            <ion-select-option value="1">Selecciona una receta</ion-select-option>
+            <ion-select-option *ngFor="let receta of recetas" value="{{receta.id}}">{{receta.listaingredientes.descripcion}}</ion-select-option>
           </ion-select>
         </ion-item>
   
@@ -35,7 +33,7 @@
           <ion-input labelPlacement="floating" label="Precio Empleado" name="precioempleado" placeholder="Precio Empleado" [(ngModel)]="platillos.precioempleado" type="number" clearInput></ion-input>
         </ion-item>
   
-        <ion-button expand="full" type="submit">Guardar</ion-button>
+        <ion-button expand="full" (click)="confirmar()">Guardar</ion-button>
       </ion-list>
     </div>
 </ion-content>

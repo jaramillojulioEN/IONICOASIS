@@ -1,4 +1,4 @@
-<ion-card (click) =  "goto(pagina)" style="cursor: pointer;">
+<ion-card  routerDirection="root" [routerLink]="pagina" style="cursor: pointer;">
   <ion-card-header>
     <ion-card-title text-capitalize>{{titulo}}</ion-card-title>
   </ion-card-header>

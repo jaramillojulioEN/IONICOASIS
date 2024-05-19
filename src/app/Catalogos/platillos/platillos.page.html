@@ -1,17 +1,13 @@
-<ion-header class="header">
-  <ion-toolbar class="header">
-    <ion-title color="light"><ion-icon name="menu"></ion-icon>Mis Platillos</ion-title>
-  </ion-toolbar>
-</ion-header>
 
-<ion-content class="main">
+<app-main-header titulo="Platillos"></app-main-header>
+<ion-content class="main" id="main-content">
   <div class="container">
     <div class="ion-grid">
       <ion-row>
-        <ion-col size="11"></ion-col>
-        <ion-col size="1">
+        <ion-col size-lg="11" size-sm="8"></ion-col>
+        <ion-col size-lg="1" size-sm="4">
           <div class="header-cotainer">
-            <ion-button (click)="AbrirModalPlatillo()" class="crear">
+            <ion-button (click)="AbrirModalPlatillo(0, 'Nuevo')" class="crear">
               <ion-icon name="add-circle-outline"></ion-icon>
               <div class="button-text">Crear</div>
             </ion-button>
@@ -25,7 +21,6 @@
           <tr>
             <th>Nombre</th>
             <th>Categoría</th>
-            <th>Receta</th>
             <th>Precio</th>
             <th>Precio Empleado</th>
             <th>Acciones</th>
@@ -34,12 +29,11 @@
         <tbody>
           <tr *ngFor="let platillo of PlatilloArry">
             <td>{{ platillo.nombre }}</td>
-            <td>{{ platillo.idcategoria }}</td>
-            <td>{{ platillo.idreceta }}</td>
+            <td>{{ platillo.categorias.categoria }}</td>
             <td>{{ platillo.precio }}</td>
             <td>{{ platillo.precioempleado }}</td>
             <td>
-              <ion-button (click)="EditarPlatillo(platillo)" fill="clear" color="primary">
+              <ion-button (click)="AbrirModalPlatillo(platillo.id, 'Actualizar', platillo)" fill="clear" color="primary">
                 <ion-icon name="create-outline"></ion-icon>
               </ion-button>
               <ion-button (click)="EliminarPlatillo(platillo)" fill="clear" color="danger">

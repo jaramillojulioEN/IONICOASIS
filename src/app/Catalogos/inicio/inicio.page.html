@@ -1,32 +1,28 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Inicio</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Inicio</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-
+<app-main-header titulo="Catalogos"></app-main-header>
+<ion-content [fullscreen]="true" id="main-content">
   <ion-grid fixed>
     <ion-row>
       <ion-col size="6">
-        <app-card titulo = "Categorias" subtitulo = "Administrar las categorias" pagina="./categorias"></app-card>
+        <app-card titulo = "Categorias" subtitulo = "Administrar las categorias" pagina="/categorias"></app-card>
       </ion-col>
       <ion-col size="6">
-        <app-card titulo = "Productos" subtitulo = "Administra os productos" pagina="./productos"></app-card>
+        <app-card titulo = "Productos" subtitulo = "Administra os productos" pagina="/productos"></app-card>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size="6">
-        <app-card titulo = "Recetas" subtitulo = "Administra tus recetas" pagina="./recetas"></app-card>
+        <app-card titulo = "Recetas" subtitulo = "Administra tus recetas" pagina="/recetas"></app-card>
       </ion-col>
       <ion-col size="6">
-        <app-card titulo = "Catalogo" subtitulo = "Ir al catlogo" pagina="Catalogos/categorias"></app-card>
+        <app-card titulo = "Platillos" subtitulo = "Administra tus Platillos" pagina="/platillos"></app-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="6">
+        <app-card titulo = "Bebidas" subtitulo = "Administra tus bebidas" pagina="/bebidas"></app-card>
+      </ion-col>
+      <ion-col size="6">
+        <app-card titulo = "Mesas" subtitulo = "Administra tus mesas" pagina="/mesas"></app-card>
       </ion-col>
     </ion-row>
   </ion-grid>

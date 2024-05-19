@@ -1,0 +1,51 @@
+
+<app-main-header titulo="Bebidas"></app-main-header>
+<ion-content class="main" id="main-content">
+  <div class="container">
+    <div class="ion-grid">
+      <ion-row>
+        <ion-col size-lg="11" size-sm="8"></ion-col>
+        <ion-col size-lg="1" size-sm="4">
+          <div class="header-cotainer">
+            <ion-button (click)="AbrirModalbebida(0, 'Nueva')" class="crear">
+              <ion-icon name="add-circle-outline"></ion-icon>
+              <div class="button-text">Crear</div>
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </div>
+    <div class="table-container">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            <th>Precio Empleado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let bebida of BebidaArry">
+            <td>{{ bebida.nombre }}</td>
+            <td>{{ bebida.categorias.categoria }}</td>
+            <td>{{ bebida.precioventa }}</td>
+            <td>{{ bebida.precioempleados }}</td>
+            <td>
+              <ion-button (click)="AbrirModalbebida(bebida.id, 'Actualizar', bebida)" fill="clear" color="primary">
+                <ion-icon name="create-outline"></ion-icon>
+              </ion-button>
+              <ion-button (click)="Eliminarbebida(bebida)" fill="clear" color="danger">
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+            </td>
+          </tr>
+          <tr *ngIf="BebidaArry.length === 0">
+            <td colspan="6">No hay datos disponibles</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ion-content>

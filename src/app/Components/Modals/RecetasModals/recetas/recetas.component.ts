@@ -159,7 +159,7 @@ export class RecetasComponent implements OnInit {
   }
 
   async ObtenerProducutos(): Promise<void> {
-    (await this.ProductoService.Productos()).subscribe(
+    (await this.ProductoService.Productos(true)).subscribe(
       async (response: any) => {
         if (response && response.productos) {
           this.productos = response.productos;

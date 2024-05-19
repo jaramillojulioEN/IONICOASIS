@@ -3,6 +3,9 @@ import { CategoriaServiceService } from '../../services/Categorias/categoria-ser
 import { ModalController } from '@ionic/angular';
 import { CategoriasComponent } from '../../Components/Modals/CategoriasModal/categorias/categorias.component';
 import { ProductosComponent } from '../../Components/Modals/PorductosModal/productos/productos.component'
+import { LoaderFunctions } from 'src/functions/utils';
+import { AlertServiceService } from '../../services/Alerts/alert-service.service'
+
 
 @Component({
   selector: 'app-categorias',
@@ -12,7 +15,12 @@ import { ProductosComponent } from '../../Components/Modals/PorductosModal/produ
 export class CategoriasPage implements OnInit {
   subcategorias: any;
   categorias: any;
-  constructor(private CategoriasService: CategoriaServiceService, private ModalController: ModalController) { }
+  constructor(
+    private CategoriasService: CategoriaServiceService,
+    private ModalController: ModalController, 
+    private loaderFunctions: LoaderFunctions,
+    private ac : AlertServiceService
+  ) { }
 
   ngOnInit() {
     this.ObtenerSubCategorias();
@@ -50,6 +58,7 @@ export class CategoriasPage implements OnInit {
 
 
   ObtenerCategorias(): void {
+    
     this.CategoriasService.Categorias().subscribe(
       (response: any) => {
         if (response && response.categorias) {
@@ -69,15 +78,16 @@ export class CategoriasPage implements OnInit {
     return categorias?.filter(categoria => categoria?.idsubcategoria === subcategoryId) || [];
   }
 
-  eliminarCategoria(categoriaId: number) {
-    console.log('Eliminar categoría con ID:', categoriaId);
+  eliminarCategoria(categoria: any) {
+    this.ac.presentCustomAlert("Eliminar", "Estas seguro de elimimnar la categoria: " + categoria.categoria, ()=>this.confirmarEliminar(categoria.id))
   }
 
-  ObtenerSubCategorias(): void {
-    this.CategoriasService.SubCategorias().subscribe(
-      (response: any) => {
-        if (response && response.subcategorias) {
-          this.subcategorias = response.subcategorias;
+  async confirmarEliminar (id : number) : Promise<void>{
+    (await this.CategoriasService.EliminarCatego(id)).subscribe(
+      async (response: any) => {
+        if (response) {
+          this.ObtenerCategorias();
+          this.ac.presentCustomAlert("Exito", response.message)
         } else {
           console.error('Error: Respuesta inválida');
         }
@@ -86,5 +96,27 @@ export class CategoriasPage implements OnInit {
         console.error('Error en la solicitud:', error);
       }
     );
+  }
+
+  async ObtenerSubCategorias(): Promise<void> {
+    await this.loaderFunctions.StartLoader();
+    try{
+      this.CategoriasService.SubCategorias().subscribe(
+        (response: any) => {
+          if (response && response.subcategorias) {
+            this.subcategorias = response.subcategorias;
+          } else {
+            console.error('Error: Respuesta inválida');
+          }
+        },
+        (error: any) => {
+          console.error('Error en la solicitud:', error);
+        }
+      );
+    }catch(error){
+
+    }finally{
+      this.loaderFunctions.StopLoader();
+    }
   }
 }

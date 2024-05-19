@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{titulo}} bebidas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="ion-padding">
+      <ion-list >
+        <ion-item>
+          <ion-input labelPlacement="floating" label="Nombre del platillo" name="nombre" placeholder="Nombre" [(ngModel)]="bebidas.nombre" clearInput></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-select labelPlacement="floating"  interface="action-sheet" label="Categoria" name="idcategoria" placeholder="ID Categoría" [(ngModel)]="bebidas.idcategoria">
+            <ion-select-option value="0">Selecciona una categoria</ion-select-option>
+            <ion-select-option *ngFor="let categoria of categorias" value="{{categoria.id}}">{{categoria.categoria}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+  
+  
+        <ion-item>
+          <ion-input labelPlacement="floating" label="Precio" name="precioventa" placeholder="Precio" [(ngModel)]="bebidas.precioventa" type="number" clearInput></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input labelPlacement="floating" label="Precio Empleado" name="precioempleados" placeholder="Precio Empleado" [(ngModel)]="bebidas.precioempleados" type="number" clearInput></ion-input>
+        </ion-item>
+  
+        <ion-button expand="full" (click)="confirmar()">Guardar</ion-button>
+      </ion-list>
+    </div>
+</ion-content>

@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map, switchMap } from 'rxjs';
-
+import {LoaderFunctions} from "src/functions/utils"
 @Injectable({
   providedIn: 'root'
 })
@@ -10,7 +10,7 @@ import { Observable, map, switchMap } from 'rxjs';
 export class CategoriaServiceService {
   server: any;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private LoaderFunctions : LoaderFunctions) {
     this.server = "https://localhost:44397/"
   }
 
@@ -30,6 +30,26 @@ export class CategoriaServiceService {
 
     return this.http.post<any>(`${this.server}api/Categorias/CrearCategoria`, data);
   }
+
+  async EliminarCatego(id: number): Promise<Observable<any>> {
+    try {
+      const data = {
+        id: id
+      };
+      const options = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+        }),
+        body: data
+      };
+
+      await this.LoaderFunctions.StartLoader();
+      return this.http.delete<any>(`${this.server}api/Categorias/EliminarCategoria`, options);
+    } finally {
+      this.LoaderFunctions.StopLoader();
+    }
+  }
+
 
 
   buscarCategoria(id: number): Observable<any> {

@@ -1,40 +1,57 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Recetas</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Recetas</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <ion-button size="small" fill="clear" color="success" style="width: 100%;"
-    (click)="AbrirModalRecetas(0, 'Nuevo')">Nuevo</ion-button>
-
-    <ion-content>
-      <ion-grid>
-        <ion-row>
-          <ion-col size="6" *ngFor="let receta of recetas">
-            <ion-card>
-              <ion-card-header>
-                {{ receta.listaingredientes.descripcion }}
-              </ion-card-header>
-              <ion-card-content class="ion-text-center">
-                <div class="ion-align-items-center">
-                  <img [src]="receta.listaimagenes.imagenes[0].cadenab64" alt="Imagen de la receta">
-                </div>
-                <p>Tiempo de preparación: {{ receta.tiempopreparacion }} minutos</p>
-                <ion-button expand="block" (click)="verRecetaCompleta(receta.id)">Ver receta completa</ion-button>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-content>
-    
-
+<app-main-header titulo="Recetas"></app-main-header>
+<ion-content id="main-content">
+  <ion-grid>
+    <ion-row>
+      <ion-col size-lg="11" size-sm="8"></ion-col>
+      <ion-col size-lg="1" size-sm="4">
+        <div class="header-cotainer">
+          <ion-button (click)="AbrirModalRecetas(0, 'Nuevo')">
+            <ion-icon name="add-circle-outline"></ion-icon>
+            <div class="button-text"class="crear" >Crear</div>
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <div class="ion-padding">
+    <div class="table-container ">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Descripción</th>
+            <th>Imagen</th>
+            <th>Tiempo de preparación</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let receta of recetas">
+            <td>{{ receta.listaingredientes.descripcion }}</td>
+            <td>
+              <img [src]="receta.listaimagenes.imagenes[0].cadenab64" alt="Imagen de la receta" class="recipe-image">
+            </td>
+            <td>{{ receta.tiempopreparacion }} minutos</td>
+            <td>
+              <ion-button (click)="verRecetaCompleta(receta.id)" fill="clear" color="info">
+                <ion-icon name="eye-outline"></ion-icon>
+              <div class="button-text"class="crear" >Ver</div>
+              </ion-button>
+              <ion-button (click)="verRecetaCompleta(receta.id)" fill="clear" color="info">
+                <ion-icon name="trash-outline"></ion-icon>
+              <div class="button-text"class="crear" >Eliminar</div>
+              </ion-button>
+              <ion-button (click)="verRecetaCompleta(receta.id)" fill="clear" color="info">
+                <ion-icon name="pencil"></ion-icon>
+              <div class="button-text"class="crear" >Editar</div>
+              </ion-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="no-recetas" *ngIf="!recetas || recetas.length === 0">
+      <p>Aún no has registrado recetas</p>
+    </div>
+  </div>
 
 </ion-content>

@@ -124,12 +124,16 @@ export class RecetasService {
     }
   }
 
-  async Recetas(): Promise<Observable<any>> {
+  async Recetas(load : Boolean = true): Promise<Observable<any>> {
     try {
-      await this.loaderFunctions.StartLoader();
+      if(load){
+        await this.loaderFunctions.StartLoader();
+      }
       return this.http.get<any>(`${this.server}api/Recetas/TodasRecetas`);
     } finally {
-      this.loaderFunctions.StopLoader();
+      if(load){
+        this.loaderFunctions.StopLoader();
+      }
     }
   }
 

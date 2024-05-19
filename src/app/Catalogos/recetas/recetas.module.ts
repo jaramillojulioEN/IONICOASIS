@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { RecetasPageRoutingModule } from './recetas-routing.module';
+import { ComponentsModule } from '../../Components/components.module';
 
 import { RecetasPage } from './recetas.page';
 
@@ -13,6 +14,7 @@ import { RecetasPage } from './recetas.page';
     CommonModule,
     FormsModule,
     IonicModule,
+    ComponentsModule,
     RecetasPageRoutingModule
   ],
   declarations: [RecetasPage]
