@@ -23,7 +23,7 @@ export class LoginPage implements OnInit {
 
   RedirigirRol(rol:any):void{
     if(rol == 1){
-      this.router.navigate(['/admin-dash-board']);
+      this.router.navigate(['/admin']);
     }else{
       this.router.navigate(['/home']);
     }

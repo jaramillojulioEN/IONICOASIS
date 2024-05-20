@@ -47,6 +47,14 @@ const routes: Routes = [
     path: 'mesas',
     loadChildren: () => import('./Catalogos/mesas/mesas.module').then( m => m.MesasPageModule)
   },
+  {
+    path: 'empleados',
+    loadChildren: () => import('./Pages/empleados/empleados.module').then( m => m.EmpleadosPageModule)
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./Pages/admin/admin.module').then( m => m.AdminPageModule)
+  },
 ];
 
 @NgModule({
