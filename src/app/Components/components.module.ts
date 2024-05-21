@@ -14,7 +14,8 @@ import { SideMenuComponent } from './Menus/SideMenu/side-menu/side-menu.componen
 import { MainHeaderComponent } from './Headers/Header/main-header/main-header.component';
 import {BebidaComponent} from 'src/app/Components/Modals/BebidasModal/bebida/bebida.component'
 import {MesasComponent} from 'src/app/Components/Modals/Mesas/mesas/mesas.component'
-
+import {EmpleadosComponent} from 'src/app/Components/Modals/Empleados/empleados/empleados.component'
+import {PropiedadesComponent} from 'src/app/Components/Secciones/Empleado/propiedades/propiedades.component'
 
 @NgModule({
   declarations:
@@ -25,6 +26,8 @@ import {MesasComponent} from 'src/app/Components/Modals/Mesas/mesas/mesas.compon
     MesasComponent,
     LoaderComponent,
     RecetasComponent,
+    EmpleadosComponent,
+    PropiedadesComponent,
     SideMenuComponent,
     PlatilloNuevoComponent,
     MainHeaderComponent,
@@ -35,6 +38,8 @@ import {MesasComponent} from 'src/app/Components/Modals/Mesas/mesas/mesas.compon
     CardComponent,
     MainHeaderComponent,
     MesasComponent,
+    EmpleadosComponent,
+    PropiedadesComponent,
     CategoriasComponent,
     ProductosComponent,
     LoaderComponent,

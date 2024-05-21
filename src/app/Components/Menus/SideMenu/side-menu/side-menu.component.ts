@@ -18,7 +18,7 @@ export class SideMenuComponent implements OnInit {
   ];
 
   public appPages = [
-    { title: 'Inicio', url: '/inicio', icon: 'home', open: false },
+    { title: 'Inicio', url: '/admin', icon: 'home', open: false },
     { 
       title: 'Catálogos', 
       url: '/incio', 
@@ -26,6 +26,7 @@ export class SideMenuComponent implements OnInit {
       subpages: this.CatalogosPages, 
       open: false
     },
+    { title: 'Empleados', url: '/empleados', icon: 'person', open: false },
     { title: 'Contacto', url: '/contacto', icon: 'call', open: false },
   ];
 

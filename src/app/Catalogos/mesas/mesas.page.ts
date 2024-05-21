@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { MesasComponent } from 'src/app/Components/Modals/Mesas/mesas/mesas.component'
-import { MenuController } from '@ionic/angular';
 import { MesasService } from 'src/app//services/Mesas/mesas.service'
 import { AlertServiceService } from '../../services/Alerts/alert-service.service'
 
@@ -59,7 +58,6 @@ export class MesasPage implements OnInit {
   async EliminarMesa(mesa: any) {
     this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar la mesa: " + mesa.descripcion, () => this.ConfirmarELiminar(mesa.id));
   }
-  
 
   async ConfirmarELiminar (id : number) :Promise<void> {
     (await this.MesasService.EliminarMesa(id)).subscribe(

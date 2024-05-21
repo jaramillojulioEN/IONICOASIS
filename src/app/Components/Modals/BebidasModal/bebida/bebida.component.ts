@@ -13,7 +13,6 @@ export class BebidaComponent  implements OnInit {
   constructor(
     private modalController: ModalController,
     private BebidaService: BebidaService,
-    private alertController: AlertController,
     private categoservice: CategoriaServiceService,
     private ac : AlertServiceService
   ) { }

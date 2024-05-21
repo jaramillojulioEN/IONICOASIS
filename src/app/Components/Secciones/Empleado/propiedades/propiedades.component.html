@@ -1,0 +1,34 @@
+<ion-content>
+  <table>
+    <tr>
+      <th colspan="2">Contacto</th>
+    </tr>
+    <tr>
+      <td>Nombre:</td>
+      <td>{{empleado.nombrecompleto}}</td>
+    </tr>
+    <tr>
+      <td>Correo:</td>
+      <td>{{empleado.correo}}</td>
+    </tr>
+    <tr>
+      <td>Telefono:</td>
+      <td>{{empleado.telefono}}</td>
+    </tr>
+    <tr>
+      <th colspan="2">Sesión</th>
+    </tr>
+    <tr>
+      <td>Usuario:</td>
+      <td>{{empleado.usuarios.nombreusuario}}</td>
+    </tr>
+    <tr>
+      <td>Contraseña:</td>
+      <td>{{pass}}<ion-icon role="button" name="eye-outline" color="success" (click) = "show()" style="cursor: pointer;"></ion-icon></td>
+    </tr>
+    <tr>
+      <td>Rol:</td>
+      <td>{{empleado.usuarios.roles.rol}}</td>
+    </tr>
+  </table>
+</ion-content>
