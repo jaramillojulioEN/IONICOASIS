@@ -9,40 +9,51 @@ import { Router } from '@angular/router';
 })
 export class LoginPage implements OnInit {
 
-  constructor(private router: Router,private UserService: UserServiceService) { }
-
+  constructor(private router: Router, private UserService: UserServiceService) { }
+  user: any = []
   ngOnInit() {
-    const usuarioGuardado = localStorage.getItem('usuario');
-    if (usuarioGuardado) {
-      let JSONUser = JSON.parse(usuarioGuardado)
-      this.RedirigirRol(JSONUser.idrol)
+    if (this.UserService.isAuth()) {
+      this.user = this.UserService.getUser()
+      this.RedirigirRol()
     } else {
       this.login();
     }
   }
 
-  RedirigirRol(rol:any):void{
-    if(rol == 1){
-      this.router.navigate(['/admin']);
-    }else{
-      this.router.navigate(['/home']);
+  RedirigirRol(): void {
+    switch (this.user.idrol) {
+      case 1:
+        this.router.navigate(['/admin']);
+        break;
+      case 2:
+        this.router.navigate(['/mesero']);
+        break;
+      case 4:
+        this.router.navigate(['/cocina']);
+        break;
+      case 5:
+        this.router.navigate(['/caja']);
+        break;
     }
   }
 
   login(): void {
     let usuario = "JJ"
+    console.log(usuario)
+
     let password = "1234"
     this.UserService.login(usuario, password).subscribe(
-      (response:any) => {
+      (response: any) => {
         if (response && response.repuesta) {
           const usuario = response.repuesta;
           localStorage.setItem('usuario', JSON.stringify(usuario));
-          this.RedirigirRol(usuario.idrol)
+          this.user = this.UserService.getUser()
+          this.RedirigirRol()
         } else {
           console.error('Error: Respuesta inválida');
         }
       },
-      (error:any) => {
+      (error: any) => {
         console.error('Error en la solicitud:', error);
       }
     );
