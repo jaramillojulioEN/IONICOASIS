@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, UnsubscriptionError } from 'rxjs';
 import { UserServiceService } from 'src/app/services/Users/user-service.service';  
 
 @Injectable({
@@ -13,14 +13,13 @@ export class RoleGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    
       const expectedRoles: string[] = next.data['expectedRoles'];
-
-    if (!this.authService.isAuth() || !expectedRoles.includes(this.authService.getRol())) {
+      let user = this.authService.getUser()
+      let rol : any = this.authService.getRol(user.nombreusuario, user.contraseña)
+    if (!this.authService.isAuth() || !(expectedRoles.includes(rol.rol))) {
       this.router.navigate(['/login']);
       return false;
     }
-
     return true;
   }
 }

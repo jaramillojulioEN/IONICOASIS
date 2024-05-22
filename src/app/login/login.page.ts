@@ -9,33 +9,18 @@ import { Router } from '@angular/router';
 })
 export class LoginPage implements OnInit {
 
-  constructor(private router: Router, private UserService: UserServiceService) { }
+  constructor(private UserService: UserServiceService) { }
   user: any = []
   ngOnInit() {
     if (this.UserService.isAuth()) {
       this.user = this.UserService.getUser()
-      this.RedirigirRol()
+      this.UserService.RedirigirRol(this.user.idrol)
     } else {
       this.login();
     }
   }
 
-  RedirigirRol(): void {
-    switch (this.user.idrol) {
-      case 1:
-        this.router.navigate(['/admin']);
-        break;
-      case 2:
-        this.router.navigate(['/mesero']);
-        break;
-      case 4:
-        this.router.navigate(['/cocina']);
-        break;
-      case 5:
-        this.router.navigate(['/caja']);
-        break;
-    }
-  }
+
 
   login(): void {
     let usuario = "JJ"
@@ -48,7 +33,7 @@ export class LoginPage implements OnInit {
           const usuario = response.repuesta;
           localStorage.setItem('usuario', JSON.stringify(usuario));
           this.user = this.UserService.getUser()
-          this.RedirigirRol()
+          this.UserService.RedirigirRol(this.user.idrol)
         } else {
           console.error('Error: Respuesta inválida');
         }
