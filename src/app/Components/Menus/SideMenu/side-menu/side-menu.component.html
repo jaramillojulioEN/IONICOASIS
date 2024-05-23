@@ -7,7 +7,7 @@
   <ion-content>
     <ion-list id="menu-list">
       <ng-container *ngFor="let p of appPages">
-        <ng-container *ngIf="!p.subpages; else hasSubpages">
+        <ng-container *ngIf="p.subpages !== null &&!p.subpages; else hasSubpages">
           <ion-menu-toggle auto-hide="false">
             <ion-item (click)="navigateTo(p.url)" lines="none" routerDirection="root" [routerLink]="[p.url]" detail="false" routerLinkActive="selected">
               <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-outline'"></ion-icon>

@@ -16,11 +16,13 @@ import {BebidaComponent} from 'src/app/Components/Modals/BebidasModal/bebida/beb
 import {MesasComponent} from 'src/app/Components/Modals/Mesas/mesas/mesas.component'
 import {EmpleadosComponent} from 'src/app/Components/Modals/Empleados/empleados/empleados.component'
 import {PropiedadesComponent} from 'src/app/Components/Secciones/Empleado/propiedades/propiedades.component'
+import { DetalleordenComponent } from 'src/app/Components/Modals/Mesas/detalleorden/detalleorden.component'
 
 @NgModule({
   declarations:
   [
     CardComponent,
+    DetalleordenComponent,
     CategoriasComponent,
     ProductosComponent,
     MesasComponent,
@@ -40,6 +42,7 @@ import {PropiedadesComponent} from 'src/app/Components/Secciones/Empleado/propie
     MesasComponent,
     EmpleadosComponent,
     PropiedadesComponent,
+    DetalleordenComponent,
     CategoriasComponent,
     ProductosComponent,
     LoaderComponent,

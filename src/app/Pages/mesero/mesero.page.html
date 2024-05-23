@@ -1,13 +1,15 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>mesero</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-main-header titulo="Ordenes"></app-main-header>
+<ion-content id="main-content">
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">mesero</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-lg="4" size-sm="12" *ngFor="let mesa of mesas">
+        <div class="image-container" style="cursor: pointer;" (click) = "VerOrden(mesa)">
+          <img [src]="images[mesa.estado]" alt="Imagen de fondo">
+          <div class="text-overlay">{{mesa.descripcion}}</div>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-content>
