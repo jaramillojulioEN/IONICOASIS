@@ -6,7 +6,10 @@
       <ion-col size-lg="4" size-sm="12" *ngFor="let mesa of mesas">
         <div class="image-container" style="cursor: pointer;" (click) = "VerOrden(mesa)">
           <img [src]="images[mesa.estado]" alt="Imagen de fondo">
-          <div class="text-overlay">{{mesa.descripcion}}</div>
+          <div class="text-overlay">
+            <p class="ion-text-center">{{mesa.descripcion}}</p>
+            <p color="success" *ngIf="mesa.ordenes.length !== 0">Orden: {{mesa.ordenes[0].orden}}</p>
+          </div>
         </div>
       </ion-col>
     </ion-row>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { MesasService } from 'src/app/services/Mesas/mesas.service'
+import { OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.component'
 import { DetalleordenComponent } from 'src/app/Components/Modals/Mesas/detalleorden/detalleorden.component'
 @Component({
   selector: 'app-mesero',
@@ -23,13 +24,26 @@ export class MeseroPage implements OnInit {
     this.ObtenerMesas()
   }
 
-  async VerOrden(data: any) {
-    const modal = await this.ModalController.create({
-      component: DetalleordenComponent,
-      componentProps: {
-        mesa: data
-      },
-    });
+  async VerOrden(data: any, id: number = 0, titulo : string = "") {
+    var modal: any = null;
+    if (data.ordenes.length != 0) {
+      modal = await this.ModalController.create({
+        component: DetalleordenComponent,
+        componentProps: {
+          mesa: data
+        },
+      });
+    } else {
+      modal = await this.ModalController.create({
+        component: OrdnComponent,
+        componentProps: {
+          titulo : titulo,
+          id : id,
+          orden :data
+        },
+      });
+    }
+
     return await modal.present();
   }
 

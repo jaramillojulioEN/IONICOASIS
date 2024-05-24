@@ -1,3 +1,53 @@
-<p>
-  detalleorden works!
-</p>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Detalles de la Orden</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Orden #ORD{{orden.id}}</ion-card-title>
+      <ion-card-subtitle>Fecha y Hora: {{orden.fecha}}</ion-card-subtitle>
+      <ion-card-subtitle>Tiempo de preparacion (estimado): {{estimados[0]}} minutos</ion-card-subtitle>
+      <ion-card-subtitle>Entrega (estimado): {{estimados[1]}}</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div class="order-details">
+        <div class="order-info">
+          <h3 class="section-header">Detalle de la mesa</h3>
+          <p><strong>{{mesa.descripcion}}</strong></p>
+          <p><strong>Nombre del Cliente:</strong> {{orden.nombrecliente}}</p>
+        </div>
+
+        <div class="order-section">
+          <div *ngIf="orden.ordenesplatillos.length !==0">
+            <h3 class="section-header">Detalles de los Platillos</h3>
+            <div class="order-item" *ngFor="let platillo of orden.ordenesplatillos">
+              <p><strong>{{platillo.platillos.nombre}}</strong></p>
+              <p>Cantidad: {{platillo.cantidad}}</p>
+              <p>Observaciones: {{platillo.observaciones}}</p>
+            </div>
+          </div>
+          <div *ngIf="orden.ordenesbebidas.length !== 0">
+            <h3 class="section-header">Detalles de las bebidas</h3>
+            <div class="order-item" *ngFor="let bebida of orden.ordenesbebidas">
+              <p><strong>{{bebida.bebidas.nombre}}</strong></p>
+              <p>Cantidad: {{bebida.cantidad}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="order-section">
+          <h3 class="section-header">Instrucciones Especiales</h3>
+          <p>Instruncciones {{orden.observaciones}}</p>
+        </div>
+
+        <div class="order-section">
+          <h3 class="section-header">Identificación del Mesero</h3>
+          <p>Mesero: {{orden.usuarios.nombre}}</p>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
