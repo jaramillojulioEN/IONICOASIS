@@ -1,0 +1,44 @@
+<!-- src/app/components/receta-detalle/receta-detalle.component.html -->
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Detalle de la Receta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="receta">
+    <ion-card-header>
+      <ion-card-title>Receta #{{ receta.id }}</ion-card-title>
+      <ion-card-subtitle>{{ receta.listaingredientes.descripcion }}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Tiempo de preparación:</strong> {{ receta.tiempopreparacion }} minutos</p>
+      <ion-list>
+        <ion-list-header>
+          <ion-label>Ingredientes</ion-label>
+        </ion-list-header>
+        <ion-item *ngFor="let ingrediente of receta.listaingredientes.ingredientes">
+          <ion-label>
+            {{ ingrediente.productos.nombre }} - {{ ingrediente.cantidad }}
+          </ion-label>
+        </ion-item>
+      </ion-list>
+      <ion-list>
+        <ion-list-header>
+          <ion-label>Pasos</ion-label>
+        </ion-list-header>
+        <ion-item>
+          <div [innerHTML]="receta.pasoshtml"></div>
+        </ion-item>
+      </ion-list>
+      <ion-list>
+        <ion-list-header>
+          <ion-label>Imagenes</ion-label>
+        </ion-list-header>
+        <ion-item>
+          
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

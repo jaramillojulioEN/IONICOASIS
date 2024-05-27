@@ -1,13 +1,38 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>cocina</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">cocina</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<app-main-header titulo="Órdenes Pendientes"></app-main-header>
+<ion-content [fullscreen]="true" id="main-content">
+  <ion-list>
+    <ion-item *ngFor="let orden of ordenes">
+      <ion-label>
+        <h2>ID Orden: #ORD{{ orden.id }}</h2>
+        <p>
+          <ion-icon name="calendar-outline"></ion-icon>
+          Fecha: {{ orden.fecha | date: 'short' }}
+        </p>
+        <p>
+          <ion-icon name="restaurant-outline"></ion-icon>
+          Mesa: {{ orden.mesas.descripcion }}
+        </p>
+        <p>
+          <ion-icon name="person-outline"></ion-icon>
+          Mesero: {{ orden.usuarios.nombre }}
+        </p>
+        <p>
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          Estado: {{ orden.estado }}
+        </p>
+        <p>
+          <ion-icon name="cash-outline"></ion-icon>
+          Total: {{ orden.total | currency }}
+        </p>
+        <p>
+          <ion-icon name="time-outline"></ion-icon>
+          Tiempo estimado de preparación: minutos
+        </p>
+      </ion-label>
+      <ion-button slot="end" color="primary" (click)="VerOrden(orden)">
+        Ver Detalle
+        <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
 </ion-content>
