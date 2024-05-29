@@ -1,3 +1,77 @@
-<p>
-  ordn works!
-</p>
+<ion-content class="order-details">
+  <ion-item>
+    <ion-label position="floating">Nombre Cliente</ion-label>
+    <ion-input type="text" [(ngModel)]="NewOrden.nombrecliente" [disabled]="estadoCreacion === 1" name="nombrecliente" required></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Nombre Orden</ion-label>
+    <ion-input type="text" [(ngModel)]="NewOrden.orden" name="orden" [disabled]="estadoCreacion === 1" required></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Observaciones</ion-label>
+    <ion-input type="text" [(ngModel)]="NewOrden.observaciones" [disabled]="estadoCreacion === 1" name="observaciones"></ion-input>
+  </ion-item>
+  <ion-button *ngIf="estadoCreacion == 0" expand="full" type="submit" (click)="CrearOrden()">Ir a detalles</ion-button>
+
+  <hr>
+  <ion-segment *ngIf="estadoCreacion == 1" [(ngModel)]="tipo">
+    <ion-segment-button value="default">
+      <ion-icon name="pizza-outline"></ion-icon>
+      <ion-text>Platillos</ion-text>
+    </ion-segment-button>
+    <ion-segment-button value="bebida">
+      <ion-icon name="beer-outline"></ion-icon>
+      <ion-text>Bebidas</ion-text>
+    </ion-segment-button>
+  </ion-segment>
+  <div *ngIf="tipo == 'default' && estadoCreacion == 1">
+    <ion-item>
+      <ion-label position="floating">ID Platillo</ion-label>
+      <ion-input type="number" [(ngModel)]="detallePlatillo.idplatillo" name="idplatillo" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Cantidad</ion-label>
+      <ion-input type="number" [(ngModel)]="detallePlatillo.cantidad" name="cantidad" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Observaciones</ion-label>
+      <ion-input type="text" [(ngModel)]="detallePlatillo.observaciones" name="observaciones"></ion-input>
+    </ion-item>
+    <ion-button expand="full" type="submit" (click)="crearDetalle(detallePlatillo)">Agregar a la orden</ion-button>
+  </div>
+  <div *ngIf="tipo !== 'default'">
+    <ion-item>
+      <ion-label position="floating">ID Bebida</ion-label>
+      <ion-input type="number" [(ngModel)]="DetalleBebida.idbebida" name="idbebida" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Cantidad</ion-label>
+      <ion-input type="number" [(ngModel)]="DetalleBebida.cantidad" name="cantidad" required></ion-input>
+    </ion-item>
+    <ion-button expand="full" type="submit" (click)="crearDetalle(DetalleBebida)">Agregar a la orden</ion-button>
+  </div>
+  <hr>
+  
+  <div class="order-details">
+    <div *ngIf="OrdenDetalles.ordenesplatillos && OrdenDetalles.ordenesplatillos.length !== 0">
+      <h3 class="section-header">Detalles de los Platillos</h3>
+      <div class="order-item" *ngFor="let platillo of OrdenDetalles.ordenesplatillos">
+        <p><strong>{{platillo.platillos.nombre}}</strong></p>
+        <p>Cantidad: {{platillo.cantidad}}</p>
+        <p>Observaciones: {{platillo.observaciones}}</p>
+      </div>
+    </div>
+    <div *ngIf="OrdenDetalles.ordenesbebidas && OrdenDetalles.ordenesbebidas.length !== 0">
+      <h3 class="section-header">Detalles de las bebidas</h3>
+      <div class="order-item" *ngFor="let bebida of OrdenDetalles.ordenesbebidas">
+        <p><strong>{{bebida.bebidas.nombre}}</strong></p>
+        <p>Cantidad: {{bebida.cantidad}}</p>
+      </div>
+    </div>
+  </div>
+  <ion-item *ngIf="estadoCreacion == 1">
+    <ion-label position="floating">Total</ion-label>
+    <ion-input type="number" [disabled] = 'true' [(ngModel)]="NewOrden.total" name="total" required></ion-input>
+  </ion-item>
+  <ion-button *ngIf="estadoCreacion == 1" expand="full" type="submit">Guardar</ion-button>
+</ion-content>

@@ -18,12 +18,14 @@ import {EmpleadosComponent} from 'src/app/Components/Modals/Empleados/empleados/
 import {PropiedadesComponent} from 'src/app/Components/Secciones/Empleado/propiedades/propiedades.component'
 import { DetalleordenComponent } from 'src/app/Components/Modals/Mesas/detalleorden/detalleorden.component'
 import {DetalleComponentReceta} from 'src/app/Components/Modals/RecetasModals/detalle/detalle.component'
+import {OrdnComponent} from 'src/app/Components/Modals/Ordenes/ordn/ordn.component'
 @NgModule({
   declarations:
   [
     CardComponent,
     DetalleComponentReceta,
     DetalleordenComponent,
+    OrdnComponent,
     CategoriasComponent,
     ProductosComponent,
     MesasComponent,
@@ -46,6 +48,7 @@ import {DetalleComponentReceta} from 'src/app/Components/Modals/RecetasModals/de
     PropiedadesComponent,
     DetalleordenComponent,
     CategoriasComponent,
+    OrdnComponent,
     ProductosComponent,
     LoaderComponent,
     RecetasComponent,

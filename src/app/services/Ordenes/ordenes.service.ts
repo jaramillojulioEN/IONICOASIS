@@ -51,4 +51,43 @@ export class OrdenesService {
   }
 
 
+  async CrearOrden(data: object): Promise<Observable<any>> {
+    try {
+      await this.loaderFunctions.StartLoader();
+      return this.http.post<any>(`${this.server}api/Ordenes/CrearOrden`, data);
+    } finally {
+      this.loaderFunctions.StopLoader();
+    }
+  }
+
+  async CrearOrdenDetail(data: any): Promise<Observable<any>> {
+    try {
+      await this.loaderFunctions.StartLoader();
+      if (data.idbebida == undefined && data.idplatillo != 0) {
+        console.log(data)
+
+        return this.http.post<any>(`${this.server}api/Detalles/CrearDetallePlatillo`, data);
+      }
+      if (data.idplatillo == undefined && data.idbebida != 0) {
+        console.log(data)
+
+        return this.http.post<any>(`${this.server}api/Detalles/CrearDetalleBebida`, data);
+      }
+      return new Observable<any>
+    } finally {
+      this.loaderFunctions.StopLoader();
+    }
+  }
+
+  total (orden : any) : number{
+    let total = 0
+    orden.ordenesplatillos.forEach((ordenplatillo: any) => {
+      total += (ordenplatillo.platillos.precio * ordenplatillo.cantidad)
+    });
+    orden.ordenesbebidas.forEach((ordenbebida: any) => {
+      total += (ordenbebida.bebidas.precioventa * ordenbebida.cantidad)
+    });
+    return total
+  }
+
 }

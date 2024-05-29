@@ -24,7 +24,7 @@ export class MeseroPage implements OnInit {
     this.ObtenerMesas()
   }
 
-  async VerOrden(data: any, id: number = 0, titulo : string = "") {
+  async VerOrden(data: any, titulo : string = "") {
     var modal: any = null;
     if (data.ordenes.length != 0) {
       modal = await this.ModalController.create({
@@ -38,7 +38,7 @@ export class MeseroPage implements OnInit {
         component: OrdnComponent,
         componentProps: {
           titulo : titulo,
-          id : id,
+          idmesa : data.id,
           orden :data
         },
       });

@@ -1,13 +1,12 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Detalles de la Orden</ion-title>
-    <ion-buttons slot="end" color="light">
+    <ion-buttons slot="end" color="light" *ngIf="rol.id !== 2">
       <ion-icon name="time-outline" color="light" slot="icon-only"></ion-icon>
       <span class="timer">{{ elapsedTime | date:'mm:ss' }}</span>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
 
 <ion-content>
   <ion-card>
@@ -18,13 +17,12 @@
       <ion-card-subtitle>Entrega (estimado): {{estimados[1]}}</ion-card-subtitle>
       <ion-card-subtitle>Estado: {{getEstado(orden.estado)}}</ion-card-subtitle>
     </ion-card-header>
-
     <ion-card-content>
-      <ion-button slot="end" color="primary" (click)="startTimer()" *ngIf="orden.estado === 1">
+      <ion-button slot="end" color="primary" (click)="startTimer()" *ngIf="orden.estado === 1 && rol.id!==2">
         Iniciar a preparar
         <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
       </ion-button>
-      <ion-button slot="end" color="primary" (click)="stopTimer()" *ngIf="orden.estado === 2">
+      <ion-button slot="end" color="primary" (click)="stopTimer()" *ngIf="orden.estado === 2 && rol.id!==2">
         Terminar Orden
         <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
       </ion-button>
@@ -34,26 +32,42 @@
           <p><strong>{{mesa.descripcion}}</strong></p>
           <p><strong>Nombre del Cliente:</strong> {{orden.nombrecliente}}</p>
         </div>
-
         <div class="order-section">
+          <ion-button (click)="AgregarAOrden(orden)" slot="end" color="primary">
+            Añadir detalles a la orden
+            <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+          </ion-button>
           <div *ngIf="orden.ordenesplatillos.length !== 0">
             <h3 class="section-header">Detalles de los Platillos</h3>
             <div class="order-item" *ngFor="let platillo of orden.ordenesplatillos">
-              <p><strong>{{platillo.platillos.nombre}}</strong></p>
-              <p>Cantidad: {{platillo.cantidad}}</p>
-              <p>Observaciones: {{platillo.observaciones}}</p>
-              <ion-button slot="end" color="primary" (click)="VerReceta(platillo.platillos.recetas)">
-                Consultar receta
-                <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
-              </ion-button>
+              <div class="info" style="padding: 10px;" [ngStyle]="{'background-color': (platillo.estado === 1) ? '#2c507c' : '#fff','color': (platillo.estado === 1) ? '#fff' : '#000'}">
+                <p><strong>{{platillo.platillos.nombre}}</strong></p>
+                <p>Cantidad: {{platillo.cantidad}}</p>
+                <p>Observaciones: {{platillo.observaciones}}</p>
+                <ion-button slot="end" color="danger" *ngIf="rol.id === 2 && orden.estado === 1" (click)="EliminarPlatillo(platillo)">
+                  Eliminar platillo
+                  <ion-icon slot="end" name="trash-outline"></ion-icon>
+                </ion-button>
+                <ion-button slot="end" color="primary" *ngIf="rol.id !== 2" (click)="VerReceta(platillo.platillos.recetas)">
+                  Consultar receta
+                  <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+                </ion-button>
+              </div>              
             </div>
+            <ion-label>Total Platillos: {{orden.ordenesplatillos.length}}</ion-label>
           </div>
           <div *ngIf="orden.ordenesbebidas.length !== 0">
             <h3 class="section-header">Detalles de las bebidas</h3>
             <div class="order-item" *ngFor="let bebida of orden.ordenesbebidas">
               <p><strong>{{bebida.bebidas.nombre}}</strong></p>
               <p>Cantidad: {{bebida.cantidad}}</p>
+              <ion-button slot="end" color="danger" *ngIf="rol.id === 2 && orden.estado === 1"
+                (click)="EliminarBebida(bebida)">
+                Eliminar bebida
+                <ion-icon slot="end" name="trash-outline"></ion-icon>
+              </ion-button>
             </div>
+            <ion-label>Total Bebidas: {{orden.ordenesbebidas.length}}</ion-label>
           </div>
         </div>
         <div class="order-section">

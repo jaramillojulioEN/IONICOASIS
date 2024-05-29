@@ -3,7 +3,9 @@ import { ModalController, NumericValueAccessor } from '@ionic/angular';
 import { DetalleComponentReceta } from 'src/app/Components/Modals/RecetasModals/detalle/detalle.component';
 import { UserServiceService } from 'src/app/services/Users/user-service.service';
 import { interval, Subscription } from 'rxjs';
+import {OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.component'
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
+import { MatOptgroup } from '@angular/material/core';
 @Component({
   selector: 'app-detalleorden',
   templateUrl: './detalleorden.component.html',
@@ -30,8 +32,10 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
     if (this.rol.id === 4) {
       this.orden = this.ordenC;
     } else {
+      console.log(this.mesa)
       this.orden = this.mesa.ordenes[0];
     }
+    console.log(this.orden)
     this.Getestimandos();
   }
 
@@ -136,4 +140,26 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
   }
 
 
+  async AgregarAOrden(data: any, titulo : string = "") {
+    let modal: any
+    modal = await this.modalController.create({
+      component: OrdnComponent,
+      componentProps: {
+        titulo: titulo,
+        idmesa: data.idmesa,
+        ordenold: data
+      },
+    });
+    modal.present()
+  }
+
+
+  EliminarPlatillo(platillo : any) {
+
+  }
+  
+  EliminarBebida(bebida : any) {
+    
+  }
+  
 }
