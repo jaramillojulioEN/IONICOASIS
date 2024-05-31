@@ -1,18 +1,18 @@
-<app-main-header titulo="Caja"></app-main-header>
+<app-main-header titulo="Lavado de Vehiculos"></app-main-header>
 <ion-content [fullscreen]="true" id="main-content">
   <ion-segment [(ngModel)]="segmento">
     <ion-segment-button value="pago">
       <ion-label>Pendientes</ion-label>
     </ion-segment-button>
     <ion-segment-button value="hoy">
-      <ion-label>Cobradas</ion-label>
+      <ion-label>Cobrados</ion-label>
     </ion-segment-button>
   </ion-segment>
 
   <ion-content *ngIf="segmento === 'pago'" class="ion-padding">
-    <h3 class="ion-text-center">Ordenes pendientes de cobro</h3>
+    <h3 class="ion-text-center">Vehiculos pendientes de cobro</h3>
   </ion-content>
   <ion-content *ngIf="segmento === 'hoy'" class="ion-padding">
-    <h3 class="ion-text-center">Ordenes del día ({{fechaActual}})</h3>
+    <h3 class="ion-text-center">Vehiculos del día ({{fechaActual}})</h3>
   </ion-content>
 </ion-content>

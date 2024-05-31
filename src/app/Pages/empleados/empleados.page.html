@@ -32,7 +32,7 @@
             <td>{{ empleado.id }}</td>
             <td>{{ empleado.nombrecompleto }}</td>
             <td>{{ empleado.cargo }}</td>
-            <td role="button" style="cursor: pointer;" (click)="verPropiedades(empleado,$event)">{{ empleado.telefono }}</td>
+            <td role="button" style="cursor: pointer;" (click)="verPropiedades(empleado, $event)">{{ empleado.telefono }}</td>
             <td>{{ empleado.diapago ? empleado.diapago : '-' }}</td>
             <td class="ion-text-end">${{ empleado.salario ? empleado.salario : '-' }}</td>
             <td>
@@ -45,28 +45,39 @@
               <ion-button fill="clear" (click)="EliminarEmpleados(empleado)">
                 <ion-icon name="trash-outline"></ion-icon>
               </ion-button>
+              <ion-button fill="clear" (click)="AbrirModalConsumo(0, 'Nuevo Consumo')">
+                <ion-icon name="fast-food-outline"></ion-icon>
+              </ion-button>
             </td>
           </tr>
-          <tr *ngFor="let consumo of empleado.consumoEmpleado">
-            <td colspan="3"></td>
-            <td>{{consumo.fecha}}</td>
-            <td *ngIf="consumo.bebidas != null">{{consumo.bebidas.nombre}} ({{consumo.cantidad}} * ${{consumo.bebidas.precioempleados}})</td>
-            <td *ngIf="consumo.platillos != null">{{consumo.platillos.nombre}} ({{consumo.cantidad}} * ${{consumo.platillos.precioempleado}})</td>
-            <td *ngIf="consumo.concepto != null">{{consumo.concepto}}</td>
-            <td  *ngIf="consumo.bebidas != null" class="ion-text-end">- ${{consumo.cantidad * consumo.bebidas.precioempleados}}</td>
-            <td  *ngIf="consumo.platillos != null" class="ion-text-end">- ${{consumo.cantidad * consumo.platillos.precioempleado}}</td>
-            <td  *ngIf="consumo.concepto != null" class="ion-text-end">- ${{consumo.cantidad}}</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td colspan="4"></td>
-            <td>Total:</td>
-            <td class="ion-text-end">${{total(empleado)}}</td>
-          </tr>
+          <ng-container *ngIf="detallesVisibles[empleado.id]">
+            <tr *ngFor="let consumo of empleado.consumoEmpleado">
+              <td colspan="3"></td>
+              <td>{{ consumo.fecha }}</td>
+              <td *ngIf="consumo.bebidas != null">{{ consumo.bebidas.nombre }} ({{ consumo.cantidad }} * ${{ consumo.bebidas.precioempleados }})</td>
+              <td *ngIf="consumo.platillos != null">{{ consumo.platillos.nombre }} ({{ consumo.cantidad }} * ${{ consumo.platillos.precioempleado }})</td>
+              <td *ngIf="consumo.concepto != null">{{ consumo.concepto }}</td>
+              <td *ngIf="consumo.bebidas != null" class="ion-text-end">- ${{ consumo.cantidad * consumo.bebidas.precioempleados }}</td>
+              <td *ngIf="consumo.platillos != null" class="ion-text-end">- ${{ consumo.cantidad * consumo.platillos.precioempleado }}</td>
+              <td *ngIf="consumo.concepto != null" class="ion-text-end">- ${{ consumo.cantidad }}</td>
+              <td>
+                <ion-button fill="clear" (click)="RefactorizarConsumo(consumo, false)">
+                  <ion-icon name="create-outline"></ion-icon>
+                </ion-button>
+                <ion-button fill="clear" (click)="RefactorizarConsumo(consumo, true)">
+                  <ion-icon name="trash-outline"></ion-icon>
+                </ion-button>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4"></td>
+              <td>Total:</td>
+              <td class="ion-text-end">${{ total(empleado) }}</td>
+              <td></td>
+            </tr>
+          </ng-container>
         </tbody>
       </table>
     </div>
   </div>
-
-
 </ion-content>

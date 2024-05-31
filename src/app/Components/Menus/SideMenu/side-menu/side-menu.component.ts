@@ -57,6 +57,14 @@ export class SideMenuComponent implements OnInit {
         { title: 'Mis mesas', url: '/mesas', icon: 'golf', open: false },
       ]
     }
-
+    else if (this.rol.id == 5) {
+      this.appPages = [
+        { title: 'Cobrar', url: '/caja', icon: 'card', open: false },
+        { title: 'Lavado', url: '/lavado', icon: 'car-sport', open: false },
+        { title: 'Cierres e Inicios', url: '/cierre', icon: 'flash', open: false },
+        { title: 'Cortes de caja', url: '/corte', icon: 'file-tray-full', open: false },
+        { title: 'Empleados', url: '/empleados', icon: 'person', open: false },
+      ]
+    }
   }
 }

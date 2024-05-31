@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-import { IonicModule } from '@ionic/angular';
 import {ComponentsModule} from 'src/app/Components/components.module'
-import { CajaPageRoutingModule } from './caja-routing.module';
+import { IonicModule } from '@ionic/angular';
 
-import { CajaPage } from './caja.page';
+import { CortePageRoutingModule } from './corte-routing.module';
+
+import { CortePage } from './corte.page';
 
 @NgModule({
   imports: [
     CommonModule,
-    ComponentsModule,
     FormsModule,
+    ComponentsModule,
     IonicModule,
-    CajaPageRoutingModule
+    CortePageRoutingModule
   ],
-  declarations: [CajaPage]
+  declarations: [CortePage]
 })
-export class CajaPageModule {}
+export class CortePageModule {}

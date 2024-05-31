@@ -5,6 +5,7 @@ import { CategoriasComponent } from './Modals/CategoriasModal/categorias/categor
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
+import {ConsumoComponent } from 'src/app/Components/Modals/consumo/consumo.component'
 import { IonicModule } from '@ionic/angular';
 import { ProductosComponent } from './Modals/PorductosModal/productos/productos.component';
 import { LoaderComponent } from './Modals/LoadingModal/loader/loader.component';
@@ -25,6 +26,7 @@ import {OrdnComponent} from 'src/app/Components/Modals/Ordenes/ordn/ordn.compone
     CardComponent,
     DetalleComponentReceta,
     DetalleordenComponent,
+    ConsumoComponent,
     OrdnComponent,
     CategoriasComponent,
     ProductosComponent,
@@ -43,6 +45,7 @@ import {OrdnComponent} from 'src/app/Components/Modals/Ordenes/ordn/ordn.compone
     CardComponent,
     DetalleComponentReceta,
     MainHeaderComponent,
+    ConsumoComponent,
     MesasComponent,
     EmpleadosComponent,
     PropiedadesComponent,
