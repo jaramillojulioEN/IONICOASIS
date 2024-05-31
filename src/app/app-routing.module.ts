@@ -89,6 +89,12 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: { expectedRoles: ['Cajero'] }
   },
+  {
+    path: 'mesas',
+    loadChildren: () => import('./Pages/mesas/mesas.module').then( m => m.MesasPageModule),
+    canActivate: [RoleGuard],
+    data: { expectedRoles: ['Mesero'] }
+  },
 ];
 
 @NgModule({

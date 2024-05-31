@@ -19,12 +19,19 @@ export class MeseroPage implements OnInit {
   constructor(private MesasService: MesasService, private ModalController: ModalController) { }
 
 
+  private intervalId: any;
 
   ngOnInit() {
     this.ObtenerMesas()
+    this.intervalId = setInterval(() => {
+      this.ObtenerMesas(false);
+    }, 5000);
+    window.addEventListener('success', () => {
+      this.ObtenerMesas()
+    })
   }
 
-  async VerOrden(data: any, titulo : string = "") {
+  async VerOrden(data: any, titulo: string = "") {
     var modal: any = null;
     if (data.ordenes.length != 0) {
       modal = await this.ModalController.create({
@@ -37,9 +44,9 @@ export class MeseroPage implements OnInit {
       modal = await this.ModalController.create({
         component: OrdnComponent,
         componentProps: {
-          titulo : titulo,
-          idmesa : data.id,
-          orden :data
+          titulo: titulo,
+          idmesa: data.id,
+          orden: data
         },
       });
     }
@@ -52,7 +59,6 @@ export class MeseroPage implements OnInit {
       async (response: any) => {
         if (response && response.mesas) {
           this.mesas = response.mesas;
-          console.log(this.mesas)
         } else {
           console.error('Error: Respuesta inválida');
         }

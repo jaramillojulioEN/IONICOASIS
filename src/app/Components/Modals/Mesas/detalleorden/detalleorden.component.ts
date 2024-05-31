@@ -28,14 +28,15 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    window.addEventListener('success', () => {
+      this.buscarOrden();
+    })
     this.rol = this.userService.getRol();
     if (this.rol.id === 4) {
       this.orden = this.ordenC;
     } else {
-      console.log(this.mesa)
       this.orden = this.mesa.ordenes[0];
     }
-    console.log(this.orden)
     this.Getestimandos();
   }
 

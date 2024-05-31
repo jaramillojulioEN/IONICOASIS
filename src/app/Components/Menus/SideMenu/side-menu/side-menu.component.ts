@@ -53,8 +53,8 @@ export class SideMenuComponent implements OnInit {
       ]
     } else if (this.rol.id == 2) {
       this.appPages = [
-        { title: 'Mesas', url: '/admin', icon: 'cafe', open: false },
-        { title: 'Mis mesas', url: '/admin', icon: 'golf', open: false },
+        { title: 'Mesas', url: '/mesero', icon: 'cafe', open: false },
+        { title: 'Mis mesas', url: '/mesas', icon: 'golf', open: false },
       ]
     }
 
