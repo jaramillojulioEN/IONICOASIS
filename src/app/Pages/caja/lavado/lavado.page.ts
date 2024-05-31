@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-caja',
-  templateUrl: './caja.page.html',
-  styleUrls: ['./caja.page.scss'],
+  selector: 'app-lavado',
+  templateUrl: './lavado.page.html',
+  styleUrls: ['./lavado.page.scss'],
 })
-export class CajaPage implements OnInit {
+export class LavadoPage implements OnInit {
   segmento : string = "pago"
   fechaActual: string = "";
   constructor() { }

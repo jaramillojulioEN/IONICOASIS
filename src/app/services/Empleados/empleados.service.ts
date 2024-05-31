@@ -43,6 +43,22 @@ export class EmpleadosService {
     }
   }
 
+  async RefactorizarConsumo(consumo: any, isdelete : boolean): Promise<Observable<any>> {
+    try {
+      const options = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+        }),
+        body: consumo
+      };
+      await this.loaderFunctions.StartLoader();
+      return isdelete ? this.http.delete<any>(`${this.server}api/Empleados/EliminarConsumo`, options)
+      : this.http.put<any>(`${this.server}api/Empleados/EditarConsumo`, options);
+    } finally {
+      this.loaderFunctions.StopLoader();
+    }
+  }
+
   async ActulizarEmpleado(data: object): Promise<Observable<any>> {
     try {
       await this.loaderFunctions.StartLoader();

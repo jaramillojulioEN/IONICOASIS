@@ -5,7 +5,7 @@ import { EmpleadosService } from 'src/app//services/Empleados/empleados.service'
 import { AlertServiceService } from '../../services/Alerts/alert-service.service'
 import { PopoverController } from '@ionic/angular';
 import { PropiedadesComponent } from 'src/app/Components/Secciones/Empleado/propiedades/propiedades.component'
-
+import {ConsumoComponent} from 'src/app/Components/Modals/consumo/consumo.component'
 @Component({
   selector: 'app-empleados',
   templateUrl: './empleados.page.html',
@@ -27,6 +27,18 @@ export class EmpleadosPage implements OnInit {
       this.ModalController.dismiss()
       this.ObtenerEmpleados()
     })
+  }
+
+  async AbrirModalConsumo(id: number, titulo: string, data: any = null) {
+    const modal = await this.ModalController.create({
+      component: ConsumoComponent,
+      componentProps: {
+        id: id,
+        titulo: titulo,
+        data: data
+      },
+    });
+    return await modal.present();
   }
 
   async AbrirModalEmpleados(id: number, titulo: string, data: any = null) {
@@ -78,8 +90,33 @@ export class EmpleadosPage implements OnInit {
     );
   }
 
-  verConsumo(empleado: any): void {
+  RefactorizarConsumo(consumo : any, isdelete : boolean){
+    console.log(consumo)
+    if(isdelete){
+      this.ac.presentCustomAlert("Eliminar", "¿Estás seguro de eliminar este elemento?: " , () => this.CEliminarConsumo(consumo));
+    }else{
+    }
+  }
 
+  async CEliminarConsumo(consumo: any): Promise<void> {
+    (await this.EmpleadosService.RefactorizarConsumo(consumo, true)).subscribe(
+      async (response: any) => {
+        if (response) {
+          this.ObtenerEmpleados(false);
+          this.ac.presentCustomAlert("Exito", response.message)
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
+  }
+  detallesVisibles: { [key: number]: boolean } = {};
+  verConsumo(empleado: any) {
+    const empleadoId = empleado.id;
+    this.detallesVisibles[empleadoId] = !this.detallesVisibles[empleadoId];
   }
 
   async verPropiedades(empleado: any, event: Event): Promise<void> {

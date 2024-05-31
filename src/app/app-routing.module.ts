@@ -62,7 +62,7 @@ const routes: Routes = [
     path: 'empleados',
     loadChildren: () => import('./Pages/empleados/empleados.module').then( m => m.EmpleadosPageModule),
     canActivate: [RoleGuard],
-    data: { expectedRoles: ['Administrador'] }
+    data: { expectedRoles: ['Administrador', 'Cajero'] }
     
   },
   {
@@ -94,6 +94,24 @@ const routes: Routes = [
     loadChildren: () => import('./Pages/mesas/mesas.module').then( m => m.MesasPageModule),
     canActivate: [RoleGuard],
     data: { expectedRoles: ['Mesero'] }
+  },
+  {
+    path: 'lavado',
+    loadChildren: () => import('./Pages/caja/lavado/lavado.module').then( m => m.LavadoPageModule),
+    canActivate: [RoleGuard],
+    data: { expectedRoles: ['Cajero'] }
+  },
+  {
+    path: 'corte',
+    loadChildren: () => import('./Pages/caja/corte/corte.module').then( m => m.CortePageModule),
+    canActivate: [RoleGuard],
+    data: { expectedRoles: ['Cajero'] }
+  },
+  {
+    path: 'cierre',
+    loadChildren: () => import('./Pages/caja/cierre/cierre.module').then( m => m.CierrePageModule),
+    canActivate: [RoleGuard],
+    data: { expectedRoles: ['Cajero'] }
   },
 ];
 
