@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { UserServiceService } from '../services/Users/user-service.service'
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -8,6 +7,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
+  message: string[] = [];
 
   constructor(private UserService: UserServiceService) { }
   user: any = []
@@ -15,33 +15,56 @@ export class LoginPage implements OnInit {
     if (this.UserService.isAuth()) {
       this.user = this.UserService.getUser()
       this.UserService.RedirigirRol(this.user.idrol)
-    } else {
-      this.login();
     }
   }
 
+  usuario: string = ""
+  password: string = "";
 
 
   login(): void {
-    let usuario = "JJ"
-    console.log(usuario)
-
-    let password = "1234"
-    this.UserService.login(usuario, password).subscribe(
-      (response: any) => {
-        if (response && response.repuesta) {
-          const usuario = response.repuesta;
-          localStorage.setItem('usuario', JSON.stringify(usuario));
-          this.user = this.UserService.getUser()
-          this.UserService.RedirigirRol(this.user.idrol)
-        } else {
-          console.error('Error: Respuesta inválida');
+    if (this.validar()) {
+      this.UserService.login(this.usuario, this.password, true).subscribe(
+        (response: any) => {
+          if (response && response.success != null) {
+            if (response.success) {
+              console.log('Inicio de sesión exitoso:', response.usuario);
+              localStorage.setItem('usuario', JSON.stringify(response.usuario));
+              this.user = response.usuario;
+              this.UserService.RedirigirRol(this.user.idrol);
+            } else {
+              this.message[2] = response.message;
+              console.log(this.message)
+            }
+          } else {
+            console.error('Error: Respuesta inválida');
+          }
+        },
+        (error: any) => {
+          console.error('Error en la solicitud:', error);
         }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
-      }
-    );
+      );
+    }
+  }
+  
+
+  validar(): boolean {
+    let valido = true
+    if (this.usuario === "") {
+      this.message[0] = "Se requiere un usuario para iniciar sesión"
+      valido = false
+    }
+    else{
+      this.message[0] = ""
+    }
+    if (this.password === "") {
+      this.message[1] = "Se requiere una contraseña para iniciar sesión"
+      valido = false
+    }else{
+      this.message[1] = ""
+    }
+    console.log(valido)
+    return valido
   }
 
 }

@@ -1,13 +1,29 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>login</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content>
+  <div class="login-container">
+    <ion-card>
+      <ion-card-content class="login-card-content">
+        <div class="login-image">
+          <img src="https://i.imgur.com/3ZmT6du.jpeg" alt="Imagen de login">
+        </div>
+        <div class="login-form">
+          <ion-item lines="none" class="input-item">
+            <ion-icon slot="start" name="person" aria-hidden="true"></ion-icon>
+            <ion-input labelPlacement="stacked" label="Usuario" type="text" [(ngModel)]="usuario" name="usuario"
+              class="rounded-input" placeholder="Ingrese su usuario"></ion-input>
+          </ion-item>
+          <div *ngIf="message[0]" class="error-message">{{ message[0] }}</div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">login</ion-title>
-    </ion-toolbar>
-  </ion-header>
+          <ion-item lines="none" class="input-item">
+            <ion-icon slot="start" name="lock-closed" aria-hidden="true"></ion-icon>
+            <ion-input labelPlacement="stacked" label="Contraseña" type="password" [(ngModel)]="password"
+              name="password" class="rounded-input" placeholder="Ingrese su contraseña"></ion-input>
+          </ion-item>
+          <div *ngIf="message[1]" class="error-message">{{ message[1] }}</div>
+          <ion-button color="primary" (click)="login()" expand="full" type="submit">Ingresar</ion-button>
+          <br>
+          <div *ngIf="message[2]" class="error-message ion-text-center">{{ message[2] }}</div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

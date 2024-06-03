@@ -1,0 +1,67 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  
+  .login-card-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 800px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .login-image img {
+    width: 300px;
+    height: auto;
+    border-radius: 8px;
+  }
+  
+  .login-form {
+    flex: 1;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  
+  ion-item {
+    --inner-padding-start: 16px;
+    --inner-padding-end: 16px;
+    margin-bottom: 16px;  /* Agrega un margen inferior para evitar el recorte */
+  }
+  
+  .rounded-input {
+    --border-radius: 20px;
+    --padding-start: 16px;
+  }
+  
+  ion-button {
+    margin-top: 16px;
+    border-radius: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .login-card-content {
+      flex-direction: column;
+    }
+  
+    .login-image img {
+      width: 100%;
+      margin-bottom: 16px;
+    }
+  
+    .login-form {
+      width: 100%;
+    }
+  }
+  .error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: -12px;
+    margin-bottom: 12px;
+  }  

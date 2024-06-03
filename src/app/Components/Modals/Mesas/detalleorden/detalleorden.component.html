@@ -9,7 +9,13 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
+
+  <div *ngIf="orden.estado === 4">
+    <h1 class="ion-text-center"><ion-icon style="font-size: 80px;" name="calculator-outline"></ion-icon></h1>
+    <h5 class="ion-text-center">Esta mesa tiene una orden cerrada pendiente de pago</h5>
+  </div>
+
+  <ion-card *ngIf="orden.estado !== 4">
     <ion-card-header>
       <ion-card-title>Orden #ORD{{orden.id}}</ion-card-title>
       <ion-card-subtitle>Fecha y Hora: {{orden.fecha}}</ion-card-subtitle>
@@ -33,26 +39,33 @@
           <p><strong>Nombre del Cliente:</strong> {{orden.nombrecliente}}</p>
         </div>
         <div class="order-section">
-          <ion-button (click)="AgregarAOrden(orden)" slot="end" color="primary">
+          <ion-button (click)="AgregarAOrden(orden)" *ngIf="rol.id!==4" slot="end" color="primary">
             Añadir detalles a la orden
+            <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+          </ion-button>
+          <ion-button (click)="alterstate(4)" *ngIf="rol.id!==4 && orden.estado !== 4" slot="end" color="primary">
+            Cerrar Orden
             <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
           </ion-button>
           <div *ngIf="orden.ordenesplatillos.length !== 0">
             <h3 class="section-header">Detalles de los Platillos</h3>
             <div class="order-item" *ngFor="let platillo of orden.ordenesplatillos">
-              <div class="info" style="padding: 10px;" [ngStyle]="{'background-color': (platillo.estado === 1) ? '#2c507c' : '#fff','color': (platillo.estado === 1) ? '#fff' : '#000'}">
+              <div class="info" style="padding: 10px;"
+                [ngStyle]="{'background-color': (platillo.estado === 1) ? '#2c507c' : '#fff','color': (platillo.estado === 1) ? '#fff' : '#000'}">
                 <p><strong>{{platillo.platillos.nombre}}</strong></p>
                 <p>Cantidad: {{platillo.cantidad}}</p>
                 <p>Observaciones: {{platillo.observaciones}}</p>
-                <ion-button slot="end" color="danger" *ngIf="rol.id === 2 && orden.estado === 1" (click)="EliminarPlatillo(platillo)">
+                <ion-button slot="end" color="danger" *ngIf="rol.id === 2 && orden.estado === 1"
+                  (click)="EliminarPlatillo(platillo)">
                   Eliminar platillo
                   <ion-icon slot="end" name="trash-outline"></ion-icon>
                 </ion-button>
-                <ion-button slot="end" color="primary" *ngIf="rol.id !== 2" (click)="VerReceta(platillo.platillos.recetas)">
+                <ion-button slot="end" color="primary" *ngIf="rol.id !== 2"
+                  (click)="VerReceta(platillo.platillos.recetas)">
                   Consultar receta
                   <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
                 </ion-button>
-              </div>              
+              </div>
             </div>
             <ion-label>Total Platillos: {{orden.ordenesplatillos.length}}</ion-label>
           </div>

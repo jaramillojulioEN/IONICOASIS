@@ -114,6 +114,7 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
     (await this.OrdenesService.ActualizarOrden(this.orden)).subscribe(
       async (response: any) => {
         if (response && response.message) {
+          
           await this.buscarOrden();
         } else {
           console.error('Error: Respuesta inválida');

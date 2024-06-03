@@ -13,6 +13,8 @@ export class MeseroPage implements OnInit {
   images: string[] = [
     "https://i.imgur.com/3lXXAwW.png",
     "https://i.imgur.com/lKYGtBL.png",
+    "https://i.imgur.com/lKYGtBL.png",
+    "https://i.imgur.com/lKYGtBL.png",
   ]
   mesas: any = [];
 
