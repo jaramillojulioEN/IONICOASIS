@@ -2,17 +2,77 @@
 <ion-content [fullscreen]="true" id="main-content">
   <ion-segment [(ngModel)]="segmento">
     <ion-segment-button value="pago">
-      <ion-label>Pendientes</ion-label>
+      <ion-label>Lavado</ion-label>
     </ion-segment-button>
     <ion-segment-button value="hoy">
-      <ion-label>Cobrados</ion-label>
+      <ion-label>Historial</ion-label>
     </ion-segment-button>
   </ion-segment>
 
-  <ion-content *ngIf="segmento === 'pago'" class="ion-padding">
-    <h3 class="ion-text-center">Vehiculos pendientes de cobro</h3>
-  </ion-content>
-  <ion-content *ngIf="segmento === 'hoy'" class="ion-padding">
+  <div *ngIf="segmento === 'pago'" class="ion-padding">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="4">
+          <ion-select aria-label="Vehiculo" interface="action-sheet" [(ngModel)]="vehiculo"
+            placeholder="Selecciona un tipo de vehiculos">
+            <ion-select-option *ngFor="let vehiculo of vehiculos"
+              [value]="vehiculo">{{vehiculo.tipo_vehiculo}}</ion-select-option>
+          </ion-select>
+        </ion-col>
+        <ion-col size="4">
+          <ion-select aria-label="Servicios" [multiple]="true" [(ngModel)]="servicios"
+            placeholder="Selecciona los servicios">
+            <ion-select-option
+              [value]="{id_servicio:servcios.id_servicio, id_tipo_vehiculo : servcios.id_tipo_vehiculo}"
+              *ngFor="let servcios of vehiculo.Servicio_Tipo_Vehiculo">{{servcios.Servicios.nombre_servicio}}
+              ${{servcios.Servicios.precio}}</ion-select-option>
+          </ion-select>
+        </ion-col>
+        <ion-col size="4">
+          <ion-button expand="block" (click)="Guardar()">Agregar</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-card>
+      <ion-card-content>
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>NO</th>
+              <th>Vehiculo</th>
+              <th>Servicios</th>
+              <th>Total</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let lavado of lavados">
+              <td>{{lavado.id}}</td>
+              <td>{{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</td>
+              <td>
+                <ul>
+                  <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}
+                  </li>
+                </ul>
+              </td>
+              <td>${{lavado.total}}</td>
+              <td>
+                <ion-button fill="clear" color="success" (click)="Cobrar(lavado)">
+                  <ion-icon name="pencil"></ion-icon>
+                  Cobrar
+                </ion-button>
+                <ion-button fill="clear" color="danger" (click)="Eliminar(lavado)">
+                  <ion-icon name="trash"></ion-icon>
+                  Eliminar
+                </ion-button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  <div *ngIf="segmento === 'hoy'" class="ion-padding">
     <h3 class="ion-text-center">Vehiculos del día ({{fechaActual}})</h3>
-  </ion-content>
+  </div>
 </ion-content>

@@ -20,6 +20,7 @@ export class OrdnComponent implements OnInit {
   OrdenDetalles : any = []
   @Input() idmesa: number = 0
   @Input() ordenold: any = []
+
   NewOrden = {
     id: null,
     fecha: '',
@@ -62,7 +63,8 @@ export class OrdnComponent implements OnInit {
     this.NewOrden.idsucursal = this.user.sucursales.id
     this.NewOrden.fecha = hoy
     this.NewOrden.idmesa = this.idmesa
-    if(this.ordenold.id!=null){
+
+    if(this.ordenold.id != null){
       this.OrdenDetalles = this.ordenold
       this.estadoCreacion = 1
       this.NewOrden.nombrecliente = this.ordenold.nombrecliente
@@ -82,6 +84,7 @@ export class OrdnComponent implements OnInit {
         (response: any) => {
           window.dispatchEvent(new Event('success'));
           this.ac.presentCustomAlert("Exito", response.message + ", ahora puedes agregar platillos y bebidas")
+          this.ordenold.id = response.id
         },
         (error: any) => {
           console.error('Error en la solicitud:', error);
@@ -117,11 +120,17 @@ export class OrdnComponent implements OnInit {
   }
 
   async crearDetalle(detalle : any)  : Promise<void>{
-    detalle.idorden = this.ordenold.id;
+    if(this.ordenold.id){
+      detalle.idorden = this.ordenold.id;
+      console.log(detalle.idorden)
+    }
+    else{
+      this.ac.presentCustomAlert("Error", "Se presentó un problema interno, contacte a soporte")
+    }
     (await this.OrdenesService.CrearOrdenDetail(detalle)).subscribe(
       (response: any) => {
         this.limpiar()
-        this.buscarOrden()
+        this.buscarOrden(detalle.idorden)
         window.dispatchEvent(new Event('success'));
         this.ac.presentCustomAlert("Exito", response.message)
       },
@@ -131,8 +140,8 @@ export class OrdnComponent implements OnInit {
     );
   }
 
-  async buscarOrden () : Promise<void> {
-    (await this.OrdenesService.BuscarOrden(false, this.OrdenDetalles.id)).subscribe(
+  async buscarOrden (idorden : number) : Promise<void> {
+    (await this.OrdenesService.BuscarOrden(false, idorden)).subscribe(
       async (response: any) => {
         if (response && response.orden) {
           this.OrdenDetalles = response.orden

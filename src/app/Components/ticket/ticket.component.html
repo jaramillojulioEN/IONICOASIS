@@ -1,0 +1,79 @@
+<ion-content>
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>Menu de cobro</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="ion-padding" *ngIf="!sst">
+    <div class="total-container" *ngIf="orden.length != 0">
+      <h5>Detalle de la venta:</h5>
+      <h5>Total de la orden:</h5>
+      <h5>$ {{orden.total}}</h5>
+    </div>
+    <div class="total-container" *ngIf="lavado.length != 0">
+      <h5>Detalle de la venta:</h5>
+      <ul>
+        <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} - ${{det.Servicios.precio}}
+        </li>
+      </ul>
+      <h5>Total : ${{lavado.total}}</h5>
+    </div>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <h5>Recibo: </h5>
+          <ion-input [(ngModel)]="serecibe" (ionChange)="ccambio()" name="serecibe" type="number"></ion-input>
+        </ion-col>
+        <ion-col>
+          <h5>Cambio: ${{cambio}}</h5>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <div class="button-container">
+      <!-- <ion-button color="primary" fill="outline" (click)="verecibo()" expand="full">Ver recibo</ion-button> -->
+      <ion-button color="primary" fill="outline" (click)="lavado.length !== 0 ? cobrarl() : cobrar(false)"
+        expand="full">Cobrar</ion-button>
+      <!-- <ion-button color="primary" fill="outline" (click)="cobrar(true)" expand="full">Cobrar e imprimir
+        recibo</ion-button> -->
+    </div>
+  </div>
+
+  <div class="body-tt ion-padding" *ngIf="sst">
+    <div class="header">
+      <p>{{usuario.sucursales.sucursal}}</p>
+      <p>{{usuario.sucursales.direccion}}</p>
+      <p>Tel: (123) 456-7890</p>
+      <p *ngIf="orden.length != 0">Fecha: {{orden.fecha}}</p>
+    </div>
+    <div class="content" *ngIf="orden.length != 0">
+      <div class="item" *ngFor="let detallep of orden.ordenesplatillos">
+        <span>{{detallep.platillos.nombre}}</span>
+        <span>${{detallep.platillos.precio}}</span>
+      </div>
+      <div class="item" *ngFor="let detalleb of orden.ordenesbebidas">
+        <span>{{detalleb.bebidas.nombre}}</span>
+        <span>${{detalleb.platillos.precioventa}}</span>
+      </div>
+      <div class="item total">
+        <span>Total: </span>
+        <span>${{orden.total}}</span>
+      </div>
+    </div>
+    <div class="content">
+      <div class="item">
+        <span>Paga con: </span>
+        <span>${{serecibe}}</span>
+      </div>
+      <div class="item">
+        <span>Cambio: </span>
+        <span>${{cambio}}</span>
+      </div>
+    </div>
+    <div class="footer">
+      <p>¡Gracias por su compra!</p>
+      <p>Vuelva pronto</p>
+    </div>
+
+  </div>
+</ion-content>

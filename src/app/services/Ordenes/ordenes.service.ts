@@ -14,11 +14,11 @@ export class OrdenesService {
     this.server = "https://localhost:44397/"
   }
 
-  async OrdenesPendientes(loader: boolean = true): Promise<Observable<any>> {
+  async OrdenesPendientes(loader: boolean = true, estado : number = 1): Promise<Observable<any>> {
     try {
       if (loader)
         await this.loaderFunctions.StartLoader();
-      return this.http.get<any>(`${this.server}api/Ordenes/TodasOrdenes/1`);
+      return this.http.get<any>(`${this.server}api/Ordenes/TodasOrdenes/${estado}`);
     } finally {
       if (loader)
         this.loaderFunctions.StopLoader();

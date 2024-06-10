@@ -66,7 +66,7 @@ export class MesasService {
     try {
       if(loader)
         await this.loaderFunctions.StartLoader();
-      return this.http.get<any>(`${this.server}api/Mesas/TodasMesas/4`);
+      return this.http.get<any>(`${this.server}api/Mesas/TodasMesas/5`);//todas las mesas excepto aquellas con etado 5
     } finally {
       if(loader)
       this.loaderFunctions.StopLoader();

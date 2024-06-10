@@ -22,4 +22,6 @@ export class LoaderFunctions {
             this.modalController.dismiss();
         }, 1000);
     }
+
+
 }

@@ -1,0 +1,38 @@
+.body-tt {
+    font-family: 'Courier New', Courier, monospace;
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #000;
+}
+.header, .footer {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.content {
+    border-top: 1px dashed #000;
+    border-bottom: 1px dashed #000;
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+.item {
+    display: flex;
+    justify-content: space-between;
+}
+.total {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.total-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .utton-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }

@@ -5,7 +5,6 @@ import { UserServiceService } from 'src/app/services/Users/user-service.service'
 import { interval, Subscription } from 'rxjs';
 import {OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.component'
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
-import { MatOptgroup } from '@angular/material/core';
 @Component({
   selector: 'app-detalleorden',
   templateUrl: './detalleorden.component.html',

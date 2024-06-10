@@ -23,6 +23,16 @@ export class UserServiceService {
     }
   }
 
+  getServer(): string {
+    let server = "https://localhost"
+    let port = "44397"
+    if (this.isAuth())
+      return `${server}:${port}/`
+    else{
+      return "forbiden"
+    }
+  }
+
   getRol(usuario: string = "", contra: string = ""): string {
     if (usuario != "" && contra != "") {
       this.login(usuario, contra).subscribe((response: any) => {
