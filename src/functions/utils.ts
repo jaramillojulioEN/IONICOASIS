@@ -23,5 +23,15 @@ export class LoaderFunctions {
         }, 1000);
     }
 
+    filterbydate(elements: any, fecha: string) : any {
+        let result: any[] = [];
+        elements.forEach((element: any) => {
+            if(element.fecha.split("T")[0] == fecha.split("T")[0]){
+                result.push(element)
+            }
+        });
+        return result;
+    }
+
 
 }

@@ -1,20 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { LavadoService } from 'src/app/services/Lavado/lavado.service'
 import { UserServiceService } from 'src/app/services/Users/user-service.service'
-import {AlertServiceService} from 'src/app/services/Alerts/alert-service.service'
+import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service'
 import { TicketComponent } from 'src/app/Components/ticket/ticket.component';
 import { ModalController } from '@ionic/angular';
+import { PopoverController } from '@ionic/angular';
+import { DatepickerComponent } from 'src/app/Components/Secciones/datepicker/datepicker.component'
+import { LoaderFunctions } from 'src/functions/utils'
+import { formatDate } from '@angular/common';
 @Component({
   selector: 'app-lavado',
   templateUrl: './lavado.page.html',
   styleUrls: ['./lavado.page.scss'],
 })
 export class LavadoPage implements OnInit {
+  //paginacion
+  registrosPorPagina: number = 5;
+  currentPage: number = 1;
+  totalRegistros: number = 0;
+  totalPages: number = 0;
+  filterdate: string = "";
+  //----------
+
   segmento: string = "pago"
   fechaActual: string = "";
-
   vehiculo: any = []
-
   vehiculos: any = []
   servicios: any = [];
 
@@ -31,7 +41,23 @@ export class LavadoPage implements OnInit {
   }
   lavados: any = [];
 
-  constructor(private mc : ModalController ,private ac : AlertServiceService,private LavadoService: LavadoService, protected UserServiceService: UserServiceService) { }
+  lavadoshistorial: any = [];
+  lavadoshistorialnf: any = [];
+  lavadoshistorialf: any = [];
+  filtered: boolean = false;
+  fecha: string = "";
+  message: string = "Error desconocido, conecta con soporte";
+
+  constructor(
+    private fns: LoaderFunctions,
+    private PopoverController: PopoverController,
+    private mc: ModalController,
+    private ac: AlertServiceService,
+    private LavadoService: LavadoService,
+    protected UserServiceService: UserServiceService) {
+    const today = new Date();
+    this.fecha = formatDate(today, 'yyyy-MM-dd', 'en-US');
+  }
 
   ngOnInit() {
     this.obtenerLavados(1)
@@ -44,35 +70,49 @@ export class LavadoPage implements OnInit {
   }
 
   async Guardar(): Promise<void> {
-    let user = this
     console.log(this.servicios)
     this.lavado.entidad.idsucursal = this.UserServiceService.getUser().idsucursal
     this.lavado.entidad.lavadodet = this.servicios
     console.log(this.lavado);
-
-
-    (await this.LavadoService.CrearLavado(this.lavado)).subscribe(
-      (response: any) => {
-        console.log(response);
-        if(response.message){
-          this.ac.presentCustomAlert("Exito", response.message)
-
+    if (this.ValidarLavado()) {
+      (await this.LavadoService.CrearLavado(this.lavado)).subscribe(
+        (response: any) => {
+          if (response.message) {
+            this.ac.presentCustomAlert("Exito", response.message)
+            this.obtenerLavados(1)
+          }
+        },
+        (error: any) => {
+          console.error('Error en la solicitud:', error);
         }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
-      }
-    );
+      );
+    }else{
+      this.ac.presentCustomAlert("Error", this.message)
+    }
 
   }
 
-  
-  async obtenerLavados(estado: number): Promise<void> {
-    (await this.LavadoService.lavados(estado)).subscribe(
+
+  ValidarLavado(): boolean {
+    let stt = true;
+    if (this.lavado.entidad.lavadodet.length == 0) {
+      stt = false
+      this.message ="Debes seleccionar un tipo de vehiculo y sus servicios"
+    }
+    return stt
+  }
+
+  async obtenerLavados(estado: number, load: boolean = true): Promise<void> {
+    (await this.LavadoService.lavados(estado, load)).subscribe(
       async (response: any) => {
         if (response && response.Lavados) {
-          this.lavados = response.Lavados;
-          console.log(this.lavados)
+          if (estado == 1) {
+            this.lavados = response.Lavados;
+          } else {
+            this.lavadoshistorial = response.Lavados;
+            this.lavadoshistorialnf = response.Lavados;
+            this.cargarLavadosHistorialPagina();
+          }
           this.obtenerServicios()
         } else {
           console.error('Error: Respuesta inválida');
@@ -85,19 +125,48 @@ export class LavadoPage implements OnInit {
 
   }
 
-  async Cobrar(lavado : any): Promise<void> {
-      const modal = await this.mc.create({
-        component: TicketComponent,
-        componentProps : {
-          lavado : lavado
-        },
-        backdropDismiss: false
-      });
-      return await modal.present();
-  
+  async Cobrar(lavado: any): Promise<void> {
+    const modal = await this.mc.create({
+      component: TicketComponent,
+      componentProps: {
+        lavado: lavado,
+        cssClass: 'fullscreen-modal',
+      },
+      backdropDismiss: true
+    });
+    return await modal.present();
+
   }
 
-  async Eliminar(lavado : any): Promise<void> {
+  async openFilter(event: Event): Promise<void> {
+    console.log(this.fecha)
+    const popover = await this.PopoverController.create({
+      component: DatepickerComponent,
+      componentProps: {
+        filterdate: this.fecha,
+      },
+      event: event,
+      size: 'auto',
+      translucent: true,
+      animated: true,
+      showBackdrop: true,
+      backdropDismiss: true
+    });
+    popover.onDidDismiss().then((dataReturned) => {
+      if (dataReturned !== undefined) {
+        this.fecha = dataReturned.data
+        if (this.fecha != undefined && this.fecha != null) {
+          this.lavadoshistorial = this.fns.filterbydate(this.lavadoshistorialnf, this.fecha)
+          this.cargarLavadosHistorialPagina();
+          this.filtered = true
+        }
+      }
+    });
+    await popover.present();
+
+  }
+
+  async Eliminar(lavado: any): Promise<void> {
 
   }
 
@@ -115,6 +184,37 @@ export class LavadoPage implements OnInit {
       }
     );
 
+  }
+
+  deletefilter() {
+    this.filtered = false
+    this.obtenerLavados(2)
+  }
+
+  historial(): void {
+    this.obtenerLavados(2)
+  }
+
+  paginaAnterior() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.cargarLavadosHistorialPagina();
+    }
+  }
+
+  paginaSiguiente() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.cargarLavadosHistorialPagina();
+    }
+  }
+
+  cargarLavadosHistorialPagina() {
+    this.totalRegistros = this.lavadoshistorial.length
+    this.totalPages = Math.ceil(this.totalRegistros / this.registrosPorPagina)
+    const startIndex = (this.currentPage - 1) * this.registrosPorPagina;
+    const endIndex = startIndex + this.registrosPorPagina;
+    this.lavadoshistorialf = this.lavadoshistorial.slice(startIndex, endIndex);
   }
 
 }

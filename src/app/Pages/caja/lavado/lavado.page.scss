@@ -1,0 +1,28 @@
+.scroll-container {
+    overflow-x: auto;
+  }
+  
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .tabla {
+    width: 100%;
+    white-space: nowrap; 
+  }
+  
+  .tabla th, .tabla td {
+    padding: 8px; 
+  }
+  
+  .pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .pagination-container ion-label {
+    margin: 0 10px;
+  }
+  

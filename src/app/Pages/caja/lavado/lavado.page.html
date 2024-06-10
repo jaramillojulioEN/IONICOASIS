@@ -1,10 +1,10 @@
 <app-main-header titulo="Lavado de Vehiculos"></app-main-header>
 <ion-content [fullscreen]="true" id="main-content">
   <ion-segment [(ngModel)]="segmento">
-    <ion-segment-button value="pago">
+    <ion-segment-button value="pago" (click)="obtenerLavados(1)">
       <ion-label>Lavado</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="hoy">
+    <ion-segment-button value="hoy" (click)="historial()">
       <ion-label>Historial</ion-label>
     </ion-segment-button>
   </ion-segment>
@@ -29,50 +29,106 @@
           </ion-select>
         </ion-col>
         <ion-col size="4">
-          <ion-button expand="block" (click)="Guardar()">Agregar</ion-button>
+          <ion-button expand="block" class="crear" (click)="Guardar()">Agregar</ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
     <ion-card>
-      <ion-card-content>
-        <table class="tabla">
-          <thead>
-            <tr>
-              <th>NO</th>
-              <th>Vehiculo</th>
-              <th>Servicios</th>
-              <th>Total</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let lavado of lavados">
-              <td>{{lavado.id}}</td>
-              <td>{{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</td>
-              <td>
-                <ul>
-                  <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}
-                  </li>
-                </ul>
-              </td>
-              <td>${{lavado.total}}</td>
-              <td>
-                <ion-button fill="clear" color="success" (click)="Cobrar(lavado)">
-                  <ion-icon name="pencil"></ion-icon>
-                  Cobrar
-                </ion-button>
-                <ion-button fill="clear" color="danger" (click)="Eliminar(lavado)">
-                  <ion-icon name="trash"></ion-icon>
-                  Eliminar
-                </ion-button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <ion-card-content class="scroll-container">
+        <div class="table-wrapper">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>NO</th>
+                <th>Vehiculo</th>
+                <th>Servicios</th>
+                <th>Total</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <!-- Cuerpo de la tabla -->
+            <tbody>
+              <tr *ngFor="let lavado of lavados">
+                <td>{{lavado.id}}</td>
+                <td>{{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</td>
+                <td>
+                  <ul>
+                    <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}
+                    </li>
+                  </ul>
+                </td>
+                <td>${{lavado.total}}</td>
+                <td>
+                  <ion-button fill="clear" color="success" (click)="Cobrar(lavado)">
+                    <ion-icon name="pencil"></ion-icon>
+                    Cobrar
+                  </ion-button>
+                  <ion-button fill="clear" color="danger" (click)="Eliminar(lavado)">
+                    <ion-icon name="trash"></ion-icon>
+                    Eliminar
+                  </ion-button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </ion-card-content>
     </ion-card>
+
   </div>
   <div *ngIf="segmento === 'hoy'" class="ion-padding">
-    <h3 class="ion-text-center">Vehiculos del día ({{fechaActual}})</h3>
+    <ion-card>
+      <ion-card-content class="scroll-container">
+        <ion-item slot="end">
+          <ion-label>Seleccionar Fecha</ion-label>
+
+          <ion-button (click)="openFilter($event)" class="crear">
+            <ion-icon slot="start" name="filter"></ion-icon>
+            <ion-label>Fecha</ion-label>
+          </ion-button>
+          <ion-button style="margin-left: 8px;" color="danger" *ngIf="filtered" (click)="deletefilter()" class="crear">
+            <ion-icon slot="start" name="trash"></ion-icon>
+            <ion-label>Eliminar filtros</ion-label>
+          </ion-button>
+        </ion-item>
+        <div class="table-wrapper">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>NO</th>
+                <th>Vehiculo</th>
+                <th>Servicios</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let lavado of lavadoshistorialf">
+                <td>{{lavado.id}}</td>
+                <td>{{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</td>
+                <td>
+                  <ul>
+                    <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}
+                    </li>
+                  </ul>
+                </td>
+                <td>${{lavado.total}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination-container">
+          <ion-button (click)="paginaAnterior()" [disabled]="currentPage === 1" fill="clear" color="primary">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+          </ion-button>
+
+          <ion-label>{{ currentPage }} de {{ totalPages }}</ion-label>
+
+          <ion-button (click)="paginaSiguiente()" [disabled]="currentPage === totalPages" fill="clear" color="primary">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </ion-button>
+        </div>
+
+      </ion-card-content>
+    </ion-card>
   </div>
 </ion-content>

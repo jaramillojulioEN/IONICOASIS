@@ -17,6 +17,7 @@ import { BebidaComponent } from 'src/app/Components/Modals/BebidasModal/bebida/b
 import { MesasComponent } from 'src/app/Components/Modals/Mesas/mesas/mesas.component'
 import { EmpleadosComponent } from 'src/app/Components/Modals/Empleados/empleados/empleados.component'
 import { PropiedadesComponent } from 'src/app/Components/Secciones/Empleado/propiedades/propiedades.component'
+import { DatepickerComponent } from 'src/app/Components/Secciones/datepicker/datepicker.component'
 import { DetalleordenComponent } from 'src/app/Components/Modals/Mesas/detalleorden/detalleorden.component'
 import { DetalleComponentReceta } from 'src/app/Components/Modals/RecetasModals/detalle/detalle.component'
 import { OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.component'
@@ -30,6 +31,7 @@ import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
       DetalleComponentReceta,
       DetalleordenComponent,
       ConsumoComponent,
+      DatepickerComponent,
       TicketComponent,
       OrdnComponent,
       CategoriasComponent,
@@ -50,6 +52,7 @@ import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
     DetalleComponentReceta,
     MainHeaderComponent,
     ConsumoComponent,
+    DatepickerComponent,
     TicketComponent,
     MesasComponent,
     EmpleadosComponent,

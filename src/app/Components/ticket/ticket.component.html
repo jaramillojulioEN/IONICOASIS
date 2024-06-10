@@ -1,79 +1,155 @@
 <ion-content>
   <ion-header>
-    <ion-toolbar color="primary">
-      <ion-title>Menu de cobro</ion-title>
+    <ion-toolbar>
+      <ion-title>Detalle de la venta</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <div class="ion-padding" *ngIf="!sst">
-    <div class="total-container" *ngIf="orden.length != 0">
-      <h5>Detalle de la venta:</h5>
-      <h5>Total de la orden:</h5>
-      <h5>$ {{orden.total}}</h5>
-    </div>
-    <div class="total-container" *ngIf="lavado.length != 0">
-      <h5>Detalle de la venta:</h5>
-      <ul>
-        <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} - ${{det.Servicios.precio}}
-        </li>
-      </ul>
-      <h5>Total : ${{lavado.total}}</h5>
-    </div>
+  <div *ngIf="!sst" class="ion-padding">
+
+    <ion-card *ngIf="orden.length != 0" class="custom-card">
+      <ion-card-header>
+        <ion-card-title>Total de la orden:</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div *ngFor="let platillo of orden.ordenesplatillos" class="item-container">
+          <ion-label>
+            <h2>{{ platillo.platillos.nombre }}</h2>
+          </ion-label>
+          <ion-label slot="end" class="ion-text-right cantidad">
+            <h2>Cantidad: {{ platillo.cantidad }}</h2>
+            <h2>Precio: ${{platillo.platillos.precio}}</h2>
+          </ion-label>
+          <hr>
+        </div>
+
+        <div *ngFor="let bebida of orden.ordenesbebidas" class="item-container">
+          <ion-label>
+            <h2>{{ bebida.bebidas.nombre}}</h2>
+          </ion-label>
+          <ion-label slot="end" class="ion-text-right cantidad">
+            <h2>$ {{ bebida.cantidad }}</h2>
+          </ion-label>
+        </div>
+        <div>
+          <ion-label class="ion-text-end ">
+            <h5 class="total-label">Total: ${{orden.total}}</h5>
+          </ion-label>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="lavado.length != 0" class="custom-card">
+      <ion-card-header>
+        <ion-card-title>Detalles del Lavado</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div *ngFor="let det of lavado.lavadodet" class="lavado-detalle">
+          <div class="detalle-item">
+            <ion-label>
+              <h2>{{det.Servicios.nombre_servicio}}</h2>
+            </ion-label>
+            <ion-label slot="end" class="ion-text-right" style="padding-right: 30px;">
+              <h2>$ {{det.Servicios.precio}}</h2>
+            </ion-label>
+          </div>
+        </div>
+        <div>
+          <ion-label class="ion-text-end ">
+            <h5 class="total-label">Total: ${{lavado.total}}</h5>
+          </ion-label>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="custom-card">
+      <ion-card-header>
+        <ion-card-title>Pago</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Recibo:</ion-label>
+          <ion-input [(ngModel)]="serecibe" (ionChange)="ccambio()" name="serecibe" type="number"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Cambio: ${{cambio}}</ion-label>
+        </ion-item>
+        <ion-button color="primary" class="crear" (click)="ticket()"
+          expand="full">Siguiente</ion-button>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+
+  <div class="detai" *ngIf="sst">
+
     <ion-grid>
       <ion-row>
-        <ion-col>
-          <h5>Recibo: </h5>
-          <ion-input [(ngModel)]="serecibe" (ionChange)="ccambio()" name="serecibe" type="number"></ion-input>
+        <ion-col sm-size="12" lg-size ="4"class="ion-margin-top ion-padding">
+          <ion-button color="primary" class="crear" (click)="volver()" expand="full">Volver al detalle</ion-button>
+          <br>
+          <ion-item lines="none">
+            <ion-label>Imprimir ticket</ion-label>
+            <ion-checkbox [(ngModel)]="imprimirTicket" slot="end"></ion-checkbox>
+          </ion-item>
+          <br>          
+          <ion-button color="primary" class="crear" (click)="lavado.length !== 0 ? cobrarl() : cobrar()"
+            expand="full">Cobrar</ion-button>
         </ion-col>
-        <ion-col>
-          <h5>Cambio: ${{cambio}}</h5>
+        <ion-col sm-size="12" lg-size ="8">
+          <div class="body-tt ion-margin-top">
+            <div class="header">
+              <p>{{usuario.sucursales.sucursal}}</p>
+              <p>{{usuario.sucursales.direccion}}</p>
+              <p>Tel: (123) 456-7890</p>
+              <p *ngIf="orden.length != 0">Fecha: {{orden.fecha}}</p>
+            </div>
+            <div class="content" *ngIf="orden.length != 0">
+              <div class="item" *ngFor="let detallep of orden.ordenesplatillos">
+                <span>{{detallep.platillos.nombre}}</span>
+                <span>${{detallep.platillos.precio}}</span>
+              </div>
+              <div class="item" *ngFor="let detalleb of orden.ordenesbebidas">
+                <span>{{detalleb.bebidas.nombre}}</span>
+                <span>${{detalleb.platillos.precioventa}}</span>
+              </div>
+              <div class="item total">
+                <span>Total: </span>
+                <span>${{orden.total}}</span>
+              </div>
+            </div>
+            <div class="content" *ngIf="lavado.length != 0">
+              <div class="item" *ngFor="let det of lavado.lavadodet">
+                <span>LAV{{det.id}} | {{det.Servicios.nombre_servicio}}</span>
+                <span>${{det.Servicios.precio}}</span>
+              </div>
+              <div class="item total">
+                <span>Total: </span>
+                <span>${{lavado.total}}</span>
+              </div>
+            </div>
+            <div class="content">
+              <div class="item">
+                <span>Paga con: </span>
+                <span>${{serecibe}}</span>
+              </div>
+              <div class="item">
+                <span>Cambio: </span>
+                <span>${{cambio}}</span>
+              </div>
+            </div>
+            <div class="footer">
+              <p>¡Gracias por su compra!</p>
+              <p>Vuelva pronto</p>
+            </div>
+          </div>
         </ion-col>
+        
       </ion-row>
     </ion-grid>
-    <div class="button-container">
-      <!-- <ion-button color="primary" fill="outline" (click)="verecibo()" expand="full">Ver recibo</ion-button> -->
-      <ion-button color="primary" fill="outline" (click)="lavado.length !== 0 ? cobrarl() : cobrar(false)"
-        expand="full">Cobrar</ion-button>
-      <!-- <ion-button color="primary" fill="outline" (click)="cobrar(true)" expand="full">Cobrar e imprimir
-        recibo</ion-button> -->
-    </div>
+
+   
   </div>
 
-  <div class="body-tt ion-padding" *ngIf="sst">
-    <div class="header">
-      <p>{{usuario.sucursales.sucursal}}</p>
-      <p>{{usuario.sucursales.direccion}}</p>
-      <p>Tel: (123) 456-7890</p>
-      <p *ngIf="orden.length != 0">Fecha: {{orden.fecha}}</p>
-    </div>
-    <div class="content" *ngIf="orden.length != 0">
-      <div class="item" *ngFor="let detallep of orden.ordenesplatillos">
-        <span>{{detallep.platillos.nombre}}</span>
-        <span>${{detallep.platillos.precio}}</span>
-      </div>
-      <div class="item" *ngFor="let detalleb of orden.ordenesbebidas">
-        <span>{{detalleb.bebidas.nombre}}</span>
-        <span>${{detalleb.platillos.precioventa}}</span>
-      </div>
-      <div class="item total">
-        <span>Total: </span>
-        <span>${{orden.total}}</span>
-      </div>
-    </div>
-    <div class="content">
-      <div class="item">
-        <span>Paga con: </span>
-        <span>${{serecibe}}</span>
-      </div>
-      <div class="item">
-        <span>Cambio: </span>
-        <span>${{cambio}}</span>
-      </div>
-    </div>
-    <div class="footer">
-      <p>¡Gracias por su compra!</p>
-      <p>Vuelva pronto</p>
-    </div>
 
-  </div>
 </ion-content>
