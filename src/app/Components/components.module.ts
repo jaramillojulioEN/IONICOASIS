@@ -21,7 +21,7 @@ import { DatepickerComponent } from 'src/app/Components/Secciones/datepicker/dat
 import { DetalleordenComponent } from 'src/app/Components/Modals/Mesas/detalleorden/detalleorden.component'
 import { DetalleComponentReceta } from 'src/app/Components/Modals/RecetasModals/detalle/detalle.component'
 import { OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.component'
-
+import { ServiciosComponent } from 'src/app/Components/Modals/servicios/servicios.component'
 
 import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
 @NgModule({
@@ -32,6 +32,7 @@ import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
       DetalleordenComponent,
       ConsumoComponent,
       DatepickerComponent,
+      ServiciosComponent,
       TicketComponent,
       OrdnComponent,
       CategoriasComponent,
@@ -52,6 +53,7 @@ import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
     DetalleComponentReceta,
     MainHeaderComponent,
     ConsumoComponent,
+    ServiciosComponent,
     DatepickerComponent,
     TicketComponent,
     MesasComponent,

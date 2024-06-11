@@ -113,6 +113,10 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: { expectedRoles: ['Cajero'] }
   },
+  {
+    path: 'servicios',
+    loadChildren: () => import('./Catalogos/servicios/servicios.module').then( m => m.ServiciosPageModule)
+  },
 ];
 
 @NgModule({

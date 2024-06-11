@@ -15,11 +15,22 @@ export class LavadoService {
   ) {
     this.server = this.UserServiceService.getServer()
   }
-  async Servicios(loader : boolean = true): Promise<Observable<any>> {
+  async Vehiculos(loader : boolean = true): Promise<Observable<any>> {
     try {
       if(loader)
         await this.loaderFunctions.StartLoader();
       return this.http.get<any>(`${this.server}api/Servicios/TodosServicios`);
+    } finally {
+      if(loader)
+      this.loaderFunctions.StopLoader();
+    }
+  }
+
+  async Servicios(loader : boolean = true): Promise<Observable<any>> {
+    try {
+      if(loader)
+        await this.loaderFunctions.StartLoader();
+      return this.http.get<any>(`${this.server}api/Servicios/Servicios`);
     } finally {
       if(loader)
       this.loaderFunctions.StopLoader();

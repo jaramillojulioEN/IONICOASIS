@@ -1,0 +1,57 @@
+/* Estilos para el contenedor del checkbox personalizado */
+.custom-checkbox {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    padding-left: 25px; /* Espacio para el icono de verificación */
+    margin-bottom: 10px; /* Espaciado opcional entre cada checkbox */
+  }
+  
+  /* Estilos para el checkbox oculto */
+  .hidden-checkbox {
+    position: absolute;
+    opacity: 0;
+  }
+  
+  /* Estilos para el marcador de verificación */
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #fff;
+    border: 2px solid #007bff; /* Color del borde del checkbox */
+    border-radius: 3px;
+  }
+  
+  /* Estilos para el icono de verificación */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Estilos para mostrar el icono de verificación cuando el checkbox está marcado */
+  .hidden-checkbox:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  /* Estilos para el icono de verificación */
+  .checkmark:after {
+    left: 6px; /* Posicionamiento del icono de verificación */
+    top: 2px; /* Posicionamiento del icono de verificación */
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg); /* Rotación del icono de verificación */
+  }
+  
+  /* Estilos para el texto junto al checkbox */
+  .custom-checkbox label {
+    margin-left: 5px; /* Espacio entre el checkbox y el texto */
+  }
+  

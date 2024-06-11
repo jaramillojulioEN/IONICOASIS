@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Administrar vehiculos y servicios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding ion-margin-top">
+  <div>
+    <ion-input labelPlacement="floating" label="Tipo de vehiculo" name="tipo_vehiculo" fill="outline"
+      placeholder="Tipo de vehiculo" [(ngModel)]="vehiculo.tipo_vehiculo" clearInput></ion-input>
+  </div>
+  <h5>Añadir servicios</h5>
+  <p>Marca los servicios disponibles para este tipo de vehiculo</p>
+  <div class="services">
+    <ion-list lines="none">
+      <ion-grid>
+        <ion-row *ngIf="nuevoservicio">
+          <ion-col sm-size="12" lg-size="4">
+            <ion-input labelPlacement="floating" label="Nombre del servicio" name="nombre_servicio" fill="outline"
+              [(ngModel)]="servicio.entidad.nombre_servicio"></ion-input>
+          </ion-col>
+          <ion-col sm-size="12" lg-size="4">
+            <ion-input labelPlacement="floating" label="Descripcion" name="descripcion" fill="outline"
+              placeholder="Tipo de vehiculo" [(ngModel)]="servicio.entidad.descripcion"></ion-input>
+          </ion-col>
+          <ion-col sm-size="12" lg-size="4">
+            <ion-input labelPlacement="floating" label="Precio" name="precio" fill="outline"
+              placeholder="Tipo de vehiculo" [(ngModel)]="servicio.entidad.precio"></ion-input>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col sm-size="12" lg-size="12">
+            <ion-button collapse="block" class="crear" (click)="AgregarServicio()">
+              Agregar servicio
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <ion-item *ngFor="let service of servicios">
+        <ion-checkbox [checked]="ischeck(service.id_servicio)" (click)="AddOrDelete(service.id_servicio)"
+          labelPlacement="start">{{service.nombre_servicio}}</ion-checkbox>
+      </ion-item>
+    </ion-list>
+    <ion-checkbox id="asdsdsd"
+          labelPlacement="start">fdfd</ion-checkbox>
+    <ion-button collapse="block" class="crear" (click)="AgregarTipo()">
+      Guardar Cambios
+    </ion-button>
+  </div>
+</ion-content>

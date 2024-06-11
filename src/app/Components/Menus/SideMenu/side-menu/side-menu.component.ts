@@ -15,6 +15,7 @@ export class SideMenuComponent implements OnInit {
     { title: 'Categorias', url: '/categorias', icon: 'duplicate' },
     { title: 'Bebidas', url: '/categorias', icon: 'beer' },
     { title: 'Mesas', url: '/mesas', icon: 'cafe' },
+    { title: 'Servicios Lavado', url: '/servicios', icon: 'car-sport' },
   ];
 
   public appPages: any = [];
