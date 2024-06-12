@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, Input, OnInit, QueryList, ViewChildren, input } from '@angular/core';
 import { LavadoService } from 'src/app/services/Lavado/lavado.service'
-
+import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service'
 @Component({
   selector: 'app-servicios',
   templateUrl: './servicios.component.html',
@@ -9,9 +9,11 @@ import { LavadoService } from 'src/app/services/Lavado/lavado.service'
 export class ServiciosComponent implements OnInit {
   servicios: any = [];
   nuevoservicio: boolean = false;
-  constructor(private LavadoService: LavadoService) { }
+  @Input() servicio: any = []
+  @Input() isService: boolean = false;
+  constructor(private LavadoService: LavadoService, private ac: AlertServiceService) { }
 
-  servicio: any = {
+  serviciorquest: any = {
     tipoEntidad: "Servicios",
     entidad: {
       id: 0,
@@ -21,7 +23,15 @@ export class ServiciosComponent implements OnInit {
     }
   }
   ngOnInit() {
+    console.log(this.servicio)
     this.obtenerServicios()
+    if (this.servicio != null && this.servicio.length != 0) {
+      this.serviciorquest.entidad = this.servicio
+    }
+    if (!this.isService) {
+      this.marcarServiciosDisponibles()
+    }
+
   }
 
   async obtenerServicios(load: boolean = false): Promise<void> {
@@ -43,20 +53,25 @@ export class ServiciosComponent implements OnInit {
     if (!this.nuevoservicio) {
       this.nuevoservicio = true
     } else {
-      console.log(this.vehiculo);
-      (await this.LavadoService.CrearLavado(this.servicio)).subscribe(
-        (response: any) => {
-          if (response.message) {
-            this.obtenerServicios()
-            console.log(this.vehiculo);
-          }
-        },
-        (error: any) => {
-          console.error('Error en la solicitud:', error);
-        }
-      );
+      this.GotoBackEnd(this.serviciorquest)
       this.nuevoservicio = false
     }
+  }
+
+
+  async GotoBackEnd(data: any) {
+    (await this.LavadoService.CrearLavado(data)).subscribe(
+      (response: any) => {
+        if (response.message) {
+          this.ac.presentCustomAlert("Notificacion", response.message)
+          this.obtenerServicios()
+          window.dispatchEvent(new Event('success'));
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
   }
 
   @Input() vehiculo: any = {
@@ -66,27 +81,41 @@ export class ServiciosComponent implements OnInit {
   }
 
 
-  ischeck(idServicio: number): boolean {
-    console.log(idServicio)
-    return this.vehiculo.Servicio_Tipo_Vehiculo.some((servicio: any) => servicio.id_servicio === idServicio);
+
+  serviciosSeleccionados: Set<number> = new Set();
+  marcarServiciosDisponibles() {
+    this.vehiculo.Servicio_Tipo_Vehiculo.forEach((st: any) => {
+      this.serviciosSeleccionados.add(st.id_servicio);
+    });
   }
 
-
-
-  AddOrDelete(id: number) {
-    const index = this.vehiculo.Servicio_Tipo_Vehiculo.findIndex((element: any) => element.id_servicio === id);
-    if (index > -1) {
-      this.vehiculo.Servicio_Tipo_Vehiculo.splice(index, 1);
+  toggleServicio(id_servicio: number) {
+    if (this.serviciosSeleccionados.has(id_servicio)) {
+      this.serviciosSeleccionados.delete(id_servicio);
+      const index = this.vehiculo.Servicio_Tipo_Vehiculo.findIndex((st: any) => st.id_servicio === id_servicio);
+      if (index !== -1) {
+        this.vehiculo.Servicio_Tipo_Vehiculo.splice(index, 1);
+      }
     } else {
-      this.vehiculo.Servicio_Tipo_Vehiculo.push({ id: 0, id_tipo_vehiculo: this.vehiculo.id_tipo_vehiculo, id_servicio: id });
+      this.serviciosSeleccionados.add(id_servicio);
+      this.vehiculo.Servicio_Tipo_Vehiculo.push({ id_servicio, id_tipo_vehiculo: this.vehiculo.id_tipo_vehiculo });
     }
-    console.log(this.vehiculo.Servicio_Tipo_Vehiculo);
   }
-
 
   async AgregarTipo(): Promise<void> {
-
-    console.log(this.vehiculo)
+    if (this.vehiculo.tipo_vehiculo != "") {
+      if (this.vehiculo.Servicio_Tipo_Vehiculo.length != 0) {
+        let Tipos_Vehiculos: any = {
+          tipoEntidad: "Tipos_Vehiculos",
+          entidad: this.vehiculo
+        }
+        this.GotoBackEnd(Tipos_Vehiculos)
+      } else {
+        this.ac.presentCustomAlert("Error", "Debes seleccionar al menos 1 servicio para este vehiculo")
+      }
+    } else {
+      this.ac.presentCustomAlert("Error", "Debes especificar el tipo de vehiculo")
+    }
 
   }
 }

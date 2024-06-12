@@ -60,6 +60,9 @@ export class LavadoPage implements OnInit {
   }
 
   ngOnInit() {
+    window.addEventListener('success', () => {
+      this.obtenerLavados(1, false);
+    })
     this.obtenerLavados(1)
     this.fechaActual = new Date().toLocaleDateString('es-ES', {
       weekday: 'long',
