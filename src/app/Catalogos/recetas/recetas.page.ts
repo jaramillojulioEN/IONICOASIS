@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { RecetasComponent } from 'src/app/Components/Modals/RecetasModals/recetas/recetas.component';
-import {RecetasService} from '../../services/Recetas/recetas.service'
+import { RecetasService } from '../../services/Recetas/recetas.service'
+import { DetalleComponentReceta } from 'src/app/Components/Modals/RecetasModals/detalle/detalle.component';
 @Component({
   selector: 'app-recetas',
   templateUrl: './recetas.page.html',
@@ -10,7 +11,7 @@ import {RecetasService} from '../../services/Recetas/recetas.service'
 export class RecetasPage implements OnInit {
   recetas: any;
 
-  constructor(private modalController: ModalController,  private RecetasService: RecetasService) { }
+  constructor(private modalController: ModalController, private RecetasService: RecetasService) { }
 
   ngOnInit() {
     this.ObtenerRecetas();
@@ -19,8 +20,15 @@ export class RecetasPage implements OnInit {
     })
   }
 
-  verRecetaCompleta(id : number){
-    
+  async verRecetaCompleta(receta: any): Promise<void> {
+
+    const modal = await this.modalController.create({
+      component: DetalleComponentReceta,
+      componentProps: {
+        receta: receta,
+      },
+    });
+    await modal.present();
   }
 
   async ObtenerRecetas(): Promise<void> {
@@ -50,5 +58,7 @@ export class RecetasPage implements OnInit {
     return await modal.present();
   }
 
+  editarReceta(receta: any) { }
 
+  eliminarReceta(receta: any) { }
 }

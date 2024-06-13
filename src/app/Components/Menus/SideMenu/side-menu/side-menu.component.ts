@@ -13,7 +13,7 @@ export class SideMenuComponent implements OnInit {
     { title: 'Platillos', url: '/platillos', icon: 'pizza' },
     { title: 'Recetas', url: '/recetas', icon: 'receipt' },
     { title: 'Categorias', url: '/categorias', icon: 'duplicate' },
-    { title: 'Bebidas', url: '/categorias', icon: 'beer' },
+    { title: 'Bebidas', url: '/bebidas', icon: 'beer' },
     { title: 'Mesas', url: '/mesas', icon: 'cafe' },
     { title: 'Servicios Lavado', url: '/servicios', icon: 'car-sport' },
   ];

@@ -1,57 +1,63 @@
 <app-main-header titulo="Recetas"></app-main-header>
 <ion-content id="main-content">
-  <ion-grid>
-    <ion-row>
-      <ion-col size-lg="11" size-sm="8"></ion-col>
-      <ion-col size-lg="1" size-sm="4">
-        <div class="header-cotainer">
-          <ion-button (click)="AbrirModalRecetas(0, 'Nuevo')">
-            <ion-icon name="add-circle-outline"></ion-icon>
-            <div class="button-text"class="crear" >Crear</div>
-          </ion-button>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
   <div class="ion-padding">
-    <div class="table-container ">
-      <table class="tabla">
-        <thead>
-          <tr>
-            <th>Descripción</th>
-            <th>Imagen</th>
-            <th>Tiempo de preparación</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let receta of recetas">
-            <td>{{ receta.listaingredientes.descripcion }}</td>
-            <td>
-              <img [src]="receta.listaimagenes.imagenes[0].cadenab64" alt="Imagen de la receta" class="recipe-image">
-            </td>
-            <td>{{ receta.tiempopreparacion }} minutos</td>
-            <td>
-              <ion-button (click)="verRecetaCompleta(receta.id)" fill="clear" color="info">
-                <ion-icon name="eye-outline"></ion-icon>
-              <div class="button-text"class="crear" >Ver</div>
-              </ion-button>
-              <ion-button (click)="verRecetaCompleta(receta.id)" fill="clear" color="info">
-                <ion-icon name="trash-outline"></ion-icon>
-              <div class="button-text"class="crear" >Eliminar</div>
-              </ion-button>
-              <ion-button (click)="verRecetaCompleta(receta.id)" fill="clear" color="info">
-                <ion-icon name="pencil"></ion-icon>
-              <div class="button-text"class="crear" >Editar</div>
-              </ion-button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <ion-grid>
+      <ion-row>
+        <ion-col size-lg="11" size-sm="8"></ion-col>
+        <ion-col size-lg="1" size-sm="4">
+          <div class="header-container">
+            <ion-button (click)="AbrirModalRecetas(0, 'Nuevo')">
+              <ion-icon name="add-circle-outline"></ion-icon>
+              <div class="button-text crear">Crear</div>
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="2"></ion-col>
+          <ion-col class="table-container" lg-size="8" sm-size="12">
+            <table class="tabla">
+              <thead>
+                <tr>
+                  <th>Nombre de la receta</th>
+                  <th>Imagen</th>
+                  <th>Tiempo de preparación</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let receta of recetas">
+                  <td>{{ receta.listaingredientes.descripcion }}</td>
+                  <td>
+                    <img [src]="receta.listaimagenes.imagenes[0]?.cadenab64 || 'assets/img/no-image.png'"
+                      alt="Imagen de la receta" class="recipe-image">
+                  </td>
+                  <td>{{ receta.tiempopreparacion }} minutos</td>
+                  <td>
+                    <ion-button (click)="verRecetaCompleta(receta)" fill="clear" color="info">
+                      <ion-icon name="eye-outline"></ion-icon>
+                      <div class="button-text crear">Ver</div>
+                    </ion-button>
+                    <ion-button (click)="eliminarReceta(receta)" fill="clear" color="danger">
+                      <ion-icon name="trash-outline"></ion-icon>
+                      <div class="button-text crear">Eliminar</div>
+                    </ion-button>
+                    <ion-button (click)="editarReceta(receta)" fill="clear" color="primary">
+                      <ion-icon name="pencil"></ion-icon>
+                      <div class="button-text crear">Editar</div>
+                    </ion-button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </ion-col >
+          <ion-col size="2"></ion-col>
+        </ion-row>
+      </ion-grid>
     <div class="no-recetas" *ngIf="!recetas || recetas.length === 0">
       <p>Aún no has registrado recetas</p>
     </div>
   </div>
-
 </ion-content>

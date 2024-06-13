@@ -5,20 +5,53 @@
 </ion-header>
 
 <ion-content>
-  <div class="ion-padding">
-    <ion-list>
-      <ion-item>
-        <ion-input labelPlacement="floating" label="Descripción" name="descripcion" placeholder="Descripción" [(ngModel)]="mesadata.descripcion" clearInput></ion-input>
-      </ion-item>
+  <ion-card class="custom-card">
+    <ion-card-content>
+      <div class="ion-padding">
+        <ion-list>
+          <ion-list-header class="list-header">
+            <h1>Mesas</h1>
+          </ion-list-header>
 
-      <ion-item>
-        <ion-input labelPlacement="floating" label="Capacidad" name="capacidad" placeholder="Capacidad" [(ngModel)]="mesadata.capacidad" type="number" clearInput></ion-input>
-      </ion-item>
+          <ion-item lines="none">
+            <ion-input 
+              labelPlacement="floating" 
+              label="Descripción" 
+              name="descripcion" 
+              placeholder="Descripción"
+              [(ngModel)]="mesadata.descripcion" 
+              clearInput>
+            </ion-input>
+          </ion-item>
 
-      <ion-item>
-        <ion-input labelPlacement="floating" disabled="true" label="Sucursal" name="sucursal" placeholder="Capacidad" [(ngModel)]="sucursal" type="text" clearInput></ion-input>
-      </ion-item>
-      <ion-button expand="full" (click)="confirmar()">Guardar</ion-button>
-    </ion-list>
-  </div>
+          <ion-item lines="none">
+            <ion-input 
+              labelPlacement="floating" 
+              label="Capacidad" 
+              name="capacidad" 
+              placeholder="Capacidad"
+              [(ngModel)]="mesadata.capacidad" 
+              type="number" 
+              clearInput>
+            </ion-input>
+          </ion-item>
+
+          <ion-item lines="none">
+            <ion-input 
+              labelPlacement="floating" 
+              [disabled]="true" 
+              label="Sucursal" 
+              name="sucursal"
+              placeholder="Sucursal" 
+              [(ngModel)]="sucursal" 
+              type="text" 
+              clearInput>
+            </ion-input>
+          </ion-item>
+
+          <ion-button expand="full" (click)="confirmar()">Guardar</ion-button>
+        </ion-list>
+      </div>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
