@@ -22,14 +22,16 @@ import { DetalleordenComponent } from 'src/app/Components/Modals/Mesas/detalleor
 import { DetalleComponentReceta } from 'src/app/Components/Modals/RecetasModals/detalle/detalle.component'
 import { OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.component'
 import { ServiciosComponent } from 'src/app/Components/Modals/servicios/servicios.component'
-
+import { SelectComponent } from './select/select.component';
 import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
 @NgModule({
   declarations:
     [
       CardComponent,
       DetalleComponentReceta,
+      TicketComponent,
       DetalleordenComponent,
+      SelectComponent,
       ConsumoComponent,
       DatepickerComponent,
       ServiciosComponent,
@@ -54,9 +56,11 @@ import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
     MainHeaderComponent,
     ConsumoComponent,
     ServiciosComponent,
+    SelectComponent,
     DatepickerComponent,
     TicketComponent,
     MesasComponent,
+    TicketComponent,
     EmpleadosComponent,
     PropiedadesComponent,
     DetalleordenComponent,

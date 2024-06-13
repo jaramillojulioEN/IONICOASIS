@@ -10,63 +10,38 @@
       <ion-list>
 
         <ion-item lines="none">
-          <ion-input 
-            labelPlacement="floating" 
-            label="Nombre del platillo" 
-            name="nombre" 
-            placeholder="Nombre" 
-            [(ngModel)]="platillos.nombre" 
-            clearInput>
+          <ion-input labelPlacement="floating" label="Nombre del platillo" name="nombre" placeholder="Nombre"
+            [(ngModel)]="platillos.nombre" clearInput>
           </ion-input>
         </ion-item>
 
         <ion-item lines="none">
-          <ion-select 
-            labelPlacement="floating" 
-            interface="action-sheet" 
-            label="Categoria" 
-            name="idcategoria" 
-            placeholder="ID Categoría" 
-            [(ngModel)]="platillos.idcategoria">
+          <ion-select labelPlacement="floating" interface="action-sheet" label="Categoria" name="idcategoria"
+            placeholder="ID Categoría" [(ngModel)]="platillos.idcategoria">
             <ion-select-option value="0">Selecciona una categoria</ion-select-option>
-            <ion-select-option *ngFor="let categoria of categorias" value="{{categoria.id}}">{{categoria.categoria}}</ion-select-option>
+            <ion-select-option *ngFor="let categoria of categorias"
+              value="{{categoria.id}}">{{categoria.categoria}}</ion-select-option>
           </ion-select>
         </ion-item>
 
         <ion-item lines="none">
-          <ion-select 
-            labelPlacement="floating" 
-            interface="action-sheet" 
-            label="Receta" 
-            name="idreceta" 
-            placeholder="ID Receta" 
-            [(ngModel)]="platillos.idreceta">
+          <ion-select labelPlacement="floating" interface="action-sheet" label="Receta" name="idreceta"
+            placeholder="ID Receta" [(ngModel)]="platillos.idreceta">
             <ion-select-option value="1">Selecciona una receta</ion-select-option>
-            <ion-select-option *ngFor="let receta of recetas" value="{{receta.id}}">{{receta.listaingredientes.descripcion}}</ion-select-option>
+            <ion-select-option *ngFor="let receta of recetas"
+              value="{{receta.id}}">{{receta.listaingredientes.descripcion}}</ion-select-option>
           </ion-select>
         </ion-item>
 
         <ion-item lines="none">
-          <ion-input 
-            labelPlacement="floating" 
-            label="Precio" 
-            name="precio" 
-            placeholder="Precio" 
-            [(ngModel)]="platillos.precio" 
-            type="number" 
-            clearInput>
+          <ion-input labelPlacement="floating" label="Precio" name="precio" placeholder="Precio"
+            [(ngModel)]="platillos.precio" type="number" clearInput>
           </ion-input>
         </ion-item>
 
         <ion-item lines="none">
-          <ion-input 
-            labelPlacement="floating" 
-            label="Precio Empleado" 
-            name="precioempleado" 
-            placeholder="Precio Empleado" 
-            [(ngModel)]="platillos.precioempleado" 
-            type="number" 
-            clearInput>
+          <ion-input labelPlacement="floating" label="Precio Empleado" name="precioempleado"
+            placeholder="Precio Empleado" [(ngModel)]="platillos.precioempleado" type="number" clearInput>
           </ion-input>
         </ion-item>
 

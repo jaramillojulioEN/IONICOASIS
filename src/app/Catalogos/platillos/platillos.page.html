@@ -22,22 +22,18 @@
             <th>Nombre</th>
             <th>Categoría</th>
             <th>Precio</th>
-            <th>Precio Empleado</th>
-            <th>Acciones</th>
+            <th colspan="2">Precio Empleado</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let platillo of PlatilloArry">
+          <tr class="option" *ngFor="let platillo of PlatilloArry">
             <td>{{ platillo.nombre }}</td>
             <td>{{ platillo.categorias.categoria }}</td>
             <td>{{ platillo.precio }}</td>
             <td>{{ platillo.precioempleado }}</td>
-            <td>
-              <ion-button (click)="AbrirModalPlatillo(platillo.id, 'Actualizar', platillo)" fill="clear" color="primary">
-                <ion-icon name="create-outline"></ion-icon>
-              </ion-button>
-              <ion-button (click)="EliminarPlatillo(platillo)" fill="clear" color="danger">
-                <ion-icon name="trash-outline"></ion-icon>
+            <td class="actions-cell">
+              <ion-button fill="clear" (click)="Opciones(platillo)">
+                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
               </ion-button>
             </td>
           </tr>

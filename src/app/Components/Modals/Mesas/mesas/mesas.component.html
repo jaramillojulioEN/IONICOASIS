@@ -14,38 +14,20 @@
           </ion-list-header>
 
           <ion-item lines="none">
-            <ion-input 
-              labelPlacement="floating" 
-              label="Descripción" 
-              name="descripcion" 
-              placeholder="Descripción"
-              [(ngModel)]="mesadata.descripcion" 
-              clearInput>
+            <ion-input labelPlacement="floating" label="Descripción" name="descripcion" placeholder="Descripción"
+              [(ngModel)]="mesadata.descripcion" clearInput>
             </ion-input>
           </ion-item>
 
           <ion-item lines="none">
-            <ion-input 
-              labelPlacement="floating" 
-              label="Capacidad" 
-              name="capacidad" 
-              placeholder="Capacidad"
-              [(ngModel)]="mesadata.capacidad" 
-              type="number" 
-              clearInput>
+            <ion-input labelPlacement="floating" label="Capacidad" name="capacidad" placeholder="Capacidad"
+              [(ngModel)]="mesadata.capacidad" type="number" clearInput>
             </ion-input>
           </ion-item>
 
           <ion-item lines="none">
-            <ion-input 
-              labelPlacement="floating" 
-              [disabled]="true" 
-              label="Sucursal" 
-              name="sucursal"
-              placeholder="Sucursal" 
-              [(ngModel)]="sucursal" 
-              type="text" 
-              clearInput>
+            <ion-input labelPlacement="floating" [disabled]="true" label="Sucursal" name="sucursal"
+              placeholder="Sucursal" [(ngModel)]="sucursal" type="text" clearInput>
             </ion-input>
           </ion-item>
 

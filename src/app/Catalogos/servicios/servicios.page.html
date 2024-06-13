@@ -30,8 +30,7 @@
             <tr>
               <th>Codigo</th>
               <th>Tipo Vehiculo</th>
-              <th>Numero de servicios</th>
-              <th>Acciones</th>
+              <th colspan="2">Numero de servicios</th>
             </tr>
           </thead>
           <tbody>
@@ -39,14 +38,9 @@
               <td>{{ vehiculo.id_tipo_vehiculo }}</td>
               <td>{{ vehiculo.tipo_vehiculo }}</td>
               <td>{{ vehiculo.Servicio_Tipo_Vehiculo.length }}</td>
-              <td>
-                <ion-button (click)="Modificar(vehiculo)" fill="clear" color="info">
-                  <ion-icon name="eye-outline"></ion-icon>
-                  <div class="button-text" class="crear">Añadir servicios</div>
-                </ion-button>
-                <ion-button (click)="Eliminar(vehiculo)" fill="clear" color="info">
-                  <ion-icon name="trash-outline"></ion-icon>
-                  <div class="button-text" class="crear">Eliminar</div>
+              <td class="actions-cell">
+                <ion-button fill="clear" (click)="Opciones(vehiculo)">
+                  <ion-icon name="ellipsis-vertical-outline"></ion-icon>
                 </ion-button>
               </td>
             </tr>
@@ -80,8 +74,8 @@
               <th>Codigo</th>
               <th>Servicio</th>
               <th>Descripcion</th>
-              <th>Precio</th>
-              <th>Acciones</th>
+              <th colspan="2">Precio</th>
+              
             </tr>
           </thead>
           <tbody>
@@ -90,14 +84,9 @@
               <td>{{ servicio.nombre_servicio }}</td>
               <td>{{ servicio.descripcion }}</td>
               <td>${{ servicio.precio }}</td>
-              <td>
-                <ion-button (click)="Eliminar(servicio)" fill="clear" color="info">
-                  <ion-icon name="trash-outline"></ion-icon>
-                  <div class="button-text" class="crear">Eliminar</div>
-                </ion-button>
-                <ion-button (click)="Modificar(servicio)" fill="clear" color="info">
-                  <ion-icon name="pencil"></ion-icon>
-                  <div class="button-text" class="crear">Editar</div>
+              <td class="actions-cell">
+                <ion-button fill="clear" (click)="Opciones(servicio)">
+                  <ion-icon name="ellipsis-vertical-outline"></ion-icon>
                 </ion-button>
               </td>
             </tr>

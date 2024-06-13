@@ -3,6 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { RecetasComponent } from 'src/app/Components/Modals/RecetasModals/recetas/recetas.component';
 import { RecetasService } from '../../services/Recetas/recetas.service'
 import { DetalleComponentReceta } from 'src/app/Components/Modals/RecetasModals/detalle/detalle.component';
+import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 @Component({
   selector: 'app-recetas',
   templateUrl: './recetas.page.html',
@@ -11,7 +12,11 @@ import { DetalleComponentReceta } from 'src/app/Components/Modals/RecetasModals/
 export class RecetasPage implements OnInit {
   recetas: any;
 
-  constructor(private modalController: ModalController, private RecetasService: RecetasService) { }
+  constructor(
+    private modalController: ModalController, 
+    private RecetasService: RecetasService,
+    private ac : AlertServiceService
+  ) { }
 
   ngOnInit() {
     this.ObtenerRecetas();
@@ -45,6 +50,16 @@ export class RecetasPage implements OnInit {
         console.error('Error en la solicitud:', error);
       }
     );
+  }
+
+
+  Opciones(data: any) {
+    this.ac.configureAndPresentActionSheet([
+      { button: this.ac.btnEliminar, handler: () => this.eliminarReceta(data) },
+      { button: this.ac.btnVer, handler: () => this.verRecetaCompleta(data) },
+      { button: this.ac.btnActualizar, handler: () => { this.editarReceta(data.id); } },
+      { button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }
+    ]);
   }
 
   async AbrirModalRecetas(id: number, titulo: string) {

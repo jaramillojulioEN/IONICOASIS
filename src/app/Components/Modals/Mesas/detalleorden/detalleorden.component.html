@@ -43,7 +43,7 @@
             Añadir detalles a la orden
             <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
           </ion-button>
-          <ion-button (click)="alterstate(4)" *ngIf="rol.id!==4 && orden.estado !== 4" slot="end" color="primary">
+          <ion-button (click)="CerrarOrden()" *ngIf="rol.id!==4 && orden.estado !== 4" slot="end" color="primary">
             Cerrar Orden
             <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
           </ion-button>
@@ -55,16 +55,11 @@
                 <p><strong>{{platillo.platillos.nombre}}</strong></p>
                 <p>Cantidad: {{platillo.cantidad}}</p>
                 <p>Observaciones: {{platillo.observaciones}}</p>
-                <ion-button slot="end" color="danger" *ngIf="rol.id === 2 && orden.estado === 1"
-                  (click)="EliminarPlatillo(platillo)">
-                  Eliminar platillo
-                  <ion-icon slot="end" name="trash-outline"></ion-icon>
-                </ion-button>
-                <ion-button slot="end" color="primary" *ngIf="rol.id !== 2"
-                  (click)="VerReceta(platillo.platillos.recetas)">
-                  Consultar receta
-                  <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
-                </ion-button>
+                <div class="button-container">
+                  <ion-button fill="clear" (click)="Opciones(platillo)">
+                    <ion-icon color="light" name="ellipsis-vertical-outline"></ion-icon>
+                  </ion-button>
+                </div>
               </div>
             </div>
             <ion-label>Total Platillos: {{orden.ordenesplatillos.length}}</ion-label>

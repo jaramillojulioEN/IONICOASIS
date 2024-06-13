@@ -27,19 +27,19 @@ export class MesasPage implements OnInit {
     })
   }
 
-  async AbrirModalMesas(id:number, titulo:string, data : any = null) {
+  async AbrirModalMesas(id: number, titulo: string, data: any = null) {
     const modal = await this.ModalController.create({
       component: MesasComponent,
       componentProps: {
         id: id,
-        titulo : titulo,
-        data : data
+        titulo: titulo,
+        data: data
       },
     });
     return await modal.present();
   }
 
-  async ObtenerMesas(load : boolean = true): Promise<void> {
+  async ObtenerMesas(load: boolean = true): Promise<void> {
     (await this.MesasService.Mesas(load)).subscribe(
       async (response: any) => {
         if (response && response.mesas) {
@@ -55,11 +55,19 @@ export class MesasPage implements OnInit {
     this.ModalController.dismiss()
   }
 
-  async EliminarMesa(mesa: any) {
+  EliminarMesa(mesa: any) {
     this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar la mesa: " + mesa.descripcion, () => this.ConfirmarELiminar(mesa.id));
   }
 
-  async ConfirmarELiminar (id : number) :Promise<void> {
+  Opciones(data: any) {
+    this.ac.configureAndPresentActionSheet([
+      { button: this.ac.btnEliminar, handler: () => this.EliminarMesa(data) },
+      { button: this.ac.btnActualizar, handler: () => { this.AbrirModalMesas(data.id, "Actualizar", data); } },
+      { button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }
+    ]);
+  }
+
+  async ConfirmarELiminar(id: number): Promise<void> {
     (await this.MesasService.EliminarMesa(id)).subscribe(
       async (response: any) => {
         if (response) {

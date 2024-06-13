@@ -61,7 +61,6 @@ export class MeseroPage implements OnInit {
       async (response: any) => {
         if (response && response.mesas) {
           this.mesas = response.mesas;
-          console.log(this.mesas)
         } else {
           console.error('Error: Respuesta inválida');
         }

@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ignoreElements } from 'rxjs';
+import { SelectComponent } from '../../../select/select.component';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service'
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { UserServiceService } from 'src/app/services/Users/user-service.service'
+import { PopoverController } from '@ionic/angular';
 @Component({
   selector: 'app-ordn',
   templateUrl: './ordn.component.html',
@@ -14,12 +15,17 @@ export class OrdnComponent implements OnInit {
     private ac: AlertServiceService,
     private UserServiceService: UserServiceService,
     private OrdenesService: OrdenesService,
+    private pop: PopoverController
   ) { }
 
   estadoCreacion: number = 0;
-  OrdenDetalles : any = []
+  OrdenDetalles: any = []
   @Input() idmesa: number = 0
   @Input() ordenold: any = []
+
+
+  detallep: string = ""
+  detalleb: string = ""
 
   NewOrden = {
     id: null,
@@ -40,7 +46,7 @@ export class OrdnComponent implements OnInit {
   detallePlatillo = {
     id: 0,
     idplatillo: 0,
-    cantidad: null,
+    cantidad: 0,
     idorden: 0,
     observaciones: '',
     estado: 0
@@ -49,7 +55,7 @@ export class OrdnComponent implements OnInit {
   DetalleBebida = {
     id: 0,
     idbebida: 0,
-    cantidad: null,
+    cantidad: 0,
     idorden: 0,
     estado: 0
     // 0 - creado
@@ -64,7 +70,7 @@ export class OrdnComponent implements OnInit {
     this.NewOrden.fecha = hoy
     this.NewOrden.idmesa = this.idmesa
 
-    if(this.ordenold.id != null){
+    if (this.ordenold.id != null) {
       this.OrdenDetalles = this.ordenold
       this.estadoCreacion = 1
       this.NewOrden.nombrecliente = this.ordenold.nombrecliente
@@ -74,7 +80,7 @@ export class OrdnComponent implements OnInit {
       this.detallePlatillo.estado = 1
       this.NewOrden.total = this.total()
     }
-    
+
   }
 
   async CrearOrden(): Promise<void> {
@@ -119,12 +125,12 @@ export class OrdnComponent implements OnInit {
     return fechaISO.slice(0, 19);
   }
 
-  async crearDetalle(detalle : any)  : Promise<void>{
-    if(this.ordenold.id){
+  async crearDetalle(detalle: any): Promise<void> {
+    if (this.ordenold.id) {
       detalle.idorden = this.ordenold.id;
       console.log(detalle.idorden)
     }
-    else{
+    else {
       this.ac.presentCustomAlert("Error", "Se presentó un problema interno, contacte a soporte")
     }
     (await this.OrdenesService.CrearOrdenDetail(detalle)).subscribe(
@@ -140,7 +146,7 @@ export class OrdnComponent implements OnInit {
     );
   }
 
-  async buscarOrden (idorden : number) : Promise<void> {
+  async buscarOrden(idorden: number): Promise<void> {
     (await this.OrdenesService.BuscarOrden(false, idorden)).subscribe(
       async (response: any) => {
         if (response && response.orden) {
@@ -156,15 +162,48 @@ export class OrdnComponent implements OnInit {
   }
 
 
-  limpiar () : void {
-    this.detallePlatillo.cantidad = null
+  limpiar(): void {
+    this.detallePlatillo.cantidad = 0
     this.detallePlatillo.idplatillo = 0
-    this.DetalleBebida.cantidad = null
+    this.detallePlatillo.observaciones = ""
+    this.DetalleBebida.cantidad = 0
     this.DetalleBebida.idbebida = 0
+    this.detalleb = ""
+    this.detallep = ""
   }
-  
-  total() : number{
+
+  total(): number {
     return this.OrdenesService.total(this.OrdenDetalles)
+  }
+
+
+  async Select(isPlatillo: boolean, event: Event) {
+    const modal = await this.pop.create({
+      component: SelectComponent,
+      backdropDismiss: true,
+      componentProps: {
+        isPlatillo: isPlatillo,
+      },
+      translucent: true,
+      event: event,
+      arrow: true,
+      side: 'top',
+      size: "cover",
+      mode: 'ios'
+    });
+    modal.onDidDismiss().then((dataReturned: any) => {
+      console.log(dataReturned.data);
+      if (isPlatillo) {
+        this.detallep = dataReturned.data.nombre
+        this.detallePlatillo.idplatillo = dataReturned.data.id
+        console.log(this.detallePlatillo.idplatillo)
+      }else{
+        this.detalleb = dataReturned.data.nombre
+        this.DetalleBebida.idbebida = dataReturned.data.id
+        console.log(this.DetalleBebida.idbebida)
+      }
+    });
+    return await modal.present();
   }
 
 }

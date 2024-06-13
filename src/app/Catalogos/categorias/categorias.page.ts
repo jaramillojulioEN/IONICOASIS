@@ -119,4 +119,13 @@ export class CategoriasPage implements OnInit {
       this.loaderFunctions.StopLoader();
     }
   }
+
+  Opciones(data: any) {
+    this.ac.configureAndPresentActionSheet([
+      { button: this.ac.btnEliminar, handler: () => this.eliminarCategoria(data) },
+      { button: this.ac.btnActualizar, handler: () => { this.AbrirModal(data.id, "Actualizar"); } },
+      { button: this.ac.btnAgregarP, handler: () => { this.AbrirModalProducto(data.id, "Nuevo"); } },
+      { button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }
+    ]);
+  }
 }

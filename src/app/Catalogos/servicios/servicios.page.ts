@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LavadoService } from 'src/app/services/Lavado/lavado.service'
 import { ServiciosComponent } from 'src/app/Components/Modals/servicios/servicios.component'
 import { ModalController } from '@ionic/angular';
+import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 @Component({
   selector: 'app-servicios',
   templateUrl: './servicios.page.html',
@@ -11,7 +12,11 @@ export class ServiciosPage implements OnInit {
   vehiculos: any = [];
   servicios: any = [];
 
-  constructor(private LavadoService: LavadoService, private ModalController: ModalController) { }
+  constructor(
+    private LavadoService: LavadoService,
+    private ModalController: ModalController,
+    private ac: AlertServiceService
+  ) { }
   segmento: string = "autos"
   ngOnInit() {
     this.obtenerVehiculos()
@@ -52,32 +57,41 @@ export class ServiciosPage implements OnInit {
     );
   }
 
-  async Nuevo(isService : boolean = false) {
+
+  Opciones(data: any) {
+    this.ac.configureAndPresentActionSheet([
+      { button: this.ac.btnEliminar, handler: () => this.Eliminar(data) },
+      { button: this.ac.btnActualizar, handler: () => { this.Modificar(data); } },
+      { button: this.ac.btnCancelar, handler: () => { } }
+    ]);
+  }
+
+  async Nuevo(isService: boolean = false) {
     const modal = this.ModalController.create({
       component: ServiciosComponent,
       componentProps: {
-        isService : isService
+        isService: isService
       },
-      backdropDismiss : true,
+      backdropDismiss: true,
     }
     )
-    ;(await modal).present()
+      ; (await modal).present()
   }
 
 
-  async Modificar(data : any) {
+  async Modificar(data: any) {
     let isService = data.id_servicio != undefined ? true : false
     const modal = this.ModalController.create({
       component: ServiciosComponent,
-      backdropDismiss : true,
-      componentProps : {
-        vehiculo : data.id_servicio == undefined ? data : null,
-        servicio : data.id_servicio == undefined ? null : data,
-        isService : isService
+      backdropDismiss: true,
+      componentProps: {
+        vehiculo: data.id_servicio == undefined ? data : null,
+        servicio: data.id_servicio == undefined ? null : data,
+        isService: isService
       }
     }
     )
-    ;(await modal).present()
+      ; (await modal).present()
   }
 
 

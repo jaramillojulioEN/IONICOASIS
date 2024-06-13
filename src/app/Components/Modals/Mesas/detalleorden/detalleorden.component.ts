@@ -3,8 +3,9 @@ import { ModalController, NumericValueAccessor } from '@ionic/angular';
 import { DetalleComponentReceta } from 'src/app/Components/Modals/RecetasModals/detalle/detalle.component';
 import { UserServiceService } from 'src/app/services/Users/user-service.service';
 import { interval, Subscription } from 'rxjs';
-import {OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.component'
+import { OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.component'
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
+import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 @Component({
   selector: 'app-detalleorden',
   templateUrl: './detalleorden.component.html',
@@ -21,6 +22,7 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
   timerRunning = false;
 
   constructor(
+    private ac: AlertServiceService,
     private userService: UserServiceService,
     private modalController: ModalController,
     private OrdenesService: OrdenesService
@@ -93,6 +95,18 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
 
   }
 
+  Opciones(data: any) {
+    let butons: any[] = []
+    if (this.rol.id === 2 && this.orden.estado === 1) {
+      butons.push({ button: this.ac.btnEliminar, handler: () => this.EliminarPlatillo(data) })
+    }
+    if (this.rol.id !== 2) {
+      butons.push({ button: this.ac.btnVer, handler: () => { this.VerReceta(data.platillos.recetas); } })
+    }
+    butons.push({ button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } })
+    this.ac.configureAndPresentActionSheet(butons);
+  }
+
   getEstado(estado: number): string {
     switch (estado) {
       case 1:
@@ -108,12 +122,16 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
     }
   }
 
+  CerrarOrden(): any {
+    this.ac.presentCustomAlert("Cerrar Orden", "Estás seguro de Cerrar esta Orden", () => this.alterstate(4));
+  }
+
   async alterstate(estado: number): Promise<void> {
     this.orden.estado = estado;
     (await this.OrdenesService.ActualizarOrden(this.orden)).subscribe(
       async (response: any) => {
         if (response && response.message) {
-          
+
           await this.buscarOrden();
         } else {
           console.error('Error: Respuesta inválida');
@@ -125,7 +143,7 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
     );
   }
 
-  async buscarOrden () : Promise<void> {
+  async buscarOrden(): Promise<void> {
     (await this.OrdenesService.BuscarOrden(false, this.orden.id)).subscribe(
       async (response: any) => {
         if (response && response.orden) {
@@ -141,7 +159,7 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
   }
 
 
-  async AgregarAOrden(data: any, titulo : string = "") {
+  async AgregarAOrden(data: any, titulo: string = "") {
     let modal: any
     modal = await this.modalController.create({
       component: OrdnComponent,
@@ -155,12 +173,44 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
   }
 
 
-  EliminarPlatillo(platillo : any) {
+  EliminarPlatillo(platillo: any) {
+    this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar el platillo " + platillo.platillos.nombre, () => this.ConfirmarELiminar(platillo));
+  }
 
+  async ConfirmarELiminar(platillo: any): Promise<void> {
+    (await this.OrdenesService.EliminarPDetalle(platillo)).subscribe(
+      async (response: any) => {
+        if (response) {
+          this.buscarOrden();
+          this.ac.presentCustomAlert("Exito", response.message)
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
   }
-  
-  EliminarBebida(bebida : any) {
-    
+
+  async ConfirmarELiminarBebida(bebida: any): Promise<void> {
+    (await this.OrdenesService.EliminarBDetalle(bebida)).subscribe(
+      async (response: any) => {
+        if (response) {
+          this.buscarOrden();
+          this.ac.presentCustomAlert("Exito", response.message)
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
   }
-  
+
+  EliminarBebida(bebida: any) {
+    this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar la bebida " + bebida.bebidas.nombre, () => this.ConfirmarELiminarBebida(bebida));
+  }
+
 }

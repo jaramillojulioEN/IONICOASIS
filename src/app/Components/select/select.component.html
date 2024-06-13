@@ -1,0 +1,9 @@
+<div class="ion-padding">
+  <ion-searchbar show-cancel-button="focus" [(ngModel)]="criterio" placeholder="Buscar"></ion-searchbar>
+  <ion-list lines="none" *ngIf="isPlatillo">
+    <ion-item *ngFor="let pl of PlatilloArry" (click)="Dissmiss(pl)">{{pl.nombre}}</ion-item>
+  </ion-list>
+  <ion-list lines="none" *ngIf="!isPlatillo">
+    <ion-item *ngFor="let bd of BebidaArry" (click)="Dissmiss(bd)">{{bd.nombre}}</ion-item>
+  </ion-list>
+</div>

@@ -23,8 +23,7 @@
                 <tr>
                   <th>Nombre de la receta</th>
                   <th>Imagen</th>
-                  <th>Tiempo de preparación</th>
-                  <th>Acciones</th>
+                  <th colspan="2">Tiempo de preparación</th>
                 </tr>
               </thead>
               <tbody>
@@ -35,18 +34,9 @@
                       alt="Imagen de la receta" class="recipe-image">
                   </td>
                   <td>{{ receta.tiempopreparacion }} minutos</td>
-                  <td>
-                    <ion-button (click)="verRecetaCompleta(receta)" fill="clear" color="info">
-                      <ion-icon name="eye-outline"></ion-icon>
-                      <div class="button-text crear">Ver</div>
-                    </ion-button>
-                    <ion-button (click)="eliminarReceta(receta)" fill="clear" color="danger">
-                      <ion-icon name="trash-outline"></ion-icon>
-                      <div class="button-text crear">Eliminar</div>
-                    </ion-button>
-                    <ion-button (click)="editarReceta(receta)" fill="clear" color="primary">
-                      <ion-icon name="pencil"></ion-icon>
-                      <div class="button-text crear">Editar</div>
+                  <td class="actions-cell">
+                    <ion-button fill="clear" (click)="Opciones(receta)">
+                      <ion-icon name="ellipsis-vertical-outline"></ion-icon>
                     </ion-button>
                   </td>
                 </tr>
