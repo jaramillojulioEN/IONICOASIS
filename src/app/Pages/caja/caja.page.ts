@@ -48,7 +48,7 @@ export class CajaPage implements OnInit {
   }
 
   historial(): void {
-    this.getordenes(5)
+    this.getordenes(5, true)
   }
 
   async openFilter(event: Event): Promise<void> {
@@ -83,18 +83,19 @@ export class CajaPage implements OnInit {
   currentPage: number = 1;
   totalRegistros: number = 0;
   totalPages: number = 0;
-  filterdate: string = "";
+
 
   cargarCobradasPagina() {
-    this.totalRegistros = this.cobradasnofilter.length
+    this.totalRegistros = this.cobradas.length
     this.totalPages = Math.ceil(this.totalRegistros / this.registrosPorPagina)
     const startIndex = (this.currentPage - 1) * this.registrosPorPagina;
     const endIndex = startIndex + this.registrosPorPagina;
-    this.cobradasfilter = this.cobradasnofilter.slice(startIndex, endIndex);
+    this.cobradasfilter = this.cobradas.slice(startIndex, endIndex);
   }
 
   deletefilter() {
-
+    this.getordenes(5, true)
+    this.filtered = false;
   }
 
   paginaAnterior() {
@@ -131,7 +132,7 @@ export class CajaPage implements OnInit {
             this.ordenes = response.ordenes
           }
           else {
-            this.cobradasfilter = response.ordenes
+            this.cobradas = response.ordenes
             this.cobradasnofilter = response.ordenes
             this.cargarCobradasPagina();
           }

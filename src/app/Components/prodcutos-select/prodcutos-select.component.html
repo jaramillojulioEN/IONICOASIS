@@ -1,0 +1,23 @@
+<ion-content class="ion-padding">
+  <ion-searchbar show-clear-button="always" clear-icon="trash" placeholder="Buscar {{platillos ? 'Platillos' : 'Bebidas'}}"
+    animated="true"></ion-searchbar>
+  <div class="ion-padding" *ngIf="platillos">
+    <ion-list lines="inset">
+      <div *ngFor="let pl of platos">
+        <div role="button" class="plato-item" (click)="seleccionar(pl.id)">
+          {{pl.nombre}}
+        </div>
+      </div>
+    </ion-list>
+  </div>
+  <div class="ion-padding" *ngIf="!platillos">
+    <ion-list lines="inset">
+      <div *ngFor="let bd of bebidas">
+        <div role="button" class="plato-item" (click)="seleccionar(bd.id)">
+          {{bd.nombre}}
+        </div>
+      </div>
+    </ion-list>
+  </div>
+
+</ion-content>

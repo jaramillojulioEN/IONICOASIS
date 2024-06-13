@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ignoreElements } from 'rxjs';
+import { ModalController } from '@ionic/angular';
+import { ProdcutosSelectComponent } from 'src/app/Components/prodcutos-select/prodcutos-select.component';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service'
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { UserServiceService } from 'src/app/services/Users/user-service.service'
@@ -14,10 +15,11 @@ export class OrdnComponent implements OnInit {
     private ac: AlertServiceService,
     private UserServiceService: UserServiceService,
     private OrdenesService: OrdenesService,
+    private select: ModalController
   ) { }
 
   estadoCreacion: number = 0;
-  OrdenDetalles : any = []
+  OrdenDetalles: any = []
   @Input() idmesa: number = 0
   @Input() ordenold: any = []
 
@@ -64,7 +66,7 @@ export class OrdnComponent implements OnInit {
     this.NewOrden.fecha = hoy
     this.NewOrden.idmesa = this.idmesa
 
-    if(this.ordenold.id != null){
+    if (this.ordenold.id != null) {
       this.OrdenDetalles = this.ordenold
       this.estadoCreacion = 1
       this.NewOrden.nombrecliente = this.ordenold.nombrecliente
@@ -74,7 +76,7 @@ export class OrdnComponent implements OnInit {
       this.detallePlatillo.estado = 1
       this.NewOrden.total = this.total()
     }
-    
+
   }
 
   async CrearOrden(): Promise<void> {
@@ -119,12 +121,12 @@ export class OrdnComponent implements OnInit {
     return fechaISO.slice(0, 19);
   }
 
-  async crearDetalle(detalle : any)  : Promise<void>{
-    if(this.ordenold.id){
+  async crearDetalle(detalle: any): Promise<void> {
+    if (this.ordenold.id) {
       detalle.idorden = this.ordenold.id;
       console.log(detalle.idorden)
     }
-    else{
+    else {
       this.ac.presentCustomAlert("Error", "Se presentó un problema interno, contacte a soporte")
     }
     (await this.OrdenesService.CrearOrdenDetail(detalle)).subscribe(
@@ -140,7 +142,7 @@ export class OrdnComponent implements OnInit {
     );
   }
 
-  async buscarOrden (idorden : number) : Promise<void> {
+  async buscarOrden(idorden: number): Promise<void> {
     (await this.OrdenesService.BuscarOrden(false, idorden)).subscribe(
       async (response: any) => {
         if (response && response.orden) {
@@ -156,15 +158,34 @@ export class OrdnComponent implements OnInit {
   }
 
 
-  limpiar () : void {
+  limpiar(): void {
     this.detallePlatillo.cantidad = null
     this.detallePlatillo.idplatillo = 0
     this.DetalleBebida.cantidad = null
     this.DetalleBebida.idbebida = 0
   }
-  
-  total() : number{
+
+  total(): number {
     return this.OrdenesService.total(this.OrdenDetalles)
+  }
+
+  async platillosselect(event: Event, platillo: boolean): Promise<void> {
+    const modal = await this.select.create({
+      component: ProdcutosSelectComponent,
+      animated: true,
+      componentProps: {
+        platillos: platillo
+      },
+      showBackdrop: true,
+      backdropDismiss: true
+    });
+    modal.onDidDismiss().then((dataReturned) => {
+      if (dataReturned !== undefined) {
+        console.log(dataReturned.data)
+        platillo ? this.detallePlatillo.idplatillo = dataReturned.data : this.DetalleBebida.idbebida = dataReturned.data
+      }
+    });
+    modal.present()
   }
 
 }
