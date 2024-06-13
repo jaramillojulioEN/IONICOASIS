@@ -1,0 +1,109 @@
+<app-main-header titulo="Servicios y vehiculos"></app-main-header>
+<ion-content id="main-content">
+  <ion-segment [(ngModel)]="segmento">
+    <ion-segment-button value="autos">
+      <ion-label>Autos</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="servicios">
+      <ion-label>Servicios</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div class="autos" *ngIf="segmento === 'autos'">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-lg="11" size-sm="8"></ion-col>
+        <ion-col size-lg="1" size-sm="4">
+          <div class="header-cotainer">
+            <ion-button (click)="Nuevo()">
+              <ion-icon name="add-circle-outline"></ion-icon>
+              <div class="button-text" class="crear">Crear</div>
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <div class="ion-padding">
+      <div class="table-container ">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Codigo</th>
+              <th>Tipo Vehiculo</th>
+              <th>Numero de servicios</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let vehiculo of vehiculos">
+              <td>{{ vehiculo.id_tipo_vehiculo }}</td>
+              <td>{{ vehiculo.tipo_vehiculo }}</td>
+              <td>{{ vehiculo.Servicio_Tipo_Vehiculo.length }}</td>
+              <td>
+                <ion-button (click)="Modificar(vehiculo)" fill="clear" color="info">
+                  <ion-icon name="eye-outline"></ion-icon>
+                  <div class="button-text" class="crear">Añadir servicios</div>
+                </ion-button>
+                <ion-button (click)="Eliminar(vehiculo)" fill="clear" color="info">
+                  <ion-icon name="trash-outline"></ion-icon>
+                  <div class="button-text" class="crear">Eliminar</div>
+                </ion-button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="no-recetas" *ngIf="!vehiculos || vehiculos.length === 0">
+        <p>Aún no has registrado ningun tipo de vehiculo</p>
+      </div>
+    </div>
+  </div>
+  <div class="servicios" *ngIf="segmento === 'servicios'">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-lg="11" size-sm="8"></ion-col>
+        <ion-col size-lg="1" size-sm="4">
+          <div class="header-cotainer">
+            <ion-button (click)="Nuevo(true)">
+              <ion-icon name="add-circle-outline"></ion-icon>
+              <div class="button-text" class="crear">Crear</div>
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <div class="ion-padding">
+      <div class="table-container ">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Codigo</th>
+              <th>Servicio</th>
+              <th>Descripcion</th>
+              <th>Precio</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let servicio of servicios">
+              <td>{{ servicio.id_servicio }}</td>
+              <td>{{ servicio.nombre_servicio }}</td>
+              <td>{{ servicio.descripcion }}</td>
+              <td>${{ servicio.precio }}</td>
+              <td>
+                <ion-button (click)="Eliminar(servicio)" fill="clear" color="info">
+                  <ion-icon name="trash-outline"></ion-icon>
+                  <div class="button-text" class="crear">Eliminar</div>
+                </ion-button>
+                <ion-button (click)="Modificar(servicio)" fill="clear" color="info">
+                  <ion-icon name="pencil"></ion-icon>
+                  <div class="button-text" class="crear">Editar</div>
+                </ion-button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -60,6 +60,9 @@ export class LavadoPage implements OnInit {
   }
 
   ngOnInit() {
+    window.addEventListener('success', () => {
+      this.obtenerLavados(1, false);
+    })
     this.obtenerLavados(1)
     this.fechaActual = new Date().toLocaleDateString('es-ES', {
       weekday: 'long',
@@ -171,10 +174,11 @@ export class LavadoPage implements OnInit {
   }
 
   async obtenerServicios(): Promise<void> {
-    (await this.LavadoService.Servicios(false)).subscribe(
+    (await this.LavadoService.Vehiculos(false)).subscribe(
       async (response: any) => {
         if (response && response.Servicios) {
           this.vehiculos = response.Servicios;
+          console.log(this.vehiculos)
         } else {
           console.error('Error: Respuesta inválida');
         }

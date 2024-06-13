@@ -3,6 +3,7 @@ import { UserServiceService } from 'src/app/services/Users/user-service.service'
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service'
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { ModalController } from '@ionic/angular';
+import { LavadoService } from 'src/app/services/Lavado/lavado.service';
 @Component({
   selector: 'app-ticket',
   templateUrl: './ticket.component.html',
@@ -10,10 +11,14 @@ import { ModalController } from '@ionic/angular';
 })
 export class TicketComponent implements OnInit {
 
-  constructor(private os: OrdenesService, private ac: AlertServiceService, private UserServiceService: UserServiceService,
+  constructor(
+    private lav: LavadoService,
+    private os: OrdenesService,
+    private ac: AlertServiceService,
+    private UserServiceService: UserServiceService,
     private md: ModalController
   ) { }
-  imprimirTicket : boolean = true;
+  imprimirTicket: boolean = true;
   usuario: any = this.UserServiceService.getUser()
   sst: boolean = false
 
@@ -33,7 +38,26 @@ export class TicketComponent implements OnInit {
   }
 
   async cobrarl(): Promise<void> {
-
+    this.lavado.estado = 2;
+    let body: any = {
+      tipoEntidad: "lavado",
+      entidad: this.lavado
+    };
+    (await this.lav.CrearLavado(body)).subscribe(
+      async (response: any) => {
+        if (response && response.message) {
+          window.dispatchEvent(new Event('success'));
+          this.md.dismiss()
+          this.ac.presentCustomAlert("Alerta", response.message)
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
+    console.log(this.lavado)
   }
 
   async cobrar(): Promise<void> {
@@ -55,7 +79,7 @@ export class TicketComponent implements OnInit {
 
   }
 
-  volver() :void {
+  volver(): void {
     if (this.sst) {
       this.sst = false
     } else {

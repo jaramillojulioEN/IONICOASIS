@@ -1,30 +1,59 @@
 <app-main-header titulo="Catalogos"></app-main-header>
-<ion-content [fullscreen]="true" id="main-content">
-  <ion-grid fixed>
-    <ion-row>
-      <ion-col size="6">
-        <app-card titulo = "Categorias" subtitulo = "Administrar las categorias" pagina="/categorias"></app-card>
-      </ion-col>
-      <ion-col size="6">
-        <app-card titulo = "Productos" subtitulo = "Administra os productos" pagina="/productos"></app-card>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="6">
-        <app-card titulo = "Recetas" subtitulo = "Administra tus recetas" pagina="/recetas"></app-card>
-      </ion-col>
-      <ion-col size="6">
-        <app-card titulo = "Platillos" subtitulo = "Administra tus Platillos" pagina="/platillos"></app-card>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="6">
-        <app-card titulo = "Bebidas" subtitulo = "Administra tus bebidas" pagina="/bebidas"></app-card>
-      </ion-col>
-      <ion-col size="6">
-        <app-card titulo = "Mesas" subtitulo = "Administra tus mesas" pagina="/mesas"></app-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+<ion-content [fullscreen]="true" id="main-content" class="ion-padding ion-margin-top">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Productos</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col lg-size="4" sm-size="12">
+            <app-card titulo="Productos" subtitulo="Administra os productos" pagina="/productos"></app-card>
+          </ion-col>
+          <ion-col lg-size="4" sm-size="12">
+            <app-card titulo="Categorias" subtitulo="Administrar las categorias" pagina="/categorias"></app-card>
+          </ion-col>
+          <ion-col lg-size="4" sm-size="12">
+            <app-card titulo="Bebidas" subtitulo="Administra tus bebidas" pagina="/bebidas"></app-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
 
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Cocina</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col lg-size="4" sm-size="12">
+            <app-card titulo="Recetas" subtitulo="Administra tus recetas" pagina="/recetas"></app-card>
+          </ion-col>
+          <ion-col lg-size="4" sm-size="12">
+            <app-card titulo="Platillos" subtitulo="Administra tus Platillos" pagina="/platillos"></app-card>
+          </ion-col>
+          <ion-col lg-size="4" sm-size="12">
+            <app-card titulo="Mesas" subtitulo="Administra tus mesas" pagina="/mesas"></app-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Lavado</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col lg-size="4" sm-size="12">
+            <app-card titulo="Servicios" subtitulo="Administra los vehiculos y servicios" pagina="/servicios"></app-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Administrar vehiculos y servicios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding ion-margin-top">
+  <div class="Vehiculos" *ngIf="!isService">
+    <div>
+      <ion-input labelPlacement="floating" label="Tipo de vehiculo" name="tipo_vehiculo" fill="outline"
+        placeholder="Tipo de vehiculo" [(ngModel)]="vehiculo.tipo_vehiculo" clearInput></ion-input>
+    </div>
+    <h5>Añadir servicios</h5>
+    <p>Marca los servicios disponibles para este tipo de vehiculo</p>
+    <div class="services">
+      <ion-list lines="none">
+        <ion-grid>
+          <ion-row *ngIf="nuevoservicio">
+            <ion-col sm-size="12" lg-size="4">
+              <ion-input labelPlacement="floating" label="Nombre del servicio" name="nombre_servicio" fill="outline"
+                [(ngModel)]="serviciorquest.entidad.nombre_servicio"></ion-input>
+            </ion-col>
+            <ion-col sm-size="12" lg-size="4">
+              <ion-input labelPlacement="floating" label="Descripcion" name="descripcion" fill="outline"
+                placeholder="Tipo de vehiculo" [(ngModel)]="serviciorquest.entidad.descripcion"></ion-input>
+            </ion-col>
+            <ion-col sm-size="12" lg-size="4">
+              <ion-input labelPlacement="floating" label="Precio" name="precio" fill="outline"
+                placeholder="Tipo de vehiculo" [(ngModel)]="serviciorquest.entidad.precio"></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col sm-size="12" lg-size="12">
+              <ion-button collapse="block" class="crear" (click)="AgregarServicio()">
+                Agregar servicio
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-item *ngFor="let servicio of servicios">
+          <ion-label>{{ servicio.nombre_servicio }}</ion-label>
+          <ion-checkbox slot="end" type="checkbox" [checked]="serviciosSeleccionados.has(servicio.id_servicio)"
+            (ionChange)="toggleServicio(servicio.id_servicio)">
+          </ion-checkbox>
+        </ion-item>
+      </ion-list>
+      <ion-button collapse="block" class="crear" (click)="AgregarTipo()">
+        Guardar Cambios
+      </ion-button>
+    </div>
+  </div>
+  <div class="servicios" *ngIf="isService">
+    <ion-grid>
+      <ion-row>
+        <ion-col sm-size="12" lg-size="4">
+          <ion-input labelPlacement="floating" label="Nombre del servicio" name="nombre_servicio" fill="outline"
+            [(ngModel)]="serviciorquest.entidad.nombre_servicio"></ion-input>
+        </ion-col>
+        <ion-col sm-size="12" lg-size="4">
+          <ion-input labelPlacement="floating" label="Descripcion" name="descripcion" fill="outline"
+            placeholder="Tipo de vehiculo" [(ngModel)]="serviciorquest.entidad.descripcion"></ion-input>
+        </ion-col>
+        <ion-col sm-size="12" lg-size="4">
+          <ion-input labelPlacement="floating" label="Precio" name="precio" fill="outline"
+            placeholder="Tipo de vehiculo" [(ngModel)]="serviciorquest.entidad.precio"></ion-input>
+        </ion-col>
+
+      </ion-row>
+      <ion-row>
+        <ion-col sm-size="12" lg-size="12">
+          <ion-button collapse="block" class="crear" (click)="GotoBackEnd(serviciorquest)">
+            Agregar servicio
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>
