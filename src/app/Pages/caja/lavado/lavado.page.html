@@ -46,13 +46,15 @@
                 <th>Acciones</th>
               </tr>
             </thead>
-            <tbody *ngIf="lavados.length > 0; else noData">
+            <!-- Cuerpo de la tabla -->
+            <tbody>
               <tr *ngFor="let lavado of lavados">
                 <td>{{lavado.id}}</td>
-                <td>{{lavado.lavadodet[0]?.Tipos_Vehiculos?.tipo_vehiculo}}</td>
+                <td>{{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</td>
                 <td>
                   <ul>
-                    <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}</li>
+                    <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}
+                    </li>
                   </ul>
                 </td>
                 <td>${{lavado.total}}</td>
@@ -68,14 +70,8 @@
                 </td>
               </tr>
             </tbody>
-            <ng-template #noData>
-              <tr>
-                <td colspan="5">Sin datos disponibles para mostrar</td>
-              </tr>
-            </ng-template>
           </table>
         </div>
-        
       </ion-card-content>
     </ion-card>
 
@@ -84,7 +80,8 @@
     <ion-card>
       <ion-card-content class="scroll-container">
         <ion-item slot="end">
-          <ion-label>Mostrando: ({{filtered ? fecha : "Todos"}})</ion-label>
+          <ion-label>Seleccionar Fecha</ion-label>
+
           <ion-button (click)="openFilter($event)" class="crear">
             <ion-icon slot="start" name="filter"></ion-icon>
             <ion-label>Fecha</ion-label>
@@ -104,26 +101,21 @@
                 <th>Total</th>
               </tr>
             </thead>
-            <tbody *ngIf="lavadoshistorialf.length > 0; else noData">
+            <tbody>
               <tr *ngFor="let lavado of lavadoshistorialf">
                 <td>{{lavado.id}}</td>
-                <td>{{lavado.lavadodet[0]?.Tipos_Vehiculos?.tipo_vehiculo}}</td>
+                <td>{{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</td>
                 <td>
                   <ul>
-                    <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}</li>
+                    <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}
+                    </li>
                   </ul>
                 </td>
                 <td>${{lavado.total}}</td>
               </tr>
             </tbody>
-            <ng-template #noData>
-              <tr>
-                <td colspan="4">Sin datos disponibles para mostrar</td>
-              </tr>
-            </ng-template>
           </table>
         </div>
-        
         <div class="pagination-container">
           <ion-button (click)="paginaAnterior()" [disabled]="currentPage === 1" fill="clear" color="primary">
             <ion-icon name="chevron-back-outline"></ion-icon>

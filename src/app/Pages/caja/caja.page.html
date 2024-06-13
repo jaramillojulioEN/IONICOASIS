@@ -37,7 +37,8 @@
     <ion-card>
       <ion-card-content class="scroll-container">
         <ion-item slot="end">
-          <ion-label>Mostrando: ({{filtered ? fecha : "Todos"}})</ion-label>
+          <ion-label></ion-label>
+
           <ion-button (click)="openFilter($event)" class="crear">
             <ion-icon slot="start" name="filter"></ion-icon>
             <ion-label>Fecha</ion-label>
@@ -58,7 +59,7 @@
                 <th>Total</th>
               </tr>
             </thead>
-            <tbody *ngIf="cobradasfilter.length > 0; else noData">
+            <tbody>
               <tr *ngFor="let cf of cobradasfilter">
                 <td>{{cf.id}}</td>
                 <td>{{cf.orden}}</td>
@@ -67,14 +68,8 @@
                 <td>${{cf.total}}</td>
               </tr>
             </tbody>
-            <ng-template #noData>
-              <tr>
-                <td colspan="5">Sin datos disponibles para mostrar</td>
-              </tr>
-            </ng-template>
           </table>
         </div>
-        
         <div class="pagination-container">
           <ion-button (click)="paginaAnterior()" [disabled]="currentPage === 1" fill="clear" color="primary">
             <ion-icon name="chevron-back-outline"></ion-icon>

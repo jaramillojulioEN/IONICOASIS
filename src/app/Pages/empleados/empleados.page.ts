@@ -124,7 +124,7 @@ export class EmpleadosPage implements OnInit {
       component: PropiedadesComponent,
       componentProps: {empleado : empleado},
       event: event,
-      size : 'auto',
+      size : 'cover',
       translucent: true,
       animated: true, 
       mode: 'ios', 

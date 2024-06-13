@@ -2,15 +2,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LoaderFunctions } from '../../../functions/utils';
-import {UserServiceService} from 'src/app/services/Users/user-service.service'
+
 @Injectable({
   providedIn: 'root'
 })
 export class PlatilloService {
   server: string;
 
-  constructor(private http: HttpClient, private loaderFunctions: LoaderFunctions, private auth : UserServiceService) {
-    this.server = this.auth.getServer()
+  constructor(private http: HttpClient, private loaderFunctions: LoaderFunctions) {
+    this.server = "https://localhost:44397/"
   }
 
   async CrearPlatillo(data : object): Promise<Observable<any>> {
