@@ -20,6 +20,7 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
   elapsedTime: Date = new Date(0);
   timerSubscription: Subscription | undefined;
   timerRunning = false;
+  intervalId: any;
 
   constructor(
     private ac: AlertServiceService,
@@ -39,6 +40,10 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
       this.orden = this.mesa.ordenes[0];
     }
     this.Getestimandos();
+    this.intervalId = setInterval(() => {
+      this.Getestimandos();
+      this.buscarOrden();
+    }, 5000);
   }
 
   ngOnDestroy() {
@@ -51,8 +56,8 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
     if (this.timerSubscription) {
       this.timerSubscription.unsubscribe();
       this.timerRunning = false;
-      this.alterstate(3);
     }
+    this.alterstate(3);
   }
 
   async VerReceta(receta: any): Promise<void> {
@@ -117,6 +122,8 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
         return "Listo para recoger (terminada)";
       case 4:
         return "Orden cerrada";
+      case 5:
+        return "Orden Cobrada";
       default:
         return "Estado desconocido";
     }
@@ -128,10 +135,15 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
 
   async alterstate(estado: number): Promise<void> {
     this.orden.estado = estado;
+    if (this.orden.estado == 3) {
+      this.orden.ordenesplatillos.forEach((element: any) => {
+        element.estado = 2
+      });
+      console.log(this.orden)
+    }
     (await this.OrdenesService.ActualizarOrden(this.orden)).subscribe(
       async (response: any) => {
         if (response && response.message) {
-
           await this.buscarOrden();
         } else {
           console.error('Error: Respuesta inválida');

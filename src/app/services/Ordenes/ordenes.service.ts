@@ -14,7 +14,7 @@ export class OrdenesService {
     this.server = this.UserServiceService.getServer()
   }
 
-  async OrdenesPendientes(loader: boolean = true, estado : number = 1): Promise<Observable<any>> {
+  async OrdenesPendientes(loader: boolean = true, estado : number = 0): Promise<Observable<any>> {
     try {
       if (loader)
         await this.loaderFunctions.StartLoader();
@@ -48,7 +48,7 @@ export class OrdenesService {
         }
       );
     });
-  }
+  } 
 
 
   async CrearOrden(data: object): Promise<Observable<any>> {
@@ -65,7 +65,6 @@ export class OrdenesService {
       await this.loaderFunctions.StartLoader();
       if (data.idbebida == undefined && data.idplatillo != 0) {
         console.log(data)
-
         return this.http.post<any>(`${this.server}api/Detalles/CrearDetallePlatillo`, data);
       }
       if (data.idplatillo == undefined && data.idbebida != 0) {

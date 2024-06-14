@@ -125,6 +125,7 @@ export class OrdnComponent implements OnInit {
     return fechaISO.slice(0, 19);
   }
 
+  presentresume : any = []
   async crearDetalle(detalle: any): Promise<void> {
     if (this.ordenold.id) {
       detalle.idorden = this.ordenold.id;

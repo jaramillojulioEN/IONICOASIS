@@ -1,38 +1,106 @@
-<app-main-header titulo="Órdenes Pendientes"></app-main-header>
+<app-main-header titulo="Ordenes Pendientes"></app-main-header>
 <ion-content [fullscreen]="true" id="main-content">
-  <ion-list>
-    <ion-item *ngFor="let orden of ordenes">
-      <ion-label>
-        <h2>ID Orden: #ORD{{ orden.id }}</h2>
-        <p>
-          <ion-icon name="calendar-outline"></ion-icon>
-          Fecha: {{ orden.fecha | date: 'short' }}
-        </p>
-        <p>
-          <ion-icon name="restaurant-outline"></ion-icon>
-          Mesa: {{ orden.mesas.descripcion }}
-        </p>
-        <p>
-          <ion-icon name="person-outline"></ion-icon>
-          Mesero: {{ orden.usuarios.nombre }}
-        </p>
-        <p>
-          <ion-icon name="checkmark-circle-outline"></ion-icon>
-          Estado: {{ orden.estado }}
-        </p>
-        <p>
-          <ion-icon name="cash-outline"></ion-icon>
-          Total: {{ orden.total | currency }}
-        </p>
-        <p>
-          <ion-icon name="time-outline"></ion-icon>
-          Tiempo estimado de preparación: minutos
-        </p>
-      </ion-label>
-      <ion-button slot="end" color="primary" (click)="VerOrden(orden)">
-        Ver Detalle
-        <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
-      </ion-button>
-    </ion-item>
-  </ion-list>
+  <ion-grid>
+    <ion-row>
+      <ion-col lg-size="6" sm-size="12" *ngFor="let orden of ordenes">
+        <ion-card class="custom-card option" (click)="Opciones(orden)">
+          <ion-card-content>
+            <ion-grid class="custom-label">
+              <ion-row>
+                <ion-col size="12">
+                  <ion-row>
+                    <ion-col size="11">
+                      <h2>ID Orden: #ORD{{ orden.id }}</h2>
+                    </ion-col>
+                  </ion-row>
+                </ion-col>
+                <ion-col lg-size="4" sm-size="12">
+                  <p>
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    Fecha: {{ orden.fecha | date: 'short' }}
+                  </p>
+                  <p>
+                    <ion-icon name="restaurant-outline"></ion-icon>
+                    Mesa: {{ orden.mesas.descripcion }}
+                  </p>
+                  <p>
+                    <ion-icon name="time-outline"></ion-icon>
+                    Tiempo estimado de preparación: {{Getestimandos(orden)[0]}} minutos
+                  </p>
+                </ion-col>
+                <ion-col lg-size="4" sm-size="12">
+                  <p>
+                    <ion-icon name="person-outline"></ion-icon>
+                    Mesero: {{ orden.usuarios.nombre }}
+                  </p>
+                  <p>
+                    <ion-icon name="checkmark-circle-outline"></ion-icon>
+                    Estado: {{ getEstado(orden.estado) }}
+                  </p>
+                  <p>
+                    <ion-icon name="cash-outline"></ion-icon>
+                    Total: {{ orden.total | currency }}
+                  </p>
+                </ion-col>
+                <!-- <ion-col lg-size="4" sm-size="12">
+                  <ion-button color="primary" (click)="VerOrden(orden)">
+                    Ver Detalle
+                    <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+                  </ion-button>
+                </ion-col> -->
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-content>
+
+<style>
+  .custom-card {
+    margin: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .custom-item {
+    --background: #ffffff;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .custom-label h2 {
+    font-size: 1.4em;
+    margin-bottom: 8px;
+  }
+
+  .custom-label p {
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+    margin: 4px 0;
+    color: #666;
+  }
+
+  .custom-label ion-icon {
+    margin-right: 8px;
+    color: #888;
+  }
+
+  .detail-button {
+    margin-top: 8px;
+  }
+
+  ion-row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  ion-col {
+    display: flex;
+    flex-direction: column;
+  }
+</style>

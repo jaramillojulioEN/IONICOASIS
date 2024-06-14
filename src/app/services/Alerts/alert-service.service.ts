@@ -23,14 +23,20 @@ export class AlertServiceService {
     text: 'Eliminar',
     role: 'destructive',
     handler: () => { },
-    cssClass : "custom-action-delete-sheet-button"
+    cssClass: 'custom-action-delete-sheet-button'
   }
+  
   public btnActualizar: ActionSheetButton = {
     text: 'Editar',
     handler: () => { }
   }
   public btnVer: ActionSheetButton = {
     text: 'Ver receta',
+    handler: () => { }
+  }
+
+  public btnVerOrden: ActionSheetButton = {
+    text: 'Ver orden',
     handler: () => { }
   }
   public btnAgregarP: ActionSheetButton = {
