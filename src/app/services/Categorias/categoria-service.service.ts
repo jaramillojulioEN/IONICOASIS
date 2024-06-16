@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map, switchMap } from 'rxjs';
 import {LoaderFunctions} from "src/functions/utils"
+import { UserServiceService } from 'src/app/services/Users/user-service.service'
+
 @Injectable({
   providedIn: 'root'
 })
@@ -10,8 +12,10 @@ import {LoaderFunctions} from "src/functions/utils"
 export class CategoriaServiceService {
   server: any;
 
-  constructor(private http: HttpClient, private LoaderFunctions : LoaderFunctions) {
-    this.server = "https://localhost:44397/"
+  constructor(
+    private user : UserServiceService,
+    private http: HttpClient, private LoaderFunctions : LoaderFunctions) {
+    this.server = this.user.getServer()
   }
 
   SubCategorias(): Observable<any> {

@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LoaderFunctions } from '../../../functions/utils';
+import { UserServiceService } from 'src/app/services/Users/user-service.service'
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +11,10 @@ export class MesasService {
 
   server: string;
 
-  constructor(private http: HttpClient, private loaderFunctions: LoaderFunctions) {
-    this.server = "https://localhost:44397/"
+  constructor(
+    private user : UserServiceService,
+    private http: HttpClient, private loaderFunctions: LoaderFunctions) {
+    this.server = this.user.getServer()
   }
 
   async CrearMesa(data : object): Promise<Observable<any>> {

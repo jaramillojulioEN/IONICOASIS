@@ -11,8 +11,12 @@
 <ion-content>
 
   <div *ngIf="orden.estado === 4">
-    <h1 class="ion-text-center"><ion-icon style="font-size: 80px;" name="calculator-outline"></ion-icon></h1>
-    <h5 class="ion-text-center">Esta mesa tiene una orden cerrada pendiente de pago</h5>
+    <ion-card class="custom-card">
+      <ion-card-content>
+        <p>Esta mesa tiene una orden cerrada pendiente de pago.</p>
+        <p>Acuda a caja por la cuenta.</p>
+      </ion-card-content>
+    </ion-card>
   </div>
 
   <ion-card *ngIf="orden.estado !== 4">

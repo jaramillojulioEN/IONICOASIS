@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LoaderFunctions } from '../../../functions/utils';
+import { UserServiceService } from 'src/app/services/Users/user-service.service'
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +10,10 @@ import { LoaderFunctions } from '../../../functions/utils';
 export class ProductoServiceService {
   server: string;
 
-  constructor(private http: HttpClient, private loaderFunctions: LoaderFunctions) {
-    this.server = "https://localhost:44397/"
+  constructor(
+    private user : UserServiceService,
+    private http: HttpClient, private loaderFunctions: LoaderFunctions) {
+    this.server = this.user.getServer()
   }
 
   async CrearProducto(cantidad: number, nombre: string, idcategoria: number): Promise<Observable<any>> {

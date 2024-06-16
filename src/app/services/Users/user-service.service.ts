@@ -15,7 +15,7 @@ export class UserServiceService {
     try {
       if (load)
         this.loader.StartLoader()
-      return this.http.get<any>(`https://localhost:44397/api/Users/Login/${user}/${password}`);
+      return this.http.get<any>(`${this.getServer()}/api/Users/login/${user}/${password}`);
     }
     finally {
       if (load)
@@ -24,10 +24,10 @@ export class UserServiceService {
   }
 
   getServer(): string {
-    let server = "https://localhost"
+    let server = "http://www.pruebas.somee.com"
     let port = "44397"
     if (this.isAuth())
-      return `${server}:${port}/`
+      return `${server}/`
     else{
       return "forbiden"
     }

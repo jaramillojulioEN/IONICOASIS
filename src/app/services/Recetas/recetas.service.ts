@@ -2,20 +2,24 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { LoaderFunctions } from '../../../functions/utils';
-
+import { UserServiceService } from 'src/app/services/Users/user-service.service'
 @Injectable({
   providedIn: 'root'
 })
 export class RecetasService {
   server: string;
 
-  constructor(private http: HttpClient, private loaderFunctions: LoaderFunctions) {
-    this.server = "https://localhost:44397/"
+  constructor(
+    private http: HttpClient, 
+    private loaderFunctions: LoaderFunctions,
+    private user : UserServiceService
+  ) {
+    this.server = this.user.getServer()
   }
 
-  
-  crearListaIngredientes(descripcion : string) {
-    const url = this.server +'api/Recetas/CrearListaIngredientes';
+
+  crearListaIngredientes(descripcion: string) {
+    const url = this.server + 'api/Recetas/CrearListaIngredientes';
     const body = {
       descripcion: descripcion
     };
@@ -31,8 +35,8 @@ export class RecetasService {
     );
   }
 
-  crearListaImagenes(descripcion : string) {
-    const url = this.server +'api/Recetas/CrearListaImagenes';
+  crearListaImagenes(descripcion: string) {
+    const url = this.server + 'api/Recetas/CrearListaImagenes';
     const body = {
       descripcion: descripcion
     };
@@ -48,8 +52,8 @@ export class RecetasService {
     );
   }
 
-  agregarImagenALista(listaid: number, b64:string) {
-    const url = this.server+'api/Recetas/CrearImagenes';
+  agregarImagenALista(listaid: number, b64: string) {
+    const url = this.server + 'api/Recetas/CrearImagenes';
     const body = {
       idlistaimagen: listaid,
       cadenab64: b64
@@ -66,8 +70,8 @@ export class RecetasService {
     );
   }
 
-  agregarIngredienteALista(listaIngredientesId: number, idp : number, cantidad:number) {
-    const url = this.server+'api/Recetas/CrearIngredientes';
+  agregarIngredienteALista(listaIngredientesId: number, idp: number, cantidad: number) {
+    const url = this.server + 'api/Recetas/CrearIngredientes';
     const body = {
       idproducto: idp,
       idlistaingredientes: listaIngredientesId,
@@ -86,7 +90,7 @@ export class RecetasService {
   }
 
   obtenerItemsListaIngredientes(id: number) {
-    const url =`${this.server}api/Recetas/ObtenerIngredientes/${id}`;
+    const url = `${this.server}api/Recetas/ObtenerIngredientes/${id}`;
     return this.http.get(url).pipe(
       catchError(error => {
         console.error('Error al obtener los valores de la API:', error);
@@ -96,7 +100,7 @@ export class RecetasService {
   }
 
   obtenerItemsListaImagenes(id: number) {
-    const url =`${this.server}api/Recetas/ObtenerImagenes/${id}`;
+    const url = `${this.server}api/Recetas/ObtenerImagenes/${id}`;
     return this.http.get(url).pipe(
       catchError(error => {
         console.error('Error al obtener los valores de la API:', error);
@@ -106,7 +110,7 @@ export class RecetasService {
   }
 
 
-  async EliminarIngrediente(idi: number, idl : number): Promise<Observable<any>> {
+  async EliminarIngrediente(idi: number, idl: number): Promise<Observable<any>> {
     try {
       await this.loaderFunctions.StartLoader();
       return this.http.get<any>(`${this.server}api/Recetas/EliminarIngrediente/${idi}/${idl}`);
@@ -115,7 +119,7 @@ export class RecetasService {
     }
   }
 
-  async CrearReceta(data : object): Promise<Observable<any>> {
+  async CrearReceta(data: object): Promise<Observable<any>> {
     try {
       await this.loaderFunctions.StartLoader();
       return this.http.post<any>(`${this.server}api/Recetas/CrearReceta`, data);
@@ -124,21 +128,21 @@ export class RecetasService {
     }
   }
 
-  async Recetas(load : Boolean = true): Promise<Observable<any>> {
+  async Recetas(load: Boolean = true): Promise<Observable<any>> {
     try {
-      if(load){
+      if (load) {
         await this.loaderFunctions.StartLoader();
       }
       return this.http.get<any>(`${this.server}api/Recetas/TodasRecetas`);
     } finally {
-      if(load){
+      if (load) {
         this.loaderFunctions.StopLoader();
       }
     }
   }
 
 
-  async EliminarImagen(idi: number, idl : number): Promise<Observable<any>> {
+  async EliminarImagen(idi: number, idl: number): Promise<Observable<any>> {
     try {
       await this.loaderFunctions.StartLoader();
       return this.http.get<any>(`${this.server}api/Recetas/EliminarImagen/${idi}/${idl}`);
