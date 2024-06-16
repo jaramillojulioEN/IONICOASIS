@@ -22,22 +22,18 @@
             <th>Nombre</th>
             <th>Categoría</th>
             <th>Precio</th>
-            <th>Precio Empleado</th>
-            <th>Acciones</th>
+            <th colspan="2">Precio Empleado</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let bebida of BebidaArry">
+          <tr class="option" *ngFor="let bebida of BebidaArry">
             <td>{{ bebida.nombre }}</td>
             <td>{{ bebida.categorias.categoria }}</td>
             <td>{{ bebida.precioventa }}</td>
             <td>{{ bebida.precioempleados }}</td>
-            <td>
-              <ion-button (click)="AbrirModalbebida(bebida.id, 'Actualizar', bebida)" fill="clear" color="primary">
-                <ion-icon name="create-outline"></ion-icon>
-              </ion-button>
-              <ion-button (click)="Eliminarbebida(bebida)" fill="clear" color="danger">
-                <ion-icon name="trash-outline"></ion-icon>
+            <td class="actions-cell">
+              <ion-button fill="clear" (click)="Opciones(bebida)">
+                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
               </ion-button>
             </td>
           </tr>

@@ -21,22 +21,18 @@
             <th>Producto</th>
             <th>Cantidad</th>
             <th>Vendidos</th>
-            <th>Categoria</th>
-            <th>Acciones</th>
+            <th colspan="2">Categoria</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let producto of productos;">
+          <tr *ngFor="let producto of productos;" class="option">
             <td>{{producto.nombre}}</td>
             <td>{{producto.cantidad}}</td>
             <td>{{producto.vendidos}}</td>
             <td>{{producto.categorias.categoria}}</td>
-            <td>
-              <ion-button size="small" fill="clear" color="success" (click)="AbrirModalProducto(producto.id, 'Actualizar')">
-                <ion-icon name="pencil"></ion-icon>
-              </ion-button>
-              <ion-button size="small" fill="clear" color="danger" (click)="EliminarProducto(producto)">
-                <ion-icon name="trash"></ion-icon>
+            <td class="actions-cell">
+              <ion-button fill="clear" (click)="Opciones(producto)">
+                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
               </ion-button>
             </td>
           </tr>

@@ -3,19 +3,19 @@ import { ProductoServiceService } from 'src/app/services/Prodcutos/producto-serv
 import { ModalController } from '@ionic/angular';
 import { ProductosComponent } from 'src/app/Components/Modals/PorductosModal/productos/productos.component';
 import { AlertController } from '@ionic/angular';
-import {AlertServiceService} from '../../services/Alerts/alert-service.service' 
+import { AlertServiceService } from '../../services/Alerts/alert-service.service'
 @Component({
   selector: 'app-productos',
   templateUrl: './productos.page.html',
   styleUrls: ['./productos.page.scss'],
 })
 export class ProductosPage implements OnInit {
-  productos : any = [];
+  productos: any = [];
   constructor(
-    private AlertController : AlertController,
-    private ProductoService : ProductoServiceService,
+    private AlertController: AlertController,
+    private ProductoService: ProductoServiceService,
     private ModalController: ModalController,
-    private ac : AlertServiceService
+    private ac: AlertServiceService
   ) { }
 
   ngOnInit() {
@@ -24,18 +24,26 @@ export class ProductosPage implements OnInit {
       this.ObtenerProducutos();
     })
   }
-  async AbrirModalProducto(id:number, titulo:string) {
+  async AbrirModalProducto(id: number, titulo: string) {
     const modal = await this.ModalController.create({
       component: ProductosComponent,
       componentProps: {
         id: id,
-        titulo : titulo
+        titulo: titulo
       },
     });
     return await modal.present();
   }
 
-  async ObtenerProducutos(load : boolean = true): Promise<void> {
+  Opciones(data: any) {
+    this.ac.configureAndPresentActionSheet([
+      { button: this.ac.btnEliminar, handler: () => this.EliminarProducto(data) },
+      { button: this.ac.btnActualizar, handler: () => { this.AbrirModalProducto(data.id, "Actualizar"); } },
+      { button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }
+    ]);
+  }
+
+  async ObtenerProducutos(load: boolean = true): Promise<void> {
     (await this.ProductoService.Productos(load)).subscribe(
       async (response: any) => {
         if (response && response.productos) {
@@ -52,10 +60,10 @@ export class ProductosPage implements OnInit {
   }
 
   async EliminarProducto(producto: any): Promise<void> {
-    this.ac.presentCustomAlert("Eliminar", "Estas seguro de eilimina el producto: "+ producto.nombre, ()=> this.ConfirmarEliminar(producto.id))
+    this.ac.presentCustomAlert("Eliminar", "Estas seguro de eilimina el producto: " + producto.nombre, () => this.ConfirmarEliminar(producto.id))
   }
 
-  async ConfirmarEliminar(id : number) : Promise<void> {
+  async ConfirmarEliminar(id: number): Promise<void> {
     (await this.ProductoService.EliminarProductos(id)).subscribe(
       async (response: any) => {
         if (response) {

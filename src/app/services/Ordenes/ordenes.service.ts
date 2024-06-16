@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LoaderFunctions } from '../../../functions/utils';
-
+import { UserServiceService } from '../Users/user-service.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -10,11 +10,11 @@ export class OrdenesService {
 
   server: string;
 
-  constructor(private http: HttpClient, private loaderFunctions: LoaderFunctions) {
-    this.server = "https://localhost:44397/"
+  constructor(private UserServiceService : UserServiceService,private http: HttpClient, private loaderFunctions: LoaderFunctions) {
+    this.server = this.UserServiceService.getServer()
   }
 
-  async OrdenesPendientes(loader: boolean = true, estado : number = 1): Promise<Observable<any>> {
+  async OrdenesPendientes(loader: boolean = true, estado : number = 0): Promise<Observable<any>> {
     try {
       if (loader)
         await this.loaderFunctions.StartLoader();
@@ -48,7 +48,7 @@ export class OrdenesService {
         }
       );
     });
-  }
+  } 
 
 
   async CrearOrden(data: object): Promise<Observable<any>> {
@@ -65,7 +65,6 @@ export class OrdenesService {
       await this.loaderFunctions.StartLoader();
       if (data.idbebida == undefined && data.idplatillo != 0) {
         console.log(data)
-
         return this.http.post<any>(`${this.server}api/Detalles/CrearDetallePlatillo`, data);
       }
       if (data.idplatillo == undefined && data.idbebida != 0) {
@@ -90,4 +89,37 @@ export class OrdenesService {
     return total
   }
 
+  async EliminarBDetalle(data: any): Promise<Observable<any>> {
+    try {
+      const options = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+        }),
+        body: data
+      };
+
+      await this.loaderFunctions.StartLoader();
+      return this.http.delete<any>(`${this.server}api/Detalles/EliminarBebidaDetalle`, options);
+
+    } finally {
+      this.loaderFunctions.StopLoader();
+    }
+  }
+
+  async EliminarPDetalle(data: any): Promise<Observable<any>> {
+    try {
+      const options = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+        }),
+        body: data
+      };
+
+      await this.loaderFunctions.StartLoader();
+      return this.http.delete<any>(`${this.server}api/Detalles/EliminarPlatilloDetalle`, options);
+
+    } finally {
+      this.loaderFunctions.StopLoader();
+    }
+  }
 }

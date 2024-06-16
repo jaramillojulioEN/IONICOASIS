@@ -38,6 +38,14 @@ export class PlatillosPage implements OnInit {
     return await modal.present();
   }
 
+  Opciones(data: any) {
+    this.ac.configureAndPresentActionSheet([
+      { button: this.ac.btnEliminar, handler: () => this.EliminarPlatillo(data) },
+      { button: this.ac.btnActualizar, handler: () => { this.AbrirModalPlatillo(data.id, "Actualizar", data); } },
+      { button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }
+    ]);
+  }
+
   async ObtenerPlatillos(load : boolean = true): Promise<void> {
     (await this.PlatilloService.Platillos(load)).subscribe(
       async (response: any) => {

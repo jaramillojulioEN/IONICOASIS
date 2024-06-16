@@ -18,8 +18,8 @@
               <thead>
                 <tr>
                   <th>Subcategoría</th>
-                  <th>Categoría</th>
-                  <th>Acciones</th>
+                  <th colspan="2">Categoría</th>
+                  
                 </tr>
               </thead>
               <tbody>
@@ -27,15 +27,9 @@
                   <tr>
                     <td>{{ subcategoria.subcategoria }}</td>
                     <td>{{ categoria.categoria }}</td>
-                    <td>
-                      <ion-button size="small" fill="clear" color="success" (click)="AbrirModal(categoria.id, 'Actualizar')">
-                        <ion-icon name="pencil"></ion-icon>
-                      </ion-button>
-                      <ion-button size="small" fill="clear" color="success" (click)="AbrirModalProducto(categoria.id, 'Nuevo')">
-                        <ion-icon name="fast-food-outline"></ion-icon>
-                      </ion-button>
-                      <ion-button size="small" fill="clear" color="danger" (click)="eliminarCategoria(categoria)">
-                        <ion-icon name="trash"></ion-icon>
+                    <td class="actions-cell">
+                      <ion-button fill="clear" (click)="Opciones(categoria)">
+                        <ion-icon name="ellipsis-vertical-outline"></ion-icon>
                       </ion-button>
                     </td>
                   </tr>

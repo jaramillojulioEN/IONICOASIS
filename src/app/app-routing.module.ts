@@ -90,12 +90,6 @@ const routes: Routes = [
     data: { expectedRoles: ['Cajero'] }
   },
   {
-    path: 'mesas',
-    loadChildren: () => import('./Pages/mesas/mesas.module').then( m => m.MesasPageModule),
-    canActivate: [RoleGuard],
-    data: { expectedRoles: ['Mesero'] }
-  },
-  {
     path: 'lavado',
     loadChildren: () => import('./Pages/caja/lavado/lavado.module').then( m => m.LavadoPageModule),
     canActivate: [RoleGuard],

@@ -58,6 +58,14 @@ export class BebidasPage implements OnInit {
     this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar la bebida: " + bebida.nombre, () => this.ConfirmarELiminar(bebida.id));
   }
 
+  Opciones(data: any) {
+    this.ac.configureAndPresentActionSheet([
+      { button: this.ac.btnEliminar, handler: () => this.Eliminarbebida(data) },
+      { button: this.ac.btnActualizar, handler: () => { this.AbrirModalbebida(data.id, "Actualizar", data); } },
+      { button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }
+    ]);
+  }
+
   async ConfirmarELiminar (id : number) :Promise<void> {
     (await this.BebidaService.EliminarBebida(id)).subscribe(
       async (response: any) => {

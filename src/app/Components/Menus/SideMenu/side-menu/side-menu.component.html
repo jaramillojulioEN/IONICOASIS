@@ -6,10 +6,15 @@
   </ion-header>
   <ion-content>
     <ion-list id="menu-list">
+      <ion-item-divider mode="md">
+        <ion-label> Páginas </ion-label>
+      </ion-item-divider>
       <ng-container *ngFor="let p of appPages">
+
         <ng-container *ngIf="p.subpages !== null &&!p.subpages; else hasSubpages">
           <ion-menu-toggle auto-hide="false">
-            <ion-item (click)="navigateTo(p.url)" lines="none" routerDirection="root" [routerLink]="[p.url]" detail="false" routerLinkActive="selected">
+            <ion-item (click)="navigateTo(p.url)" lines="none" routerDirection="root" [routerLink]="[p.url]"
+              detail="false" routerLinkActive="selected">
               <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-outline'"></ion-icon>
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>
@@ -25,7 +30,8 @@
           <ion-list *ngIf="p.open">
             <ng-container *ngFor="let sub of p.subpages">
               <ion-menu-toggle auto-hide="false">
-                <ion-item (click)="navigateTo(sub.url)" lines="none" class="submenu-item" routerDirection="root" [routerLink]="[sub.url]" detail="false" routerLinkActive="selected">
+                <ion-item (click)="navigateTo(sub.url)" lines="none" class="submenu-item" routerDirection="root"
+                  [routerLink]="[sub.url]" detail="false" routerLinkActive="selected">
                   <ion-icon slot="start" [ios]="sub.icon + '-outline'" [md]="sub.icon + '-outline'"></ion-icon>
                   <ion-label>{{ sub.title }}</ion-label>
                 </ion-item>
@@ -33,6 +39,20 @@
             </ng-container>
           </ion-list>
         </ng-template>
+      </ng-container>
+      <!-- Separador -->
+      
+      <ng-container *ngFor="let s of setingsSec" class="ion-margin-top">
+        <ion-menu-toggle auto-hide="false">
+          <ion-item-divider mode="md" sticky="true">
+            <ion-label>Cuenta</ion-label>
+          </ion-item-divider>
+          <ion-item (click)="navigateTo(s.url)" lines="none" routerDirection="root" [routerLink]="[s.url]"
+            detail="false" routerLinkActive="selected">
+            <ion-icon slot="start" [ios]="s.icon + '-outline'" [md]="s.icon + '-outline'"></ion-icon>
+            <ion-label>{{ s.title }}</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
       </ng-container>
     </ion-list>
   </ion-content>

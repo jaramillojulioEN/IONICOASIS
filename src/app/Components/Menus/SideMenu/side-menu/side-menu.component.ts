@@ -13,13 +13,16 @@ export class SideMenuComponent implements OnInit {
     { title: 'Platillos', url: '/platillos', icon: 'pizza' },
     { title: 'Recetas', url: '/recetas', icon: 'receipt' },
     { title: 'Categorias', url: '/categorias', icon: 'duplicate' },
-    { title: 'Bebidas', url: '/categorias', icon: 'beer' },
+    { title: 'Bebidas', url: '/bebidas', icon: 'beer' },
     { title: 'Mesas', url: '/mesas', icon: 'cafe' },
     { title: 'Servicios Lavado', url: '/servicios', icon: 'car-sport' },
   ];
 
   public appPages: any = [];
   rol: any = [];
+  user: any = [];
+  setingsSec: any  = [];
+  
 
   constructor(private navCtrl: NavController, private menuCtrl: MenuController, private authservice: UserServiceService) { }
 
@@ -39,6 +42,8 @@ export class SideMenuComponent implements OnInit {
 
   ngOnInit() {
     this.rol = this.authservice.getRol()
+    this.user = this.authservice.getUser()
+    console.log(this.user)
     if (this.rol.id == 1) {
       this.appPages = [
         { title: 'Inicio', url: '/admin', icon: 'home', open: false },
@@ -58,6 +63,11 @@ export class SideMenuComponent implements OnInit {
         { title: 'Mis mesas', url: '/mesas', icon: 'golf', open: false },
       ]
     }
+    else if (this.rol.id == 4) {
+      this.appPages = [
+        { title: 'Ordenes pendientes', url: '/cocina', icon: 'receipt', open: false },
+      ]
+    }
     else if (this.rol.id == 5) {
       this.appPages = [
         { title: 'Cobrar', url: '/caja', icon: 'card', open: false },
@@ -67,5 +77,6 @@ export class SideMenuComponent implements OnInit {
         { title: 'Empleados', url: '/empleados', icon: 'person', open: false },
       ]
     }
+    this.setingsSec = [{ title: 'Configuraciones', url: '/empleados', icon: 'settings', open: false },]
   }
 }
