@@ -1,4 +1,4 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar>
     <ion-title>{{titulo}} Producto</ion-title>
     <ion-buttons slot="end">
@@ -7,8 +7,8 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-</ion-header>
-
+</ion-header> -->
+<app-main-header titulo="{{titulo}} Producto" [isModal]="true"></app-main-header>
 <ion-content>
   <ion-card class="custom-card">
     <ion-card-content>
@@ -16,7 +16,8 @@
         <h1>Productos</h1>
       </ion-list-header>
       <ion-item lines="none">
-        <ion-input label="Nombre del producto" labelPlacement="floating" placeholder="Nombre" [(ngModel)]="nombre" clearInput>
+        <ion-input label="Nombre del producto" labelPlacement="floating" placeholder="Nombre" [(ngModel)]="nombre"
+          clearInput>
         </ion-input>
       </ion-item>
 

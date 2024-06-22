@@ -1,10 +1,8 @@
+<app-main-header titulo="Información de la orden" [isModal]="true"></app-main-header>
 <ion-content class="order-details">
   <!-- Sección Detalles de la Orden -->
   <ion-card class="custom-card">
     <ion-card-content class="ion-padding">
-      <ion-item lines="none">
-        <h1>Información de la orden</h1>
-      </ion-item>
       <ion-item lines="none">
         <ion-input type="text" labelPlacement="floating" label="Nombre Cliente" [(ngModel)]="NewOrden.nombrecliente"
           [disabled]="estadoCreacion === 1" name="nombrecliente" required></ion-input>

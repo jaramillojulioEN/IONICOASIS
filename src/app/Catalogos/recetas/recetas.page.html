@@ -3,10 +3,10 @@
   <div class="ion-padding">
     <ion-grid>
       <ion-row>
-        <ion-col size-lg="11" size-sm="8"></ion-col>
-        <ion-col size-lg="1" size-sm="4">
-          <div class="header-container">
-            <ion-button (click)="AbrirModalRecetas(0, 'Nuevo')">
+        <ion-col size="10"></ion-col>
+        <ion-col size="2">
+          <div class="header-container" style="width: 100%;">
+            <ion-button style="width: 100%;" (click)="AbrirModalRecetas(0, 'Nuevo')">
               <ion-icon name="add-circle-outline"></ion-icon>
               <div class="button-text crear">Crear</div>
             </ion-button>
@@ -16,8 +16,7 @@
     </ion-grid>
       <ion-grid>
         <ion-row>
-          <ion-col size="2"></ion-col>
-          <ion-col class="table-container" lg-size="8" sm-size="12">
+          <ion-col class="table-container" size="12">
             <table class="tabla">
               <thead>
                 <tr>
@@ -43,7 +42,6 @@
               </tbody>
             </table>
           </ion-col >
-          <ion-col size="2"></ion-col>
         </ion-row>
       </ion-grid>
     <div class="no-recetas" *ngIf="!recetas || recetas.length === 0">

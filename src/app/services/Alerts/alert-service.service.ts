@@ -26,8 +26,23 @@ export class AlertServiceService {
     cssClass: 'custom-action-delete-sheet-button'
   }
   
+  public btncobrar: ActionSheetButton = {
+    cssClass: 'custom-action-delete-sheet-button',
+    text: 'Cobrar',
+    handler: () => { }
+  }
+
   public btnActualizar: ActionSheetButton = {
     text: 'Editar',
+    handler: () => { }
+  }
+
+  public btnVerGrafico: ActionSheetButton = {
+    text: 'Ver Gráfica',
+    handler: () => { }
+  }
+  public btnActivar: ActionSheetButton = {
+    text: 'Activar caja',
     handler: () => { }
   }
   public btnVer: ActionSheetButton = {

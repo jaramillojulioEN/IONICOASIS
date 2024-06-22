@@ -34,6 +34,11 @@ export class TicketComponent implements OnInit {
     }
   }
   async ticket(): Promise<void> {
+    console.log(this.serecibe)
+    if(this.serecibe == 0 || this.serecibe == null){
+      this.ac.presentCustomAlert("Error", "Ingrese la cantidad entregada por el cliente")
+      return
+    }
     this.sst = true
   }
 
@@ -43,6 +48,7 @@ export class TicketComponent implements OnInit {
       tipoEntidad: "lavado",
       entidad: this.lavado
     };
+
     (await this.lav.CrearLavado(body)).subscribe(
       async (response: any) => {
         if (response && response.message) {

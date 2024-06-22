@@ -9,10 +9,15 @@
   </ion-toolbar> -->
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button color="light" auto-hide="false"></ion-menu-button>
+      <ion-menu-button *ngIf="!isModal" color="light" auto-hide="false"></ion-menu-button>
+      <ion-button *ngIf="isModal" (click)="dissmiss()" fill="clear">
+        <h1><ion-icon color="light" name="arrow-back-outline"></ion-icon></h1>
+      </ion-button>
     </ion-buttons>
-    <ion-title>{{titulo}}</ion-title>
-    
+    <ion-title slot="start">{{titulo}}</ion-title>
+    <ion-title slot="end" *ngIf="!isModal"></ion-title>
+
+
   </ion-toolbar>
 </ion-header>
 <app-side-menu></app-side-menu>

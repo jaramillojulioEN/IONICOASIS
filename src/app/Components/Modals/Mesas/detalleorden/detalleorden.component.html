@@ -1,10 +1,16 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Detalles de la Orden</ion-title>
-    <ion-buttons slot="end" color="light" *ngIf="rol.id !== 2">
-      <ion-icon name="time-outline" color="light" slot="icon-only"></ion-icon>
-      <span class="timer">{{ elapsedTime | date:'mm:ss' }}</span>
+    <ion-buttons slot="start" color="light">
+      <ion-button (click)="dissmiss()" fill="clear">
+        <h1><ion-icon color="light" name="arrow-back-outline"></ion-icon></h1>
+      </ion-button>
     </ion-buttons>
+    <!-- *ngIf="rol.id !== 2" -->
+    <div slot="end">
+      <ion-icon style="width: 30px;" name="time-outline" color="light" slot="icon-only"></ion-icon>
+      <span class="timer">{{ elapsedTime | date:'mm:ss' }}</span>
+    </div>
   </ion-toolbar>
 </ion-header>
 
@@ -54,14 +60,15 @@
           <div *ngIf="orden.ordenesplatillos.length !== 0">
             <h3 class="section-header">Detalles de los Platillos</h3>
             <div class="order-item" *ngFor="let platillo of orden.ordenesplatillos">
-              <div class="{{platillo.estado === 2 ? 'tachado' : 'letra'}} info" style="padding: 10px;" 
+              <div class="{{platillo.estado === 2 ? 'tachado' : 'letra'}} info" style="padding: 10px;"
                 [ngStyle]="{'background-color': (platillo.estado === 1) ? '#2c507c' : '#fff','color': (platillo.estado === 1) ? '#fff' : '#000'}">
-                <p ><strong>{{platillo.platillos.nombre}}</strong></p>
+                <p><strong>{{platillo.platillos.nombre}}</strong></p>
                 <p>Cantidad: {{platillo.cantidad}}</p>
                 <p>Observaciones: {{platillo.observaciones}}</p>
                 <div class="button-container">
                   <ion-button fill="clear" (click)="Opciones(platillo)">
-                    <ion-icon color="light" name="ellipsis-vertical-outline"></ion-icon>
+                    <ion-icon [color]="platillo.estado === 0 ? 'dark' : 'light'"
+                      name="ellipsis-vertical-outline"></ion-icon>
                   </ion-button>
                 </div>
               </div>

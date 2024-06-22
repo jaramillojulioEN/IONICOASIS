@@ -1,12 +1,6 @@
+<app-main-header titulo="Detalle de la venta" [isModal]="true"></app-main-header>
 <ion-content>
-  <ion-header>
-    <ion-toolbar>
-      <ion-title>Detalle de la venta</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
   <div *ngIf="!sst" class="ion-padding">
-
     <ion-card *ngIf="orden.length != 0" class="custom-card">
       <ion-card-header>
         <ion-card-title>Total de la orden:</ion-card-title>
@@ -74,8 +68,7 @@
         <ion-item>
           <ion-label>Cambio: ${{cambio}}</ion-label>
         </ion-item>
-        <ion-button color="primary" class="crear" (click)="ticket()"
-          expand="full">Siguiente</ion-button>
+        <ion-button color="primary" class="crear" (click)="ticket()" expand="full">Siguiente</ion-button>
       </ion-card-content>
     </ion-card>
 
@@ -85,20 +78,20 @@
 
     <ion-grid>
       <ion-row>
-        <ion-col sm-size="12" lg-size ="4"class="ion-margin-top ion-padding">
+        <ion-col sm-size="12" lg-size="4" class="ion-margin-top ion-padding">
           <ion-button color="primary" class="crear" (click)="volver()" expand="full">Volver al detalle</ion-button>
           <br>
           <ion-item lines="none">
             <ion-label>Imprimir ticket</ion-label>
             <ion-checkbox [(ngModel)]="imprimirTicket" slot="end"></ion-checkbox>
           </ion-item>
-          <br>          
+          <br>
           <ion-button color="primary" class="crear" (click)="lavado.length !== 0 ? cobrarl() : cobrar()"
             expand="full">Cobrar</ion-button>
         </ion-col>
-        <ion-col sm-size="12" lg-size ="8">
+        <ion-col sm-size="12" lg-size="8">
           <div class="body-tt ion-margin-top">
-            <div class="header">
+            <div class="header-tt">
               <p>{{usuario.sucursales.sucursal}}</p>
               <p>{{usuario.sucursales.direccion}}</p>
               <p>Tel: (123) 456-7890</p>
@@ -144,11 +137,11 @@
             </div>
           </div>
         </ion-col>
-        
+
       </ion-row>
     </ion-grid>
 
-   
+
   </div>
 
 

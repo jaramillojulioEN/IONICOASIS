@@ -42,38 +42,36 @@
                 <th>NO</th>
                 <th>Vehiculo</th>
                 <th>Servicios</th>
-                <th>Total</th>
-                <th>Acciones</th>
+                <th colspan="2">Total</th>
               </tr>
             </thead>
-            <!-- Cuerpo de la tabla -->
-            <tbody>
+            <tbody *ngIf="lavados.length > 0; else noData">
               <tr *ngFor="let lavado of lavados">
                 <td>{{lavado.id}}</td>
-                <td>{{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</td>
+                <td>{{lavado.lavadodet[0]?.Tipos_Vehiculos?.tipo_vehiculo}}</td>
                 <td>
                   <ul>
-                    <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}
-                    </li>
+                    <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}</li>
                   </ul>
                 </td>
                 <td>${{lavado.total}}</td>
-                <td>
-                  <ion-button fill="clear" color="success" (click)="Cobrar(lavado)">
-                    <ion-icon name="pencil"></ion-icon>
-                    Cobrar
-                  </ion-button>
-                  <ion-button fill="clear" color="danger" (click)="Eliminar(lavado)">
-                    <ion-icon name="trash"></ion-icon>
-                    Eliminar
+                <td class="actions-cell">
+                  <ion-button fill="clear" (click)="Opciones(lavado)">
+                    <ion-icon name="ellipsis-vertical-outline"></ion-icon>
                   </ion-button>
                 </td>
               </tr>
             </tbody>
+            <ng-template #noData>
+              <tr>
+                <td colspan="5" class="no-data-cell">No se encontraron vehiculos pendientes de cobro</td>
+              </tr>
+            </ng-template>
           </table>
         </div>
       </ion-card-content>
     </ion-card>
+    
 
   </div>
   <div *ngIf="segmento === 'hoy'" class="ion-padding">

@@ -1,5 +1,131 @@
 <app-main-header titulo="Cierres e inicios"></app-main-header>
 
 <ion-content [fullscreen]="true" id="main-content">
- 
+
+    <ion-segment [(ngModel)]="segmento">
+        <ion-segment-button value="estado">
+            <ion-label>Estado de la caja</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="cerradas">
+            <ion-label>Estados pasados</ion-label>
+        </ion-segment-button>
+    </ion-segment>
+
+    <div class="estado ion-padding" *ngIf="segmento === 'estado'">
+
+        <ion-card class="custom-card" *ngIf="CorteActivo != null">
+            <ion-card-content>
+                <ion-grid>
+                    <ion-row>
+                        <ion-col size-lg="6" size-sm="12">
+                            <ion-card>
+                                <ion-card-header>
+                                    <ion-card-subtitle>Fecha y hora de inicio</ion-card-subtitle>
+                                </ion-card-header>
+                                <ion-card-content>
+                                    <ion-list lines="none">
+                                        <ion-item>
+                                            <ion-label>Fecha de inicio:</ion-label>
+                                            <ion-label slot="end">{{ getpart(CorteActivo.fechainicio, 0) }}</ion-label>
+                                        </ion-item>
+                                        <ion-item>
+                                            <ion-label>Hora de inicio:</ion-label>
+                                            <ion-label slot="end">{{ getpart(CorteActivo.fechainicio, 1) }}</ion-label>
+                                        </ion-item>
+                                    </ion-list>
+                                </ion-card-content>
+                            </ion-card>
+
+                            <ion-card>
+                                <ion-card-header>
+                                    <ion-card-subtitle>Datos de la caja</ion-card-subtitle>
+                                </ion-card-header>
+                                <ion-card-content>
+                                    <ion-list lines="none">
+                                        <ion-item>
+                                            <ion-label>Total Inicial:</ion-label>
+                                            <ion-label slot="end">${{ CorteActivo.totalcaja }}</ion-label>
+                                        </ion-item>
+                                        <ion-item>
+                                            <ion-label>Total Cocina:</ion-label>
+                                            <ion-label slot="end">${{ CorteActivo.totalcocina }}</ion-label>
+                                        </ion-item>
+                                        <ion-item>
+                                            <ion-label>Total en Caja:</ion-label>
+                                            <ion-label slot="end">${{ CorteActivo.sumatotal }}</ion-label>
+                                        </ion-item>
+                                        <ion-item>
+                                            <ion-label>Retiros:</ion-label>
+                                            <ion-label slot="end">${{ CorteActivo.saliodecaja }}</ion-label>
+                                        </ion-item>
+                                        <ion-item>
+                                            <ion-label>Ganancias:</ion-label>
+                                            <ion-label slot="end">${{ CorteActivo.ganancias }}</ion-label>
+                                        </ion-item>
+                                        <ion-item>
+                                            <ion-button class="crear" (click)="cerracaja(CorteActivo)"
+                                                fill="colapse">Cerrar la caja</ion-button>
+                                        </ion-item>
+                                    </ion-list>
+                                </ion-card-content>
+                            </ion-card>
+
+                        </ion-col>
+                        <ion-col size-lg="6" size-sm="12">
+                            <ion-card *ngIf="data.length > 0">
+                                <ion-card-content>
+                                    <app-charts [colores]="colores" [labels]="labels" [data]="data"></app-charts>
+                                </ion-card-content>
+                            </ion-card>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-card-content>
+        </ion-card>
+        <ion-card class="custom-card" *ngIf="CorteActivo === null">
+            <ion-card-content>
+                <ion-text>La caja fue cerrada, contacta con el administrador para activar la caja o volver a activar la
+                    pasada</ion-text>
+            </ion-card-content>
+        </ion-card>
+    </div>
+
+    <div class="estado" *ngIf="segmento !== 'estado'">
+        <div class="container">
+            <div class="table-container">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha de Inicio</th>
+                            <th>Fecha de Cierre</th>
+                            <th>Total Autos</th>
+                            <th>Total Cocina</th>
+                            <th>Total Caja</th>
+                            <th>Suma Total</th>
+                            <th>Salió de Caja</th>
+                            <th>Ganancias</th>
+                            <th>Sucursal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of CortePasado; let i = index" class="option" (click)="Opciones(data, i)">
+                            <td>{{ data.id }}</td>
+                            <td>{{ data.fechainicio }}</td>
+                            <td>{{ data.fechacierre }}</td>
+                            <td>${{ data.totalautos }}</td>
+                            <td>${{ data.totalcocina }}</td>
+                            <td>${{ data.totalcaja }}</td>
+                            <td>${{ data.sumatotal }}</td>
+                            <td>${{ data.saliodecaja }}</td>
+                            <td>${{ data.ganancias }}</td>
+                            <td>{{ data.sucursales.sucursal }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
 </ion-content>

@@ -89,18 +89,30 @@ export class LavadoPage implements OnInit {
           console.error('Error en la solicitud:', error);
         }
       );
-    }else{
+    } else {
       this.ac.presentCustomAlert("Error", this.message)
     }
 
   }
+
+  Opciones(data: any) {
+    let buttons = []
+    let rol: any = this.UserServiceService.getRol()
+    buttons.push({ button: this.ac.btncobrar, handler: () => { this.Cobrar(data); } })
+    if (rol.rol == 1) {
+      buttons.push({ button: this.ac.btnEliminar, handler: () => this.Eliminar(data) })
+    }
+    buttons.push({ button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } })
+    this.ac.configureAndPresentActionSheet(buttons);
+  }
+
 
 
   ValidarLavado(): boolean {
     let stt = true;
     if (this.lavado.entidad.lavadodet.length == 0) {
       stt = false
-      this.message ="Debes seleccionar un tipo de vehiculo y sus servicios"
+      this.message = "Debes seleccionar un tipo de vehiculo y sus servicios"
     }
     return stt
   }

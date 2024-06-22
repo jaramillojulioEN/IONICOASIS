@@ -225,4 +225,8 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
     this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar la bebida " + bebida.bebidas.nombre, () => this.ConfirmarELiminarBebida(bebida));
   }
 
+  dissmiss(){
+    this.modalController.dismiss()
+  }
+
 }

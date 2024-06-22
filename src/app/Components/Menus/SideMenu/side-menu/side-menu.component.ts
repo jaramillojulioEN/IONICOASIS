@@ -43,7 +43,6 @@ export class SideMenuComponent implements OnInit {
   ngOnInit() {
     this.rol = this.authservice.getRol()
     this.user = this.authservice.getUser()
-    console.log(this.user)
     if (this.rol.id == 1) {
       this.appPages = [
         { title: 'Inicio', url: '/admin', icon: 'home', open: false },

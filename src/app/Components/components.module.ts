@@ -4,7 +4,7 @@ import { CardComponent } from './card/card.component';
 import { CategoriasComponent } from './Modals/CategoriasModal/categorias/categorias.component';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
+import { ChartsComponent } from 'src/app/Components/Extras/charts/charts.component'
 import { ConsumoComponent } from 'src/app/Components/Modals/consumo/consumo.component'
 import { IonicModule } from '@ionic/angular';
 import { ProductosComponent } from './Modals/PorductosModal/productos/productos.component';
@@ -24,6 +24,9 @@ import { OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.compo
 import { ServiciosComponent } from 'src/app/Components/Modals/servicios/servicios.component'
 import { SelectComponent } from './select/select.component';
 import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
+
+
+
 @NgModule({
   declarations:
     [
@@ -33,6 +36,7 @@ import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
       DetalleordenComponent,
       SelectComponent,
       ConsumoComponent,
+      ChartsComponent,
       DatepickerComponent,
       ServiciosComponent,
       TicketComponent,
@@ -56,6 +60,7 @@ import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
     MainHeaderComponent,
     ConsumoComponent,
     ServiciosComponent,
+    ChartsComponent,
     SelectComponent,
     DatepickerComponent,
     TicketComponent,

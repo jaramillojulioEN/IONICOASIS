@@ -24,13 +24,10 @@ export class UserServiceService {
   }
 
   getServer(): string {
-    let server = "http://www.pruebas.somee.com"
+    // let server = "https://muddywatter26-001-site1.ftempurl.com/"
+    let server = "https://localhost:44397/"
     let port = "44397"
-    if (this.isAuth())
-      return `${server}/`
-    else{
-      return "forbiden"
-    }
+    return `${server}/`
   }
 
   getRol(usuario: string = "", contra: string = ""): string {

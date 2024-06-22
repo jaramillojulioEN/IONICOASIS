@@ -11,6 +11,9 @@ export class CardComponent  implements OnInit {
   @Input() titulo : string = "";
   @Input() subtitulo : string = "";
   @Input() pagina : string = "";
+  @Input() cssclass : string = "";
+
+
 
 
   constructor(private router: Router) { }

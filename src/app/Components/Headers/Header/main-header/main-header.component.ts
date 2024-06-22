@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MenuController } from '@ionic/angular';
+import { MenuController, ModalController } from '@ionic/angular';
 import { UserServiceService } from 'src/app/services/Users/user-service.service';
 
 @Component({
@@ -9,8 +9,12 @@ import { UserServiceService } from 'src/app/services/Users/user-service.service'
 })
 export class MainHeaderComponent implements OnInit {
 
-  constructor(private menu: MenuController, private us : UserServiceService) { }
+  constructor(private menu: MenuController, private us : UserServiceService,
+    private md : ModalController
+  ) { }
   @Input() titulo: string = ""
+  @Input() isModal: boolean = false
+  
   user : any = []
   ngOnInit() {
     this.user = this.us.getUser()
@@ -18,5 +22,9 @@ export class MainHeaderComponent implements OnInit {
 
   openFirst() {
     this.menu.toggle('second-menu');
+  }
+
+  dissmiss(){
+    this.md.dismiss()
   }
 }
