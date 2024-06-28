@@ -12,9 +12,8 @@
     </ion-segment>
 
     <div class="estado ion-padding" *ngIf="segmento === 'estado'">
-
-        <ion-card class="custom-card" *ngIf="CorteActivo != null">
-            <ion-card-content>
+        <ion-card class="custom-card" *ngIf="CorteActivo.length > 0">
+            <ion-card-content *ngFor="let corte of CorteActivo">
                 <ion-grid>
                     <ion-row>
                         <ion-col size-lg="6" size-sm="12">
@@ -26,15 +25,29 @@
                                     <ion-list lines="none">
                                         <ion-item>
                                             <ion-label>Fecha de inicio:</ion-label>
-                                            <ion-label slot="end">{{ getpart(CorteActivo.fechainicio, 0) }}</ion-label>
+                                            <ion-label slot="end">{{ getpart(corte.fechainicio, 0) }}</ion-label>
                                         </ion-item>
                                         <ion-item>
                                             <ion-label>Hora de inicio:</ion-label>
-                                            <ion-label slot="end">{{ getpart(CorteActivo.fechainicio, 1) }}</ion-label>
+                                            <ion-label slot="end">{{ getpart(corte.fechainicio, 1) }}</ion-label>
+                                        </ion-item>
+                                        <ion-item>
+                                            <ion-button class="crear" (click)="cerracaja(corte)" expand="full">Cerrar
+                                                la caja</ion-button>
+
                                         </ion-item>
                                     </ion-list>
                                 </ion-card-content>
                             </ion-card>
+
+                            <ion-card>
+                                <ion-card-content>
+                                    <app-charts [colores]="colores" [labels]="labels" [data]="data"></app-charts>
+                                </ion-card-content>
+                            </ion-card>
+
+                        </ion-col>
+                        <ion-col size-lg="6" size-sm="12">
 
                             <ion-card>
                                 <ion-card-header>
@@ -44,37 +57,26 @@
                                     <ion-list lines="none">
                                         <ion-item>
                                             <ion-label>Total Inicial:</ion-label>
-                                            <ion-label slot="end">${{ CorteActivo.totalcaja }}</ion-label>
+                                            <ion-label slot="end">${{ corte.totalcaja }}</ion-label>
                                         </ion-item>
                                         <ion-item>
                                             <ion-label>Total Cocina:</ion-label>
-                                            <ion-label slot="end">${{ CorteActivo.totalcocina }}</ion-label>
+                                            <ion-label slot="end">${{ corte.totalcocina }}</ion-label>
                                         </ion-item>
                                         <ion-item>
                                             <ion-label>Total en Caja:</ion-label>
-                                            <ion-label slot="end">${{ CorteActivo.sumatotal }}</ion-label>
+                                            <ion-label slot="end">${{ corte.sumatotal }}</ion-label>
                                         </ion-item>
                                         <ion-item>
                                             <ion-label>Retiros:</ion-label>
-                                            <ion-label slot="end">${{ CorteActivo.saliodecaja }}</ion-label>
+                                            <ion-label slot="end">${{ corte.saliodecaja }}</ion-label>
                                         </ion-item>
                                         <ion-item>
                                             <ion-label>Ganancias:</ion-label>
-                                            <ion-label slot="end">${{ CorteActivo.ganancias }}</ion-label>
+                                            <ion-label slot="end">${{ corte.ganancias }}</ion-label>
                                         </ion-item>
-                                        <ion-item>
-                                            <ion-button class="crear" (click)="cerracaja(CorteActivo)"
-                                                fill="colapse">Cerrar la caja</ion-button>
-                                        </ion-item>
-                                    </ion-list>
-                                </ion-card-content>
-                            </ion-card>
 
-                        </ion-col>
-                        <ion-col size-lg="6" size-sm="12">
-                            <ion-card *ngIf="data.length > 0">
-                                <ion-card-content>
-                                    <app-charts [colores]="colores" [labels]="labels" [data]="data"></app-charts>
+                                    </ion-list>
                                 </ion-card-content>
                             </ion-card>
                         </ion-col>
@@ -82,10 +84,12 @@
                 </ion-grid>
             </ion-card-content>
         </ion-card>
-        <ion-card class="custom-card" *ngIf="CorteActivo === null">
+        <ion-card class="custom-card" *ngIf="CorteActivo.length === 0">
             <ion-card-content>
                 <ion-text>La caja fue cerrada, contacta con el administrador para activar la caja o volver a activar la
                     pasada</ion-text>
+                <ion-button class="crear" (click)="Iniciar()" expand="full">Abrir
+                    la caja</ion-button>
             </ion-card-content>
         </ion-card>
     </div>
@@ -121,6 +125,7 @@
                             <td>${{ data.ganancias }}</td>
                             <td>{{ data.sucursales.sucursal }}</td>
                         </tr>
+                        <tr *ngIf="CortePasado.length === 0">No se ha cerrado ninguna caja</tr>
                     </tbody>
                 </table>
             </div>

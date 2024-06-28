@@ -25,12 +25,15 @@ import { ServiciosComponent } from 'src/app/Components/Modals/servicios/servicio
 import { SelectComponent } from './select/select.component';
 import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
 
-
+import { InicioComponent } from './Modals/inicio/inicio.component'
+import { RetirarComponent } from './Modals/retirar/retirar.component'
 
 @NgModule({
   declarations:
     [
       CardComponent,
+      InicioComponent,
+      RetirarComponent,
       DetalleComponentReceta,
       TicketComponent,
       DetalleordenComponent,
@@ -59,6 +62,7 @@ import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
     DetalleComponentReceta,
     MainHeaderComponent,
     ConsumoComponent,
+    InicioComponent,
     ServiciosComponent,
     ChartsComponent,
     SelectComponent,
@@ -66,6 +70,7 @@ import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
     TicketComponent,
     MesasComponent,
     TicketComponent,
+    RetirarComponent,
     EmpleadosComponent,
     PropiedadesComponent,
     DetalleordenComponent,

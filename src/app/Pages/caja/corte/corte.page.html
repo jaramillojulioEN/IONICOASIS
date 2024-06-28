@@ -2,4 +2,60 @@
 
 <ion-content [fullscreen]="true" id="main-content">
  
+
+    <ion-segment [(ngModel)]="segmento">
+        <ion-segment-button value="curso">
+          <ion-label>Cortes nuevos</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="pasado">
+          <ion-label>Cortes Pasados</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    
+
+      <div class="container">
+        <div class="ion-grid">
+          <ion-row>
+            <ion-col size-lg="8" size-sm="8"></ion-col>
+            <ion-col size-lg="4" size-sm="4">
+              <div class="header-cotainer">
+                <ion-button class="crear" (click)="AbrirModalRetiro()">
+                  <ion-icon name="add-circle-outline"></ion-icon>
+                  <div class="button-text">Retiar de caja</div>
+                </ion-button>
+              </div>
+            </ion-col>
+          </ion-row>
+        </div>
+        <div class="table-container">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>CONCEPTO</th>
+                <th>MONTO</th>
+                <th colspan="2">Fecha</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="cortescurso.length !== 0">
+              <tr class="option" *ngFor="let corte of cortescurso">
+                <td>{{ corte.id }}</td>
+                <td>{{ corte.concepto}}</td>
+                <td>{{ corte.monto }}</td>
+                <td>{{ corte.fecha }}</td>
+                <td class="actions-cell">
+                  <ion-button fill="clear" (click)="Opciones(corte)">
+                    <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                  </ion-button>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="cortescurso.length === 0">
+                <tr>No se han realizado retiros de caja</tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
 </ion-content>

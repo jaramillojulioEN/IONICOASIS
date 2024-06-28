@@ -56,3 +56,18 @@ strong {
 }
 
 
+.order-item .info {
+  position: relative; /* Añadido para que .button-container sea relativo a .info */
+  padding: 10px;
+}
+
+.order-item .info .button-container {
+  position: absolute;
+  top: 10px; /* Ajusta la distancia desde la parte superior */
+  right: 10px; /* Ajusta la distancia desde la derecha */
+}
+
+.order-item .info .button-container ion-button {
+  margin-left: 10px; /* Espacio entre los botones */
+}
+

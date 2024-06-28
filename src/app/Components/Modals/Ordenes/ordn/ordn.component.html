@@ -1,7 +1,7 @@
 <app-main-header titulo="Información de la orden" [isModal]="true"></app-main-header>
 <ion-content class="order-details">
   <!-- Sección Detalles de la Orden -->
-  <ion-card class="custom-card">
+  <!-- <ion-card class="custom-card">
     <ion-card-content class="ion-padding">
       <ion-item lines="none">
         <ion-input type="text" labelPlacement="floating" label="Nombre Cliente" [(ngModel)]="NewOrden.nombrecliente"
@@ -21,12 +21,12 @@
       <ion-button *ngIf="estadoCreacion == 0" expand="full" type="submit" (click)="CrearOrden()">Ir a
         detalles</ion-button>
     </ion-card-content>
-  </ion-card>
+  </ion-card> -->
 
   <!-- Sección Detalles del Pedido -->
-  <ion-card class="custom-card" *ngIf="estadoCreacion !== 0">
+  <ion-card class="custom-card">
     <ion-card-content class="ion-padding">
-      <ion-segment *ngIf="estadoCreacion == 1" [(ngModel)]="tipo">
+      <ion-segment [(ngModel)]="tipo">
         <ion-segment-button value="default">
           <ion-text>Platillos</ion-text>
         </ion-segment-button>
@@ -35,7 +35,7 @@
         </ion-segment-button>
       </ion-segment>
 
-      <div *ngIf="tipo == 'default' && estadoCreacion == 1">
+      <div *ngIf="tipo == 'default' ">
         <ion-item lines="none">
           <div class="custom-select" role="button" (click)="Select(true, $event)">
             <div class="selected-item">
@@ -75,32 +75,47 @@
   </ion-card>
 
   <!-- Sección Detalles de la Orden -->
-  <ion-card class="custom-card" *ngIf="estadoCreacion !== 0">
+  <ion-card class="custom-card">
     <ion-card-content class="ion-padding">
       <div class="order-details">
         <div *ngIf="OrdenDetalles.ordenesplatillos && OrdenDetalles.ordenesplatillos.length !== 0">
           <h3 class="section-header">Detalles de los Platillos</h3>
           <div class="order-item" *ngFor="let platillo of OrdenDetalles.ordenesplatillos">
-            <div class="a" *ngIf="platillo.estado !=2">
+            <div class="info" *ngIf="platillo.estado !=2">
+
               <p><strong>{{platillo.platillos.nombre}}</strong></p>
-            <p>Cantidad: {{platillo.cantidad}}</p>
-            <p>Observaciones: {{platillo.observaciones}}</p>
+              <p>Cantidad: {{platillo.cantidad}}</p>
+              <p>Observaciones: {{platillo.observaciones}}</p>
+              <div class="button-container">
+                <ion-button fill="clear" (click)="Opciones(platillo, true)">
+                  <ion-icon
+                    name="ellipsis-vertical-outline"></ion-icon>
+                </ion-button>
+              </div>
             </div>
           </div>
         </div>
         <div *ngIf="OrdenDetalles.ordenesbebidas && OrdenDetalles.ordenesbebidas.length !== 0">
           <h3 class="section-header">Detalles de las bebidas</h3>
           <div class="order-item" *ngFor="let bebida of OrdenDetalles.ordenesbebidas">
-            <p><strong>{{bebida.bebidas.nombre}}</strong></p>
-            <p>Cantidad: {{bebida.cantidad}}</p>
+            <div class="info">
+              <p><strong>{{bebida.bebidas.nombre}}</strong></p>
+              <p>Cantidad: {{bebida.cantidad}}</p>
+              <div class="button-container">
+                <ion-button fill="clear" (click)="Opciones(bebida, false)">
+                  <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                </ion-button>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
 
-      <ion-item lines="none" *ngIf="estadoCreacion == 1">
+      <!-- <ion-item lines="none">
         <ion-input labelPlacement="floating" label="Total" type="number" [disabled]='true' [(ngModel)]="NewOrden.total"
           name="total" required></ion-input>
-      </ion-item>
+      </ion-item> -->
 
     </ion-card-content>
   </ion-card>

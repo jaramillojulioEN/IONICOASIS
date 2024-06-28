@@ -4,6 +4,7 @@ import { AlertServiceService } from 'src/app/services/Alerts/alert-service.servi
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { UserServiceService } from 'src/app/services/Users/user-service.service'
 import { PopoverController } from '@ionic/angular';
+import { LoaderFunctions } from 'src/functions/utils';
 @Component({
   selector: 'app-ordn',
   templateUrl: './ordn.component.html',
@@ -15,10 +16,10 @@ export class OrdnComponent implements OnInit {
     private ac: AlertServiceService,
     private UserServiceService: UserServiceService,
     private OrdenesService: OrdenesService,
-    private pop: PopoverController
+    private pop: PopoverController,
+    private funcs : LoaderFunctions
   ) { }
 
-  estadoCreacion: number = 0;
   OrdenDetalles: any = []
   @Input() idmesa: number = 0
   @Input() ordenold: any = []
@@ -32,12 +33,9 @@ export class OrdnComponent implements OnInit {
     fecha: '',
     idsucursal: 0,
     total: 0.00,
-    orden: '',
     estado: 1,
     idmesa: 0,
     idmesero: 0,
-    observaciones: '',
-    nombrecliente: '',
     tiempo: 0
   };
 
@@ -49,7 +47,8 @@ export class OrdnComponent implements OnInit {
     cantidad: 0,
     idorden: 0,
     observaciones: '',
-    estado: 0
+    estado: 0,
+    fecha : this.funcs.obtenerFechaHoraActual()
   };
 
   DetalleBebida = {
@@ -57,25 +56,18 @@ export class OrdnComponent implements OnInit {
     idbebida: 0,
     cantidad: 0,
     idorden: 0,
-    estado: 0
-    // 0 - creado
-    // 1- añadido
+    estado: 0,
+    fecha : this.funcs.obtenerFechaHoraActual()
   };
   ngOnInit() {
-    const fechaActual = new Date();
-    const hoy = this.convertirFechaHoraParaSQLServer(fechaActual);
+
     this.user = this.UserServiceService.getUser()
     this.NewOrden.idmesero = this.user.id
     this.NewOrden.idsucursal = this.user.sucursales.id
-    this.NewOrden.fecha = hoy
+    this.NewOrden.fecha = this.funcs.obtenerFechaHoraActual()
     this.NewOrden.idmesa = this.idmesa
-
     if (this.ordenold.id != null) {
       this.OrdenDetalles = this.ordenold
-      this.estadoCreacion = 1
-      this.NewOrden.nombrecliente = this.ordenold.nombrecliente
-      this.NewOrden.orden = this.ordenold.orden
-      this.NewOrden.observaciones = this.ordenold.observaciones
       this.DetalleBebida.estado = 1
       this.detallePlatillo.estado = 1
       this.NewOrden.total = this.total()
@@ -83,70 +75,47 @@ export class OrdnComponent implements OnInit {
 
   }
 
-  async CrearOrden(): Promise<void> {
-    let validacionResposnse = this.validaOrden();
-    if (validacionResposnse.estado) {
-      (await this.OrdenesService.CrearOrden(this.NewOrden)).subscribe(
-        (response: any) => {
-          window.dispatchEvent(new Event('success'));
-          this.ac.presentCustomAlert("Exito", response.message + ", ahora puedes agregar platillos y bebidas")
-          this.ordenold.id = response.id
-        },
-        (error: any) => {
-          console.error('Error en la solicitud:', error);
-        }
-      );
-      this.estadoCreacion = 1
-    } else {
-      this.ac.presentCustomAlert('Error', validacionResposnse.mensaje)
-    }
-  }
 
-  validaOrden(): { estado: boolean, mensaje: string } {
-    let estado = true;
-    let mensaje = '';
-    if (this.NewOrden.observaciones === "") {
-      estado = false;
-      mensaje = 'El campo de observaciones es obligatorio.';
-    }
-    if (this.NewOrden.orden === "") {
-      estado = false;
-      mensaje = 'El campo de nombre de orden es obligatorio.';
-    }
-    if (this.NewOrden.nombrecliente === "") {
-      estado = false;
-      mensaje = 'El campo de nombre de cliente es obligatorio.';
-    }
-    return { estado: estado, mensaje: mensaje };
-  }
 
-  convertirFechaHoraParaSQLServer(fecha: Date): string {
-    const fechaISO = fecha.toISOString();
-    return fechaISO.slice(0, 19);
-  }
 
-  presentresume : any = []
+  presentresume: any = []
+
   async crearDetalle(detalle: any): Promise<void> {
     if (this.ordenold.id) {
       detalle.idorden = this.ordenold.id;
-      console.log(detalle.idorden)
+      console.log(detalle.idorden);
+      await this.procesarDetalle(detalle); // Procesar el detalle directamente
+    } else {
+      await this.CrearOrden(); // Esperar a que se cree la orden
+      detalle.idorden = this.ordenold.id; // Asignar el ID de la orden creada
+      await this.procesarDetalle(detalle); // Procesar el detalle después de crear la orden
     }
-    else {
-      this.ac.presentCustomAlert("Error", "Se presentó un problema interno, contacte a soporte")
-    }
-    (await this.OrdenesService.CrearOrdenDetail(detalle)).subscribe(
-      (response: any) => {
-        this.limpiar()
-        this.buscarOrden(detalle.idorden)
-        window.dispatchEvent(new Event('success'));
-        this.ac.presentCustomAlert("Exito", response.message)
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
-      }
-    );
   }
-
+  
+  private async procesarDetalle(detalle: any): Promise<void> {
+    try {
+      const response = await (await this.OrdenesService.CrearOrdenDetail(detalle)).toPromise();
+      this.limpiar();
+      this.buscarOrden(detalle.idorden);
+      window.dispatchEvent(new Event('success'));
+      this.NewOrden.total = this.total()
+      this.ac.presentCustomAlert("Éxito", response.message);
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
+  }
+  
+  async CrearOrden(): Promise<void> {
+    try {
+      const response = await (await this.OrdenesService.CrearOrden(this.NewOrden)).toPromise();
+      this.ordenold.id = response.id;
+      console.log(this.ordenold.id);
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+      throw error; // Propagar el error para manejarlo en un nivel superior si es necesario
+    }
+  }
+  
   async buscarOrden(idorden: number): Promise<void> {
     (await this.OrdenesService.BuscarOrden(false, idorden)).subscribe(
       async (response: any) => {
@@ -161,6 +130,60 @@ export class OrdnComponent implements OnInit {
       }
     );
   }
+
+  Opciones(data: any, platillo : boolean) {
+    let butons: any[] = []
+
+      if(platillo){
+        butons.push({ button: this.ac.btnEliminar, handler: () => this.EliminarPlatillo(data) })
+      }else{
+        butons.push({ button: this.ac.btnEliminar, handler: () => this.EliminarBebida(data) })
+      }
+    butons.push({ button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } })
+    this.ac.configureAndPresentActionSheet(butons);
+  }
+
+  EliminarPlatillo(platillo: any) {
+    this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar el platillo " + platillo.platillos.nombre, () => this.ConfirmarELiminar(platillo));
+  }
+
+  async ConfirmarELiminar(platillo: any): Promise<void> {
+    (await this.OrdenesService.EliminarPDetalle(platillo)).subscribe(
+      async (response: any) => {
+        if (response) {
+          this.buscarOrden(platillo.idorden);
+          this.ac.presentCustomAlert("Exito", response.message)
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
+  }
+
+  EliminarBebida(bebida: any) {
+    this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar la bebida " + bebida.bebidas.nombre, () => this.ConfirmarELiminarBebida(bebida));
+  }
+
+  async ConfirmarELiminarBebida(bebida: any): Promise<void> {
+    (await this.OrdenesService.EliminarBDetalle(bebida)).subscribe(
+      async (response: any) => {
+        if (response) {
+          this.ac.presentCustomAlert("Exito", response.message)
+          this.buscarOrden(bebida.idorden);
+
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
+  }
+
 
 
   limpiar(): void {
@@ -198,7 +221,7 @@ export class OrdnComponent implements OnInit {
         this.detallep = dataReturned.data.nombre
         this.detallePlatillo.idplatillo = dataReturned.data.id
         console.log(this.detallePlatillo.idplatillo)
-      }else{
+      } else {
         this.detalleb = dataReturned.data.nombre
         this.DetalleBebida.idbebida = dataReturned.data.id
         console.log(this.DetalleBebida.idbebida)

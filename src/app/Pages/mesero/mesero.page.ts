@@ -13,8 +13,6 @@ export class MeseroPage implements OnInit {
   images: string[] = [
     "https://i.imgur.com/3lXXAwW.png",
     "https://i.imgur.com/lKYGtBL.png",
-    "https://i.imgur.com/lKYGtBL.png",
-    "https://i.imgur.com/lKYGtBL.png",
   ]
   mesas: any = [];
 
@@ -25,11 +23,14 @@ export class MeseroPage implements OnInit {
 
   ngOnInit() {
     this.ObtenerMesas()
+
     this.intervalId = setInterval(() => {
       this.ObtenerMesas(false);
     }, 5000);
+
+
     window.addEventListener('success', () => {
-      this.ObtenerMesas()
+      this.ObtenerMesas(false)
     })
   }
 

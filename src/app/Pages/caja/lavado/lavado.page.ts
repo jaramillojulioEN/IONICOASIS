@@ -32,7 +32,7 @@ export class LavadoPage implements OnInit {
     tipoEntidad: "lavado",
     entidad: {
       id: 0,
-      fecha: new Date().toISOString(),
+      fecha: this.funcs.obtenerFechaHoraActual(),
       estado: 1,
       idsucursal: 0,
       total: 0,
@@ -54,7 +54,9 @@ export class LavadoPage implements OnInit {
     private mc: ModalController,
     private ac: AlertServiceService,
     private LavadoService: LavadoService,
-    protected UserServiceService: UserServiceService) {
+    protected UserServiceService: UserServiceService,
+    private funcs : LoaderFunctions
+  ) {
     const today = new Date();
     this.fecha = formatDate(today, 'yyyy-MM-dd', 'en-US');
   }

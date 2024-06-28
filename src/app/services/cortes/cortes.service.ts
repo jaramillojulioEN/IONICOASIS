@@ -36,11 +36,40 @@ export class CortesService {
     }
   }
 
+  async CrearInicio(data : object): Promise<Observable<any>> {
+    try {
+      await this.loaderFunctions.StartLoader();
+      return this.http.post<any>(`${this.server}api/Cortes/CrearCorte`, data);
+    } finally {
+      this.loaderFunctions.StopLoader();
+    }
+  }
+
+  async Retirar(data : object): Promise<Observable<any>> {
+    try {
+      await this.loaderFunctions.StartLoader();
+      return this.http.post<any>(`${this.server}api/Cortes/CrearRetiro`, data);
+    } finally {
+      this.loaderFunctions.StopLoader();
+    }
+  }
+
   async CortesActivos(estado : number, loader : boolean = true): Promise<Observable<any>> {
     try {
       if(loader)
         await this.loaderFunctions.StartLoader();
       return this.http.get<any>(`${this.server}api/Cortes/TodosCortes/${estado}`);
+    } finally {
+      if(loader)
+      this.loaderFunctions.StopLoader();
+    }
+  }
+
+  async RetirosActivos(loader : boolean = true): Promise<Observable<any>> {
+    try {
+      if(loader)
+        await this.loaderFunctions.StartLoader();
+      return this.http.get<any>(`${this.server}api/Cortes/TodosRetiros`);
     } finally {
       if(loader)
       this.loaderFunctions.StopLoader();

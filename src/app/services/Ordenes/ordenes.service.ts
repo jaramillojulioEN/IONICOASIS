@@ -25,7 +25,7 @@ export class OrdenesService {
     }
   }
 
-  async BuscarOrden(loader: boolean = true, id: number): Promise<Observable<any>> {
+  async BuscarOrden(loader: boolean = false, id: number): Promise<Observable<any>> {
     try {
       if (loader)
         await this.loaderFunctions.StartLoader();
@@ -53,10 +53,8 @@ export class OrdenesService {
 
   async CrearOrden(data: object): Promise<Observable<any>> {
     try {
-      await this.loaderFunctions.StartLoader();
       return this.http.post<any>(`${this.server}api/Ordenes/CrearOrden`, data);
     } finally {
-      this.loaderFunctions.StopLoader();
     }
   }
 
@@ -74,6 +72,7 @@ export class OrdenesService {
       }
       return new Observable<any>
     } finally {
+      console.log("agregando detalles")
       this.loaderFunctions.StopLoader();
     }
   }

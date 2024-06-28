@@ -71,8 +71,10 @@ export class MesasService {
         await this.loaderFunctions.StartLoader();
       return this.http.get<any>(`${this.server}api/Mesas/TodasMesas/5`);//todas las mesas excepto aquellas con etado 5
     } finally {
-      if(loader)
-      this.loaderFunctions.StopLoader();
+      if(loader){
+        console.log("Termino de recargar tras agregar detalles")
+        this.loaderFunctions.StopLoader();
+      }
     }
   }
 

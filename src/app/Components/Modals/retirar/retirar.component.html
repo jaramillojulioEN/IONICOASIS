@@ -1,0 +1,34 @@
+<app-main-header titulo="Retirar Efectivo" [isModal]="true"></app-main-header>
+
+<ion-content class="ion-pading">
+
+  <ion-card class="custom-card" *ngIf="retiro.idcaja === 0">
+    <ion-card-content>
+      <p>No ha abierto la caja.</p>
+      <p>Abra la caja para poder retirar efectivo.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="custom-card" *ngIf="retiro.idcaja !== 0">
+    <ion-card-content class="ion-padding">
+      <ion-list>
+        <ion-list-header>
+          <h1>DISPONIBLE: ${{caja[0].sumatotal}}</h1>
+        </ion-list-header>
+        <ion-item lines="none">
+          <ion-input labelPlacement="floating" label="Concepto" name="Concepto" placeholder="Concepto"
+            [(ngModel)]="retiro.concepto" clearInput>
+          </ion-input>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-input labelPlacement="floating" label="Monto" name="monto" placeholder="Monto"
+            [(ngModel)]="retiro.monto" type="number" clearInput>
+          </ion-input>
+        </ion-item>
+        <ion-button expand="full" (click)="confirmar()">Guardar</ion-button>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

@@ -100,10 +100,14 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
 
   }
 
-  Opciones(data: any) {
+  Opciones(data: any, platillo : boolean) {
     let butons: any[] = []
     if (this.rol.id === 2 && this.orden.estado === 1) {
-      butons.push({ button: this.ac.btnEliminar, handler: () => this.EliminarPlatillo(data) })
+      if(platillo){
+        butons.push({ button: this.ac.btnEliminar, handler: () => this.EliminarPlatillo(data) })
+      }else{
+        butons.push({ button: this.ac.btnEliminar, handler: () => this.EliminarBebida(data) })
+      }
     }
     if (this.rol.id !== 2) {
       butons.push({ button: this.ac.btnVer, handler: () => { this.VerReceta(data.platillos.recetas); } })
