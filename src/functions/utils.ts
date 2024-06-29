@@ -50,7 +50,7 @@ export class LoaderFunctions {
         const seconds = this.padNumber(ahora.getSeconds());
         const milliseconds = this.padNumber(ahora.getMilliseconds(), 3); // Asegurar que sean 3 dígitos
 
-        const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
+        const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}`;
 
         return formattedDate;
     }

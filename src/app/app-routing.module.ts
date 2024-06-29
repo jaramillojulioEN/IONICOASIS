@@ -38,7 +38,7 @@ const routes: Routes = [
     path: 'recetas',
     loadChildren: () => import('./Catalogos/recetas/recetas.module').then( m => m.RecetasPageModule),
     canActivate: [RoleGuard],
-    data: { expectedRoles: ['Administrador'] }
+    data: { expectedRoles: ['Administrador', "Cocinero"] }
   },
   {
     path: 'platillos',
@@ -87,13 +87,13 @@ const routes: Routes = [
     path: 'caja',
     loadChildren: () => import('./Pages/caja/caja.module').then( m => m.CajaPageModule),
     canActivate: [RoleGuard],
-    data: { expectedRoles: ['Cajero'] }
+    data: { expectedRoles: ['Cajero', "Administrador"] }
   },
   {
     path: 'lavado',
     loadChildren: () => import('./Pages/caja/lavado/lavado.module').then( m => m.LavadoPageModule),
     canActivate: [RoleGuard],
-    data: { expectedRoles: ['Cajero'] }
+    data: { expectedRoles: ['Cajero', "Administrador"] }
   },
   {
     path: 'corte',
@@ -105,11 +105,15 @@ const routes: Routes = [
     path: 'cierre',
     loadChildren: () => import('./Pages/caja/cierre/cierre.module').then( m => m.CierrePageModule),
     canActivate: [RoleGuard],
-    data: { expectedRoles: ['Cajero'] }
+    data: { expectedRoles: ['Cajero', "Administrador"] }
   },
   {
     path: 'servicios',
     loadChildren: () => import('./Catalogos/servicios/servicios.module').then( m => m.ServiciosPageModule)
+  },
+  {
+    path: 'dashboard',
+    loadChildren: () => import('./Pages/admin/dashboard/dashboard.module').then( m => m.DashboardPageModule)
   },
 ];
 

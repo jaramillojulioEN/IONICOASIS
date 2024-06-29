@@ -17,11 +17,12 @@ export class CierrePage implements OnInit {
   colores: string[] = [
     'rgba(255, 99, 132, 0.2)',
     'rgba(54, 162, 235, 0.2)',
+    'rgba(122, 162, 235, 0.2)',
     'rgba(255, 206, 86, 0.2)',
     'rgba(75, 192, 192, 0.2)',
     'rgba(153, 102, 255, 0.2)',
   ];
-  labels: string[] = ['Total Inicial', 'Total Cocina', 'Total en Caja', 'Retiros', 'Ganancias'];
+  labels: string[] = ['Total Inicial', 'Total Cocina', 'Total Lavados', 'Total en Caja', 'Retiros', 'Ganancias'];
   data: number[] = [];
   CortePasado: any = [];
   intervalId: any;
