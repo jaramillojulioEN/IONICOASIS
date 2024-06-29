@@ -41,13 +41,13 @@
         </ng-template>
       </ng-container>
       <!-- Separador -->
-      
+
       <ng-container *ngFor="let s of setingsSec" class="ion-margin-top">
         <ion-menu-toggle auto-hide="false">
           <ion-item-divider mode="md" sticky="true">
             <ion-label>Cuenta</ion-label>
           </ion-item-divider>
-          <ion-item (click)="navigateTo(s.url)" lines="none" routerDirection="root" [routerLink]="[s.url]"
+          <ion-item (click)="logOut()" lines="none" style="cursor: pointer;"
             detail="false" routerLinkActive="selected">
             <ion-icon slot="start" [ios]="s.icon + '-outline'" [md]="s.icon + '-outline'"></ion-icon>
             <ion-label>{{ s.title }}</ion-label>

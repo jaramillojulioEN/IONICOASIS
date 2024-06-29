@@ -24,8 +24,8 @@ export class UserServiceService {
   }
 
   getServer(): string {
-    // let server = "https://muddywatter26-001-site1.ftempurl.com/"
-    let server = "https://localhost:44397/"
+    let server = "https://muddywatter26-001-site1.ftempurl.com/"
+    // let server = "https://localhost:44397/"
     let port = "44397"
     return `${server}/`
   }
@@ -66,6 +66,15 @@ export class UserServiceService {
     return auth
   }
 
+  LogOut(): boolean {
+    try {
+      localStorage.removeItem("usuario")
+      return true
+    } catch {
+      return false
+    }
+  }
+
   RedirigirRol(idrol: number): void {
     console.log(this.user.idrol)
     switch (idrol) {
@@ -80,6 +89,9 @@ export class UserServiceService {
         break;
       case 5:
         this.router.navigate(['/caja']);
+        break;
+      default:
+        this.router.navigate(['/login']);
         break;
     }
   }

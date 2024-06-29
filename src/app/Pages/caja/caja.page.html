@@ -1,6 +1,6 @@
 <app-main-header titulo="Caja"></app-main-header>
 <ion-content [fullscreen]="true" id="main-content">
-  <ion-segment [(ngModel)]="segmento">
+  <ion-segment [(ngModel)]="segmento" *ngIf="rol.id !==1">
     <ion-segment-button value="pago">
       <ion-label>Pendientes</ion-label>
     </ion-segment-button>
@@ -22,11 +22,11 @@
           <ion-card-subtitle>Cliente: {{ orden.nombrecliente }}</ion-card-subtitle>
           <ion-card-subtitle>Mesa: {{ orden.mesas.descripcion }}</ion-card-subtitle>
         </ion-card-header>
-  
+
         <ion-card-content>
           <ion-button expand="block" color="success" (click)="cobrarOrden(orden)">Cobrar Orden</ion-button>
         </ion-card-content>
-  
+
       </ion-card>
     </div>
 
@@ -37,9 +37,9 @@
     <ion-card>
       <ion-card-content class="scroll-container">
         <ion-item slot="end">
+          <ion-label *ngIf="rol.id !== 1">Ordenes de hoy</ion-label>
           <ion-label></ion-label>
-
-          <ion-button (click)="openFilter($event)" class="crear">
+          <ion-button *ngIf="rol.id === 1" (click)="openFilter($event)" class="crear">
             <ion-icon slot="start" name="filter"></ion-icon>
             <ion-label>Fecha</ion-label>
           </ion-button>
@@ -53,19 +53,22 @@
             <thead>
               <tr>
                 <th>NO</th>
-                <th>Orden</th>
                 <th>Mesa</th>
-                <th>nombrecliente</th>
+                <th>Fecha</th>
                 <th>Total</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody *ngIf="cobradasfilter.length !==0">
               <tr *ngFor="let cf of cobradasfilter">
-                <td>{{cf.id}}</td>
-                <td>{{cf.orden}}</td>
+                <td>#{{cf.id}}</td>
                 <td>{{cf.mesas.descripcion}}</td>
-                <td>{{cf.nombrecliente}}</td>
+                <td>{{cf.fecha}}</td>
                 <td>${{cf.total}}</td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="cobradasfilter.length ===0">
+              <tr>
+                <td colspan="5">No se han realizado ordenes</td>
               </tr>
             </tbody>
           </table>

@@ -23,7 +23,7 @@ export class LavadoPage implements OnInit {
   //----------
 
   segmento: string = "pago"
-  fechaActual: string = "";
+  fechaActual: string = this.funcs.obtenerFechaHoraActual();
   vehiculo: any = []
   vehiculos: any = []
   servicios: any = [];
@@ -47,6 +47,7 @@ export class LavadoPage implements OnInit {
   filtered: boolean = false;
   fecha: string = "";
   message: string = "Error desconocido, conecta con soporte";
+  rol: any;
 
   constructor(
     private fns: LoaderFunctions,
@@ -55,30 +56,29 @@ export class LavadoPage implements OnInit {
     private ac: AlertServiceService,
     private LavadoService: LavadoService,
     protected UserServiceService: UserServiceService,
-    private funcs : LoaderFunctions
+    private funcs: LoaderFunctions
   ) {
     const today = new Date();
     this.fecha = formatDate(today, 'yyyy-MM-dd', 'en-US');
   }
 
   ngOnInit() {
+    this.rol = this.UserServiceService.getRol()
+    this.segmento = this.rol.id === 1 ? "hoy" : "pago"
     window.addEventListener('success', () => {
       this.obtenerLavados(1, false);
     })
-    this.obtenerLavados(1)
-    this.fechaActual = new Date().toLocaleDateString('es-ES', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    if (this.rol.id === 1) {
+      this.historial()
+    } else {
+      this.obtenerLavados(1)
+    }
+    this.fechaActual = this.funcs.obtenerFechaHoraActual()
   }
 
   async Guardar(): Promise<void> {
-    console.log(this.servicios)
     this.lavado.entidad.idsucursal = this.UserServiceService.getUser().idsucursal
     this.lavado.entidad.lavadodet = this.servicios
-    console.log(this.lavado);
     if (this.ValidarLavado()) {
       (await this.LavadoService.CrearLavado(this.lavado)).subscribe(
         (response: any) => {
@@ -128,6 +128,9 @@ export class LavadoPage implements OnInit {
           } else {
             this.lavadoshistorial = response.Lavados;
             this.lavadoshistorialnf = response.Lavados;
+            if (this.rol.id !== 1) {
+              this.lavadoshistorial = this.fns.filterbydate(this.lavadoshistorialnf, this.fechaActual)
+            } 
             this.cargarLavadosHistorialPagina();
           }
           this.obtenerServicios()
@@ -156,7 +159,6 @@ export class LavadoPage implements OnInit {
   }
 
   async openFilter(event: Event): Promise<void> {
-    console.log(this.fecha)
     const popover = await this.PopoverController.create({
       component: DatepickerComponent,
       componentProps: {
@@ -192,7 +194,6 @@ export class LavadoPage implements OnInit {
       async (response: any) => {
         if (response && response.Servicios) {
           this.vehiculos = response.Servicios;
-          console.log(this.vehiculos)
         } else {
           console.error('Error: Respuesta inválida');
         }

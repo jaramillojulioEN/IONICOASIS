@@ -6,6 +6,7 @@ import { formatDate } from '@angular/common';
 import { PopoverController } from '@ionic/angular';
 import { DatepickerComponent } from 'src/app/Components/Secciones/datepicker/datepicker.component';
 import { LoaderFunctions } from 'src/functions/utils'
+import { UserServiceService } from 'src/app/services/Users/user-service.service';
 @Component({
   selector: 'app-caja',
   templateUrl: './caja.page.html',
@@ -13,35 +14,35 @@ import { LoaderFunctions } from 'src/functions/utils'
 })
 export class CajaPage implements OnInit {
   segmento: string = "pago"
+  rol: any
   fechaActual: string = "";
   private intervalId: any;
   ordenes: any = [];
   filtered: boolean = false;
-  cobradas: any = [];
   cobradasfilter: any = [];
-  fecha: any = "";
+  fecha: any = this.fns.obtenerFechaHoraActual();
   cobradasnofilter: any = [];
   constructor(
     private os: OrdenesService,
     protected pop: PopoverController,
     private mc: ModalController,
-    private fns: LoaderFunctions
-  ) {
-    const today = new Date();
-    this.fecha = formatDate(today, 'yyyy-MM-dd', 'en-US');
-  }
+    private fns: LoaderFunctions,
+    private userservice: UserServiceService
+  ) { }
 
   ngOnInit() {
-    this.fechaActual = new Date().toLocaleDateString('es-ES', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-    this.getordenes(4, true);
-    this.intervalId = setInterval(() => {
-      this.getordenes(4);
-    }, 5000);
+    this.rol = this.userservice.getRol()
+    this.segmento = this.rol.id !== 1 ? "pago" : "hoy"
+    this.fechaActual = this.fns.obtenerFechaHoraActual();
+    if (this.rol.id !== 1) {
+      this.getordenes(4, true);
+      this.intervalId = setInterval(() => {
+        this.getordenes(4);
+      }, 5000);
+    } else {
+      this.getordenes(5, true);
+    }
+
     window.addEventListener('success', () => {
       this.getordenes(4, true);
     })
@@ -52,7 +53,6 @@ export class CajaPage implements OnInit {
   }
 
   async openFilter(event: Event): Promise<void> {
-    console.log(this.fecha)
     const popover = await this.pop.create({
       component: DatepickerComponent,
       componentProps: {
@@ -69,7 +69,8 @@ export class CajaPage implements OnInit {
       if (dataReturned !== undefined) {
         this.fecha = dataReturned.data
         if (this.fecha != undefined && this.fecha != null) {
-          this.cobradas = this.fns.filterbydate(this.cobradasnofilter, this.fecha)
+          this.cobradasfilter = this.fns.filterbydate(this.cobradasnofilter, this.fecha)
+          console.log(this.cobradasfilter)
           this.cargarCobradasPagina();
           this.filtered = true
         }
@@ -90,11 +91,12 @@ export class CajaPage implements OnInit {
     this.totalPages = Math.ceil(this.totalRegistros / this.registrosPorPagina)
     const startIndex = (this.currentPage - 1) * this.registrosPorPagina;
     const endIndex = startIndex + this.registrosPorPagina;
-    this.cobradasfilter = this.cobradasnofilter.slice(startIndex, endIndex);
+    this.cobradasfilter = this.cobradasfilter.slice(startIndex, endIndex);
   }
 
   deletefilter() {
-
+    this.historial()
+    this.filtered=false
   }
 
   paginaAnterior() {
@@ -133,6 +135,9 @@ export class CajaPage implements OnInit {
           else {
             this.cobradasfilter = response.ordenes
             this.cobradasnofilter = response.ordenes
+            if (this.rol.id !== 1 && estado === 5) {
+              this.cobradasfilter = this.fns.filterbydate(this.cobradasnofilter, this.fechaActual)
+            }
             this.cargarCobradasPagina();
           }
         }

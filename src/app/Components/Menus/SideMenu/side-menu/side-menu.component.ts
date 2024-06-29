@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, MenuController } from '@ionic/angular';
+import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 import { UserServiceService } from 'src/app/services/Users/user-service.service'
 @Component({
   selector: 'app-side-menu',
@@ -18,13 +18,23 @@ export class SideMenuComponent implements OnInit {
     { title: 'Servicios Lavado', url: '/servicios', icon: 'car-sport' },
   ];
 
+  public ExtraAdminPages: any = [
+    { title: 'Caja', url: '/cierre', icon: 'flash', open: false },
+    { title: 'Ordenes', url: '/caja', icon: 'card', open: false },
+    { title: 'Lavado', url: '/lavado', icon: 'car-sport', open: false },
+  ];
+
   public appPages: any = [];
   rol: any = [];
   user: any = [];
-  setingsSec: any  = [];
-  
+  setingsSec: any = [];
 
-  constructor(private navCtrl: NavController, private menuCtrl: MenuController, private authservice: UserServiceService) { }
+
+  constructor(
+
+    private authservice: UserServiceService,
+    private ac : AlertServiceService
+  ) { }
 
   toggleSubmenu(page: any) {
     page.open = !page.open;
@@ -37,7 +47,19 @@ export class SideMenuComponent implements OnInit {
   }
 
   async navigateTo(url: string) {
-    this.navCtrl.navigateRoot(url);
+
+  }
+
+  async logOut() {
+
+    this.ac.presentCustomAlert("Estas cerrando session", "¿Estas segurod de cerrar sesión? \nDebéras ingresar nuevamente tus credenciales para accder", ()=>this.ConfirmLogOut())
+
+  }
+
+  async ConfirmLogOut() : Promise<void> {
+    if (this.authservice.LogOut()) {
+      this.authservice.RedirigirRol(0)
+    }
   }
 
   ngOnInit() {
@@ -53,6 +75,13 @@ export class SideMenuComponent implements OnInit {
           subpages: this.CatalogosPages,
           open: false
         },
+        {
+          title: 'Finanzas',
+          url: '/incio',
+          icon: 'pie-chart-outline',
+          subpages: this.ExtraAdminPages,
+          open: false
+        },
         { title: 'Empleados', url: '/empleados', icon: 'person', open: false },
         { title: 'Contacto', url: '/contacto', icon: 'call', open: false },
       ]
@@ -65,6 +94,8 @@ export class SideMenuComponent implements OnInit {
     else if (this.rol.id == 4) {
       this.appPages = [
         { title: 'Ordenes pendientes', url: '/cocina', icon: 'receipt', open: false },
+        { title: 'Recetas', url: '/recetas', icon: 'receipt' },
+
       ]
     }
     else if (this.rol.id == 5) {
@@ -76,6 +107,6 @@ export class SideMenuComponent implements OnInit {
         { title: 'Empleados', url: '/empleados', icon: 'person', open: false },
       ]
     }
-    this.setingsSec = [{ title: 'Configuraciones', url: '/empleados', icon: 'settings', open: false },]
+    this.setingsSec = [{ title: 'Cerrar Sessión', action: true, icon: 'log-out', open: false },]
   }
 }

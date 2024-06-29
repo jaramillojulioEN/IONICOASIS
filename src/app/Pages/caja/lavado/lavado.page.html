@@ -1,6 +1,6 @@
 <app-main-header titulo="Lavado de Vehiculos"></app-main-header>
 <ion-content [fullscreen]="true" id="main-content">
-  <ion-segment [(ngModel)]="segmento">
+  <ion-segment [(ngModel)]="segmento" *ngIf="rol.id!==1">
     <ion-segment-button value="pago" (click)="obtenerLavados(1)">
       <ion-label>Lavado</ion-label>
     </ion-segment-button>
@@ -51,7 +51,8 @@
                 <td>{{lavado.lavadodet[0]?.Tipos_Vehiculos?.tipo_vehiculo}}</td>
                 <td>
                   <ul>
-                    <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}</li>
+                    <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}
+                    </li>
                   </ul>
                 </td>
                 <td>${{lavado.total}}</td>
@@ -71,16 +72,17 @@
         </div>
       </ion-card-content>
     </ion-card>
-    
+
 
   </div>
   <div *ngIf="segmento === 'hoy'" class="ion-padding">
     <ion-card>
       <ion-card-content class="scroll-container">
         <ion-item slot="end">
-          <ion-label>Seleccionar Fecha</ion-label>
+          <ion-label *ngIf="rol.id ===1">Seleccionar Fecha</ion-label>
+          <ion-label *ngIf="rol.id !==1">Hoy</ion-label>
 
-          <ion-button (click)="openFilter($event)" class="crear">
+          <ion-button *ngIf="rol.id ===1" (click)="openFilter($event)" class="crear">
             <ion-icon slot="start" name="filter"></ion-icon>
             <ion-label>Fecha</ion-label>
           </ion-button>
@@ -96,6 +98,7 @@
                 <th>NO</th>
                 <th>Vehiculo</th>
                 <th>Servicios</th>
+                <th>Fecha</th>
                 <th>Total</th>
               </tr>
             </thead>
@@ -109,6 +112,7 @@
                     </li>
                   </ul>
                 </td>
+                <td>{{lavado.fecha}}</td>
                 <td>${{lavado.total}}</td>
               </tr>
             </tbody>
