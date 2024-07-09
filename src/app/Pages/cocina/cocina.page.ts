@@ -3,6 +3,15 @@ import { DetalleordenComponent } from 'src/app/Components/Modals/Mesas/detalleor
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { ModalController } from '@ionic/angular';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
+import { Subscription } from 'rxjs';
+import { Howl, Howler } from 'howler';
+
+interface Timer {
+  id: number;
+  elapsedTime: Date;
+  subscription?: Subscription;
+}
+
 @Component({
   selector: 'app-cocina',
   templateUrl: './cocina.page.html',
@@ -11,15 +20,28 @@ import { AlertServiceService } from 'src/app/services/Alerts/alert-service.servi
 export class CocinaPage implements OnInit {
   ordenes: any = [];
   intervalId: any | undefined;
+  timers: { [idorden: number]: Timer } = {};
+
+  ordeninicial: any = []
+  notificaciones: { [idorden: number]: number } = {};
+  private sound: Howl;
 
   constructor(
-    private OrdenesService: OrdenesService, 
+    private OrdenesService: OrdenesService,
     private ModalController: ModalController,
-    private ac : AlertServiceService
-  ) { }
+    private ac: AlertServiceService
+  ) {
+
+    this.sound = new Howl({
+      src: ['assets/audio/file.mp3']
+    });
+  }
 
   ngOnInit() {
-
+    const notificacionesString = localStorage.getItem("notificaciones");
+    if (notificacionesString) {
+      this.notificaciones = JSON.parse(notificacionesString)
+    }
     this.ObtenerOrdenes(true)
     this.intervalId = setInterval(() => {
       this.ObtenerOrdenes(false);
@@ -31,7 +53,7 @@ export class CocinaPage implements OnInit {
       case 1:
         return "Orden pendiente";
       case 2:
-        return "Cocinado";
+        return "Cocinando";
       case 3:
         return "Listo para recoger (terminada)";
       case 4:
@@ -51,15 +73,49 @@ export class CocinaPage implements OnInit {
   }
 
   async VerOrden(data: any) {
+    if (this.notificaciones[data.id]) {
+      delete this.notificaciones[data.id]
+    }
+    localStorage.setItem("notificaciones", JSON.stringify(this.notificaciones))
     var modal: any = null;
     modal = await this.ModalController.create({
       component: DetalleordenComponent,
+      canDismiss: true,
       componentProps: {
+        activetimers: this.timers,
         mesa: data.mesas,
-        ordenC: data
+        ordenC: data,
+        closeModalCallback: this.handleCloseModal.bind(this),
       },
     });
+
     return await modal.present();
+  }
+
+  handleCloseModal(timers: { [id: number]: Timer }) {
+    this.timers = timers
+    this.startTimers()
+  }
+
+  startTimers() {
+    Object.values(this.timers).forEach(timer => {
+      if (timer) {
+        timer.subscription = setInterval(() => {
+          timer.elapsedTime = new Date(timer.elapsedTime.getTime() + 1);
+        }, 1000) as any; // Usar 'as any' si TypeScript muestra errores
+      }
+    });
+  }
+
+  formatTime(seconds: number): string {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    // Pad with leading zeros if necessary
+    const minutesString = minutes.toString().padStart(2, '0');
+    const secondsString = remainingSeconds.toString().padStart(2, '0');
+
+    return `${minutesString}:${secondsString}`;
   }
 
   async ObtenerOrdenes(load: boolean = true): Promise<void> {
@@ -67,6 +123,22 @@ export class CocinaPage implements OnInit {
       async (response: any) => {
         if (response && response.ordenes) {
           this.ordenes = response.ordenes;
+          if (this.ordeninicial.length !== this.ordenes.length) {
+            this.ordeninicial = response.ordenes;
+            console.log("Orden inicial respaldada")
+          } else {
+            for (let i = 0; i < this.ordenes.length; i++) {
+              if (this.ordenes[i].ordenesplatillos.length !== this.ordeninicial[i].ordenesplatillos.length) {
+                console.log("nueva longitud: " + this.ordenes[i].ordenesplatillos.length)
+                console.log("antes longitud: " + this.ordeninicial[i].ordenesplatillos.length)
+                this.notificaciones[this.ordenes[i].id] = this.ordenes[i].ordenesplatillos.length - this.ordeninicial[i].ordenesplatillos.length
+                this.sound.play()
+                localStorage.setItem("notificaciones", JSON.stringify(this.notificaciones))
+                console.log(this.notificaciones)
+              }
+            }
+            this.ordeninicial = this.ordenes
+          }
         } else {
           console.error('Error: Respuesta inválida');
         }
@@ -75,6 +147,10 @@ export class CocinaPage implements OnInit {
         console.error('Error en la solicitud:', error);
       }
     );
+  }
+
+  getElapsedTime(orderId: number): Date {
+    return this.timers[orderId]?.elapsedTime || new Date(0);
   }
 
 
@@ -88,7 +164,7 @@ export class CocinaPage implements OnInit {
     const horaEntrega =
       fechaorden.getHours() + ':' +
       (fechaorden.getMinutes() <= 9 ? '0' + fechaorden.getMinutes() : fechaorden.getMinutes());
-    return  [tiempototal, horaEntrega];
+    return [tiempototal, horaEntrega];
   }
 
 }

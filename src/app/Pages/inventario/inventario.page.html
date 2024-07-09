@@ -1,0 +1,83 @@
+<app-main-header titulo="Inventario"></app-main-header>
+<ion-content [fullscreen]="true" id="main-content" class="ion-padding">
+  <ion-segment [(ngModel)]="segmento">
+    <ion-segment-button value="productos">
+      <ion-label>Productos</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="bebidas">
+      <ion-label>Bebidas</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div class="table-container" *ngIf="segmento === 'productos'">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Vendidos</th>
+          <th>Categoria</th>
+          <th>Disponibles</th>
+          <th>Fecha adicción</th>
+          <th colspan="2">Acciones</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="productos && productos.length !== 0">
+        <tr *ngFor="let producto of productos;" class="option">
+          <td>{{producto.nombre}}</td>
+          <td>{{producto.cantidad}}</td>
+          <td>{{producto.vendidos}}</td>
+          <td>{{producto.categorias.categoria}}</td>
+          <td>{{producto.cantidad - producto.vendidos}}</td>
+          <td>{{producto.fecha}}</td>
+          <td class="actions-cell">
+            <ion-button fill="clear" (click)="Opciones(producto)">
+              <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+            </ion-button>
+          </td>
+        </tr>
+      </tbody>
+      <tbody *ngIf="!productos || productos.length === 0">
+        <tr class="no-productos">
+          <td colspan="7">Aún no has registrado productos</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-container" *ngIf="segmento === 'bebidas'">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Bebida</th>
+          <th>Cantidad</th>
+          <th>Vendidos</th>
+          <th>Categoria</th>
+          <th>Disponibles</th>
+          <th>Fecha adicción</th>
+          <th colspan="2">Acciones</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="BebidaArry && BebidaArry.length !== 0">
+        <tr class="option" *ngFor="let bebida of BebidaArry">
+          <td>{{ bebida.nombre }}</td>
+          <td>{{ bebida.cantidad }}</td>
+          <td>{{ bebida.vedidos }}</td>
+          <td>{{ bebida.categorias.categoria }}</td>
+          <td>{{ bebida.cantidad - bebida.vedidos }}</td>
+          <td>{{ bebida.fecha }}</td>
+          <td class="actions-cell">
+            <ion-button fill="clear" (click)="Opciones(bebida)">
+              <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+            </ion-button>
+          </td>
+        </tr>
+      </tbody>
+      <tbody *ngIf="!BebidaArry || BebidaArry.length === 0">
+        <tr class="no-bebidas">
+          <td colspan="7">No hay datos disponibles</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ion-content>

@@ -125,12 +125,13 @@ export class LavadoPage implements OnInit {
         if (response && response.Lavados) {
           if (estado == 1) {
             this.lavados = response.Lavados;
+            console.log(this.lavados)
           } else {
             this.lavadoshistorial = response.Lavados;
             this.lavadoshistorialnf = response.Lavados;
             if (this.rol.id !== 1) {
               this.lavadoshistorial = this.fns.filterbydate(this.lavadoshistorialnf, this.fechaActual)
-            } 
+            }
             this.cargarLavadosHistorialPagina();
           }
           this.obtenerServicios()

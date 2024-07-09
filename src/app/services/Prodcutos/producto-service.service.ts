@@ -16,12 +16,13 @@ export class ProductoServiceService {
     this.server = this.user.getServer()
   }
 
-  async CrearProducto(cantidad: number, nombre: string, idcategoria: number): Promise<Observable<any>> {
+  async CrearProducto(cantidad: number, nombre: string, idcategoria: number, fecha:string): Promise<Observable<any>> {
     try {
       await this.loaderFunctions.StartLoader();
       const data = {
         nombre: nombre,
         cantidad: cantidad,
+        fecha : fecha,
         idcategoria: idcategoria
       };
       return this.http.post<any>(`${this.server}api/Productos/CrearProducto`, data);

@@ -99,7 +99,7 @@ const routes: Routes = [
     path: 'corte',
     loadChildren: () => import('./Pages/caja/corte/corte.module').then( m => m.CortePageModule),
     canActivate: [RoleGuard],
-    data: { expectedRoles: ['Cajero'] }
+    data: { expectedRoles: ['Cajero', "Administrador"] }
   },
   {
     path: 'cierre',
@@ -109,12 +109,23 @@ const routes: Routes = [
   },
   {
     path: 'servicios',
-    loadChildren: () => import('./Catalogos/servicios/servicios.module').then( m => m.ServiciosPageModule)
+    loadChildren: () => import('./Catalogos/servicios/servicios.module').then( m => m.ServiciosPageModule),
+    canActivate: [RoleGuard],
+    data: { expectedRoles: ["Administrador"] }
   },
   {
     path: 'dashboard',
-    loadChildren: () => import('./Pages/admin/dashboard/dashboard.module').then( m => m.DashboardPageModule)
+    loadChildren: () => import('./Pages/admin/dashboard/dashboard.module').then( m => m.DashboardPageModule),
+    canActivate: [RoleGuard],
+    data: { expectedRoles: ["Administrador"] }
   },
+  {
+    path: 'inventario',
+    loadChildren: () => import('./Pages/inventario/inventario.module').then( m => m.InventarioPageModule),
+    canActivate: [RoleGuard],
+    data: { expectedRoles: ["Administrador"] }
+  },
+
 ];
 
 @NgModule({

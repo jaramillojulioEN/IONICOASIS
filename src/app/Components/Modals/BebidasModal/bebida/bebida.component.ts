@@ -3,6 +3,7 @@ import { CategoriaServiceService } from '../../../../services/Categorias/categor
 import { BebidaService } from '../../../../services/Bebidas/bebida.service'
 import { AlertController, ModalController } from '@ionic/angular';
 import {AlertServiceService} from 'src/app/services/Alerts/alert-service.service'
+import { LoaderFunctions } from 'src/functions/utils';
 @Component({
   selector: 'app-bebida',
   templateUrl: './bebida.component.html',
@@ -14,7 +15,8 @@ export class BebidaComponent  implements OnInit {
     private modalController: ModalController,
     private BebidaService: BebidaService,
     private categoservice: CategoriaServiceService,
-    private ac : AlertServiceService
+    private ac : AlertServiceService,
+    private fn : LoaderFunctions
   ) { }
 
   @Input() id: number = 0;
@@ -29,6 +31,7 @@ export class BebidaComponent  implements OnInit {
       this.bebidas.precioventa = this.data.precioventa
       this.bebidas.precioempleados = this.data.precioempleados
       this.bebidas.idcategoria = this.data.idcategoria
+      this.bebidas.fecha = this.data.fecha
     }
   }
 
@@ -38,11 +41,12 @@ export class BebidaComponent  implements OnInit {
     nombre: '',
     idcategoria: 0,
     precioventa: '',
-    precioempleados: ''
+    precioempleados: '',
+    fecha : this.fn.obtenerFechaHoraActual()
   };
 
   ObtenerCategorias(): void {
-    this.categoservice.Categorias().subscribe(
+    this.categoservice.Categorias(1).subscribe(
       (response: any) => {
         if (response && response.categorias) {
           this.categorias = response.categorias;

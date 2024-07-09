@@ -22,8 +22,8 @@ export class CategoriaServiceService {
     return this.http.get<any>(`${this.server}api/Categorias/SubCategorias`);
   }
 
-  Categorias(): Observable<any> {
-    return this.http.get<any>(`${this.server}api/Categorias/Categorias`);
+  Categorias(idsubcategoria : number = 0): Observable<any> {
+    return this.http.get<any>(`${this.server}api/Categorias/Categorias/${idsubcategoria}`);
   }
 
   CrearCategoria(categoria: string, idsubcategoria: number): Observable<any> {

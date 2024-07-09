@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { CategoriaServiceService } from 'src/app/services/Categorias/categoria-service.service';
 import { ProductoServiceService } from 'src/app/services/Prodcutos/producto-service.service';
+import { LoaderFunctions } from 'src/functions/utils';
 
 @Component({
   selector: 'app-productos',
@@ -13,14 +14,19 @@ export class ProductosComponent implements OnInit {
   nombre: string;
   cantidad: number;
   categoria: number;
-
+  fecha : string;
 
   categorias?: any[];
 
-  constructor(private modalController: ModalController, private CategoriasService: CategoriaServiceService, private ProductosService: ProductoServiceService) {
+  constructor(
+    private modalController: ModalController, 
+    private CategoriasService: CategoriaServiceService, 
+    private ProductosService: ProductoServiceService,
+  private ultil : LoaderFunctions) {
     this.nombre = "";
     this.cantidad = 0;
     this.categoria = 0;
+    this.fecha = this.ultil.obtenerFechaHoraActual()
   }
 
   @Input() idcategoria: number = 0;
@@ -46,7 +52,7 @@ export class ProductosComponent implements OnInit {
   
 
   ObtenerCategorias(): void {
-    this.CategoriasService.Categorias().subscribe(
+    this.CategoriasService.Categorias(2).subscribe(
       (response: any) => {
         if (response && response.categorias) {
           this.categorias = response.categorias;
@@ -64,7 +70,7 @@ export class ProductosComponent implements OnInit {
   async guardarProducto(): Promise<void> {
 
     if (this.id == 0) {
-      (await this.ProductosService.CrearProducto(this.cantidad, this.nombre, this.categoria)).subscribe(
+      (await this.ProductosService.CrearProducto(this.cantidad, this.nombre, this.categoria, this.fecha)).subscribe(
         (response: any) => {
           console.log(response);
           window.dispatchEvent(new Event('success'));

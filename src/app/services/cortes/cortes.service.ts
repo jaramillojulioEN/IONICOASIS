@@ -65,11 +65,11 @@ export class CortesService {
     }
   }
 
-  async RetirosActivos(loader : boolean = true): Promise<Observable<any>> {
+  async RetirosActivos(loader : boolean = true, activos : boolean = true): Promise<Observable<any>> {
     try {
       if(loader)
         await this.loaderFunctions.StartLoader();
-      return this.http.get<any>(`${this.server}api/Cortes/TodosRetiros`);
+      return this.http.get<any>(`${this.server}api/Cortes/TodosRetiros/${activos}`);
     } finally {
       if(loader)
       this.loaderFunctions.StopLoader();

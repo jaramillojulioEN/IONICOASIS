@@ -18,6 +18,7 @@ export class PlatilloNuevoComponent implements OnInit {
   @Input() id: number = 0;
   @Input() titulo: string = "";
   @Input() data: any = null;
+  @Input() isbebida: boolean = false;
 
   platillos = {
     id: this.id,

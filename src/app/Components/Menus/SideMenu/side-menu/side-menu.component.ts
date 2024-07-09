@@ -20,6 +20,7 @@ export class SideMenuComponent implements OnInit {
 
   public ExtraAdminPages: any = [
     { title: 'Caja', url: '/cierre', icon: 'flash', open: false },
+    { title: 'Cortes de caja', url: '/corte', icon: 'file-tray-full', open: false },
     { title: 'Ordenes', url: '/caja', icon: 'card', open: false },
     { title: 'Lavado', url: '/lavado', icon: 'car-sport', open: false },
   ];
@@ -68,6 +69,7 @@ export class SideMenuComponent implements OnInit {
     if (this.rol.id == 1) {
       this.appPages = [
         { title: 'Inicio', url: '/admin', icon: 'home', open: false },
+        { title: 'Inventario', url: '/inventario', icon: 'cash', open: false },
         {
           title: 'Catálogos',
           url: '/incio',

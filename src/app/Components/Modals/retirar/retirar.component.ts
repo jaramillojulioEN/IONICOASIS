@@ -42,9 +42,8 @@ export class RetirarComponent implements OnInit {
         async (response: any) => {
           if (response && response.Cortes) {
             this.caja = response.Cortes;
-            console.log(this.caja)
             if (this.caja.length > 0)
-              this.retiro.idcaja = this.caja.id
+              this.retiro.idcaja = this.caja[0].id
           } else {
             console.error('Error: Respuesta inválida');
           }
@@ -61,7 +60,7 @@ export class RetirarComponent implements OnInit {
 
   async confirmar() {
     console.log(this.retiro);
-    if (this.caja[0].sumatotal > this.retiro.monto) {
+    if ((this.caja[0].sumatotal - this.caja[0].totalcaja) >= this.retiro.monto) {
       (await this.cortes.Retirar(this.retiro)).subscribe(
         (response: any) => {
           window.dispatchEvent(new Event('success'));

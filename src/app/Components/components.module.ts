@@ -24,9 +24,10 @@ import { OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.compo
 import { ServiciosComponent } from 'src/app/Components/Modals/servicios/servicios.component'
 import { SelectComponent } from './select/select.component';
 import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
-
+import { NgxPrintModule } from 'ngx-print';
 import { InicioComponent } from './Modals/inicio/inicio.component'
 import { RetirarComponent } from './Modals/retirar/retirar.component'
+import { ExistenciasComponent } from './Modals/existencias/existencias.component'
 
 @NgModule({
   declarations:
@@ -35,6 +36,7 @@ import { RetirarComponent } from './Modals/retirar/retirar.component'
       InicioComponent,
       RetirarComponent,
       DetalleComponentReceta,
+      ExistenciasComponent,
       TicketComponent,
       DetalleordenComponent,
       SelectComponent,
@@ -55,7 +57,6 @@ import { RetirarComponent } from './Modals/retirar/retirar.component'
       PlatilloNuevoComponent,
       MainHeaderComponent,
       BebidaComponent
-
     ],
   exports: [
     CardComponent,
@@ -63,6 +64,7 @@ import { RetirarComponent } from './Modals/retirar/retirar.component'
     MainHeaderComponent,
     ConsumoComponent,
     InicioComponent,
+    ExistenciasComponent,
     ServiciosComponent,
     ChartsComponent,
     SelectComponent,
@@ -87,7 +89,8 @@ import { RetirarComponent } from './Modals/retirar/retirar.component'
     CommonModule,
     IonicModule,
     FormsModule,
-    RouterModule
+    RouterModule,
+    NgxPrintModule
   ],
 
 })

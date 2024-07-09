@@ -70,18 +70,14 @@ export class RecetasService {
     );
   }
 
-  agregarIngredienteALista(listaIngredientesId: number, idp: number, cantidad: number) {
+  agregarIngredienteALista(data : any) {
     const url = this.server + 'api/Recetas/CrearIngredientes';
-    const body = {
-      idproducto: idp,
-      idlistaingredientes: listaIngredientesId,
-      cantidad: cantidad
-    };
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
 
-    return this.http.post(url, body, { headers }).pipe(
+    return this.http.post(url, data, { headers }).pipe(
       catchError(error => {
         console.error('Error al agregar el ingrediente:', error);
         return throwError('Error al agregar el ingrediente');

@@ -64,11 +64,11 @@ export class PlatilloService {
     }
   }
   
-  async Platillos(loader : boolean = true): Promise<Observable<any>> {
+  async Platillos(loader : boolean = true, idsubcatego : number): Promise<Observable<any>> {
     try {
       if(loader)
         await this.loaderFunctions.StartLoader();
-      return this.http.get<any>(`${this.server}api/Platillos/TodosPlatillos`);
+      return this.http.get<any>(`${this.server}api/Platillos/TodosPlatillos/${idsubcatego}`);
     } finally {
       if(loader)
       this.loaderFunctions.StopLoader();

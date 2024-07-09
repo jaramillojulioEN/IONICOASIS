@@ -6,14 +6,15 @@
     </ion-row>
     <ion-row *ngIf="ordenes.length !== 0">
       <ion-col lg-size="6" sm-size="12" *ngFor="let orden of ordenes">
-        <ion-card class="custom-card option" (click)="Opciones(orden)">
+        <ion-card class="custom-card option notif" (click)="Opciones(orden)">
+          <div class="notification-circle" *ngIf="notificaciones[orden.id]">+{{notificaciones[orden.id]}}</div>
           <ion-card-content>
             <ion-grid class="custom-label">
               <ion-row>
                 <ion-col size="12">
                   <ion-row>
                     <ion-col size="11">
-                      <h2>ID Orden: #ORD{{ orden.id }}</h2>
+                      <h2>ID Orden: #ORD{{ orden.id }}</h2>   
                     </ion-col>
                   </ion-row>
                 </ion-col>
@@ -44,6 +45,11 @@
                     <ion-icon name="cash-outline"></ion-icon>
                     Total: {{ orden.total | currency }}
                   </p>
+                  <p *ngIf="orden.estado!==1">
+                    <ion-icon name="time-outline"></ion-icon>
+                    <span *ngIf="orden.estado!==3">Tiempo transcurrido: {{ getElapsedTime(orden.id) | date:'mm:ss' }}</span>
+                    <span *ngIf="orden.estado===3">Se Preparó en: {{ formatTime(orden.tiempo) }} (pausado hasta nuevo pedido)</span>
+                  </p>
                 </ion-col>
                 <!-- <ion-col lg-size="4" sm-size="12">
                   <ion-button color="primary" (click)="VerOrden(orden)">
@@ -56,6 +62,7 @@
           </ion-card-content>
         </ion-card>
       </ion-col>
+      
     </ion-row>
   </ion-grid>
 

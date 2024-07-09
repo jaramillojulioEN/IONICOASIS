@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { PlatilloNuevoComponent } from '../../Components/Modals/Platillos/platillo-nuevo/platillo-nuevo.component'
 import { MenuController } from '@ionic/angular';
-import {PlatilloService} from '../../services/Platillos/platillo.service'
-import {AlertServiceService} from '../../services/Alerts/alert-service.service'
+import { PlatilloService } from '../../services/Platillos/platillo.service'
+import { AlertServiceService } from '../../services/Alerts/alert-service.service'
 
 @Component({
   selector: 'app-platillos',
@@ -12,27 +12,36 @@ import {AlertServiceService} from '../../services/Alerts/alert-service.service'
 })
 export class PlatillosPage implements OnInit {
   PlatilloArry: any = [];
-
+  segmento: string = "platillos"
   constructor(
-    private PlatilloService : PlatilloService,
-    private ModalController: ModalController, 
-    private ac : AlertServiceService,
+    private PlatilloService: PlatilloService,
+    private ModalController: ModalController,
+    private ac: AlertServiceService,
     private menu: MenuController) { }
 
   ngOnInit() {
-    this.ObtenerPlatillos();
+    this.ObtenerPlatillos(true, 2);
     window.addEventListener('success', () => {
-      this.ObtenerPlatillos();
+      this.ObtenerPlatillos(false, 2);
     })
   }
 
-  async AbrirModalPlatillo(id:number, titulo:string, data : any = null) {
+  cargarplatillos() {
+    this.ObtenerPlatillos(true, 2);
+  }
+
+  cargarbebdias() {
+    this.ObtenerPlatillos(true, 1);
+  }
+
+  async AbrirModalPlatillo(id: number, titulo: string, data: any = null) {
     const modal = await this.ModalController.create({
       component: PlatilloNuevoComponent,
       componentProps: {
         id: id,
-        titulo : titulo,
-        data : data
+        titulo: titulo,
+        data: data,
+        isbebida : this.segmento ==="platillos" ? false : true
       },
     });
     return await modal.present();
@@ -46,8 +55,8 @@ export class PlatillosPage implements OnInit {
     ]);
   }
 
-  async ObtenerPlatillos(load : boolean = true): Promise<void> {
-    (await this.PlatilloService.Platillos(load)).subscribe(
+  async ObtenerPlatillos(load: boolean = true, idsucatego: number): Promise<void> {
+    (await this.PlatilloService.Platillos(load, idsucatego)).subscribe(
       async (response: any) => {
         if (response && response.platillos) {
           this.PlatilloArry = response.platillos;
@@ -65,13 +74,17 @@ export class PlatillosPage implements OnInit {
   async EliminarPlatillo(platillo: any) {
     this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar el platillo: " + platillo.nombre, () => this.ConfirmarELiminar(platillo.id));
   }
-  
 
-  async ConfirmarELiminar (id : number) :Promise<void> {
+
+  async ConfirmarELiminar(id: number): Promise<void> {
     (await this.PlatilloService.EliminarPlatillo(id)).subscribe(
       async (response: any) => {
         if (response) {
-          this.ObtenerPlatillos(false);
+          if (this.segmento !== 'productos') {
+            this.ObtenerPlatillos(false, 1);
+          }else{
+            this.ObtenerPlatillos(false, 2);
+          }
           this.ac.presentCustomAlert("Exito", response.message)
         } else {
           console.error('Error: Respuesta inválida');

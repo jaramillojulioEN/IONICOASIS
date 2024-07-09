@@ -35,12 +35,11 @@ export class InicioComponent implements OnInit {
     let user = this.user.getUser()
     let idsucursal = user.idsucursal
     this.model.idsucursal = idsucursal
-    this.model.fechainicio = this.funciones.todaydat()
+    this.model.fechainicio = this.funciones.obtenerFechaHoraActual()
   }
 
   async Iniciar() {
     if (this.model.totalcaja !== 0) {
-      console.table(this.model);
       (await this.CortesService.CrearInicio(this.model)).subscribe(
         (response: any) => {
           window.dispatchEvent(new Event('success'));

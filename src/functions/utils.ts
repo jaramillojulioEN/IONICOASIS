@@ -10,23 +10,45 @@ export class LoaderFunctions {
     constructor(private modalController: ModalController) { }
 
     async StartLoader() {
-        const modal = await this.modalController.create({
-            component: LoaderComponent,
-            backdropDismiss: false
-        });
-        return await modal.present();
+        try {
+            // Obtén el modal en la parte superior de la pila
+            const topModal = await this.modalController.getTop();
+            
+            // Si el modal en la parte superior es el Loader, simplemente retorna
+            if (topModal && topModal.id === "ModalLoading") {
+                return Promise.resolve();
+            }
+            
+            // Cierra cualquier modal existente
+            if (topModal) {
+                await this.modalController.dismiss();
+            }
+            
+            // Crea y presenta el modal de carga
+            const modal = await this.modalController.create({
+                id: "ModalLoading",
+                component: LoaderComponent,
+                backdropDismiss: false
+            });
+            return await modal.present();
+        } catch (error) {
+            console.error('Error starting loader:', error);
+        }
     }
-
+    
     async StopLoader() {
-        setTimeout(() => {
-            this.modalController.dismiss();
-        }, 1000);
+        try {
+            // Intenta cerrar el modal de carga
+            await this.modalController.dismiss(null, undefined, "ModalLoading");
+        } catch (error) {
+            // Si el error es que el modal no existe, simplemente ignora
+            if (error !== 'overlay does not exist') {
+                console.error('Error stopping loader:', error);
+            }
+        }
     }
 
-    todaydat(): string {
 
-        return new Date().toISOString()
-    }
 
     filterbydate(elements: any, fecha: string): any {
         let result: any[] = [];

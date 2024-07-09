@@ -3,6 +3,8 @@ import { ModalController } from '@ionic/angular';
 import { ProductoServiceService } from 'src/app/services/Prodcutos/producto-service.service';
 import { RecetasService } from 'src/app/services/Recetas/recetas.service';
 import { AlertController } from '@ionic/angular';
+import { CategoriaServiceService } from 'src/app/services/Categorias/categoria-service.service';
+import { BebidaService } from 'src/app/services/Bebidas/bebida.service';
 
 @Component({
   selector: 'app-recetas',
@@ -17,21 +19,28 @@ export class RecetasComponent implements OnInit {
 
   imagesSelected: string[] | undefined;
 
-  producto: number = 0;
   Imagenes: any;
   productos: any;
   cantidadi: number = 0;
 
   nombrereceta: string = "";
   dura: number = 0;
+  idcategoria: number = 0;
+
   pasosArray: string[] = [];
   pasoshtml: string = "";
   idlistaingredientes: number = 0;
   idlistaimagenes: number = 0;
+  categorias: any = [];
+  BebidaArry: any = [];
 
 
 
-  constructor(public alertController: AlertController, private RecetasService: RecetasService, private modalController: ModalController, private ProductoService: ProductoServiceService) {
+  constructor(
+    public alertController: AlertController,
+    private CategoriasService: CategoriaServiceService,
+    private BebidaService: BebidaService,
+    private RecetasService: RecetasService, private modalController: ModalController, private ProductoService: ProductoServiceService) {
     this.pasos = "";
   }
 
@@ -59,10 +68,11 @@ export class RecetasComponent implements OnInit {
           pasoshtml: this.pasoshtml,
           idlistaimagenes: this.idlistaimagenes,
           idlistaingredientes: this.idlistaingredientes,
-          tiempopreparacion: this.dura
+          tiempopreparacion: this.dura,
+          idcategoria: this.idcategoria
         };
         const respuesta = await (await this.RecetasService.CrearReceta(data)).toPromise();
-        if(respuesta){
+        if (respuesta) {
           this.modalController.dismiss()
           window.dispatchEvent(new Event('success'));
         }
@@ -74,7 +84,22 @@ export class RecetasComponent implements OnInit {
     }
   }
 
+  ObtenerCategorias(): void {
 
+    this.CategoriasService.Categorias().subscribe(
+      (response: any) => {
+        if (response && response.categorias) {
+          this.categorias = response.categorias;
+          console.log(this.categorias)
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
+  }
 
 
   validar(): { estado: boolean, mensaje: string } {
@@ -90,6 +115,10 @@ export class RecetasComponent implements OnInit {
     }
     else if (this.idlistaimagenes === 0) {
       mensaje = "Debe ingresar al menos una imagen";
+      estado = false;
+    }
+    else if (this.idcategoria === 0) {
+      mensaje = "Debe ingresar la categoria";
       estado = false;
     }
     else if (this.idlistaingredientes === 0) {
@@ -112,7 +141,9 @@ export class RecetasComponent implements OnInit {
 
 
   ngOnInit() {
+    this.ObtenerBebidas();
     this.ObtenerProducutos();
+    this.ObtenerCategorias();
   }
 
   dismissModal(): void {
@@ -174,41 +205,112 @@ export class RecetasComponent implements OnInit {
     );
   }
 
+  isingredient: boolean = true
+  isibebida: boolean = false
+  isfree: boolean = false
 
+  settype(type: string) {
+    this.isfree = false;
+    this.isibebida = false;
+    this.isingredient = false;
+    switch (type) {
+      case "isingredient":
+        this.isingredient = true;
+        this.bebida = [];
+        this.descripcionlibre = ""
+        break
+      case "isibebida":
+        this.isibebida = true;
+        this.producto = []
+        this.descripcionlibre = ""
+        break
+      case "isfree":
+        this.bebida = [];
+        this.producto = []
+        this.isfree = true;
+        break
 
-  async agregarIngrediente(): Promise<void> {
-    if (this.producto !== 0) {
-      if (this.cantidadi !== 0) {
-        const selectedProduct = this.productos.find((producto: { id: number }) => producto.id === this.producto);
-        this.producto = selectedProduct ? selectedProduct.nombre : '';
-        let idp = selectedProduct.id
-        if (this.idlistaingredientes === 0) {
-          try {
-            if(this.nombrereceta !== ""){
-              await this.crearListaIngredientes(this.nombrereceta);
-            }else{
-              this.presentAlert("Error", "Debe agregar un nombre para la receta")
-            }
-            this.agregarIngredienteALista(idp, this.cantidadi)
-          } catch (error) {
-            console.error('Error al crear la lista de ingredientes:', error);
-          }
-        } else {
-          this.agregarIngredienteALista(idp, this.cantidadi);
-        }
-        this.producto = 0;
-        this.cantidadi = 0;
-      } else {
-        this.presentAlert("Error", "Debe especificar la cantidad del ingrediente")
-      }
-    } else {
-      this.presentAlert("Error", "Debe seleccionar un ingrediente")
     }
   }
 
-  async agregarIngredienteALista(idp: number, cantidad: number) {
+  bebida: any = []
+  producto: any = [];
+  descripcionlibre: string = ""
+  data: any = {};
+
+  async agregarIngrediente(): Promise<void> {
+
+
+
+    if (this.validaringrediente()) {
+      if (this.idlistaingredientes === 0) {
+        try {
+          if (this.nombrereceta !== "") {
+            await this.crearListaIngredientes(this.nombrereceta);
+          } else {
+            this.presentAlert("Error", "Debe agregar un nombre para la receta")
+          }
+          this.data = { idproducto: this.producto.id, idlistaingredientes: this.idlistaingredientes, cantidad: this.cantidadi, idbebida: this.bebida.id, ingredientenobd: this.descripcionlibre === "" ? null : this.descripcionlibre }
+          this.agregarIngredienteALista(this.data)
+        } catch (error) {
+          console.error('Error al crear la lista de ingredientes:', error);
+        }
+      } else {
+        this.data = { idproducto: this.producto.id, idlistaingredientes: this.idlistaingredientes, cantidad: this.cantidadi, idbebida: this.bebida.id, ingredientenobd: this.descripcionlibre === "" ? null : this.descripcionlibre }
+        this.agregarIngredienteALista(this.data);
+      }
+    }
+
+    this.producto = [];
+    this.bebida = [];
+    this.descripcionlibre = "";
+    this.cantidadi = 0;
+
+  }
+
+
+  validaringrediente(): boolean {
+    if (!this.producto.id && this.isingredient) {
+      this.presentAlert("Error", "Debe agregar un ingrediente")
+      return false;
+
+    }
+    if (!this.bebida.id && this.isibebida) {
+      this.presentAlert("Error", "Debe agregar una bebida")
+      return false;
+
+    }
+    if (this.descripcionlibre === "" && this.isfree) {
+      this.presentAlert("Error", "Debe escribir el nombre del ingrediente")
+      return false;
+
+    }
+    if (this.cantidadi === 0) {
+      this.presentAlert("Error", "Debe agregar la cantidad")
+      return false;
+    }
+    return true
+  }
+
+  async ObtenerBebidas(load: boolean = false): Promise<void> {
+    (await this.BebidaService.Bebidas(load)).subscribe(
+      async (response: any) => {
+        if (response && response.bebidas) {
+          this.BebidaArry = response.bebidas;
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
+  }
+
+
+  async agregarIngredienteALista(data: any) {
     try {
-      await this.RecetasService.agregarIngredienteALista(this.idlistaingredientes, idp, cantidad).toPromise();
+      await this.RecetasService.agregarIngredienteALista(data).toPromise();
       this.obtenerIngredientes();
     } catch (error) {
       console.error('Error al agregar el ingrediente:', error);
@@ -326,7 +428,7 @@ export class RecetasComponent implements OnInit {
     if (this.pasos.trim() !== "") {
       this.pasosArray.push(this.pasos);
       this.pasos = "";
-    }else{
+    } else {
       this.presentAlert("Error", "Para agregar un paso, debe escribirlo")
     }
   }

@@ -69,7 +69,7 @@
           <ion-input type="number" label="Cantidad" labelPlacement="floating" [(ngModel)]="DetalleBebida.cantidad"
             name="cantidad" required></ion-input>
         </ion-item>
-        <ion-button expand="full" type="submit" (click)="crearDetalle(DetalleBebida)">Agregar a la orden</ion-button>
+        <ion-button expand="full" type="submit" (click)="crearDetalle(!isprep ? DetalleBebida : detallePlatillo)">Agregar a la orden</ion-button>
       </div>
     </ion-card-content>
   </ion-card>

@@ -25,6 +25,12 @@ export class AlertServiceService {
     handler: () => { },
     cssClass: 'custom-action-delete-sheet-button'
   }
+
+  public btnAgregar: ActionSheetButton = {
+    text: 'Agregar Existencias',
+    handler: () => { },
+    cssClass: ''
+  }
   
   public btncobrar: ActionSheetButton = {
     cssClass: 'custom-action-delete-sheet-button',

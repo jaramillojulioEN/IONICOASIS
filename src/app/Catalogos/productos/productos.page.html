@@ -19,16 +19,12 @@
         <thead>
           <tr>
             <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Vendidos</th>
             <th colspan="2">Categoria</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let producto of productos;" class="option">
             <td>{{producto.nombre}}</td>
-            <td>{{producto.cantidad}}</td>
-            <td>{{producto.vendidos}}</td>
             <td>{{producto.categorias.categoria}}</td>
             <td class="actions-cell">
               <ion-button fill="clear" (click)="Opciones(producto)">

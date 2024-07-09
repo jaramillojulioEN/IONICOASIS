@@ -19,7 +19,9 @@
     <ion-card-content>
       <ul>
         <li *ngFor="let ingrediente of receta.listaingredientes.ingredientes">
-          {{ ingrediente.productos.nombre }} - {{ ingrediente.cantidad }}
+          <span *ngIf="ingrediente.productos">{{ ingrediente.productos.nombre }} x {{ ingrediente.cantidad }}</span>
+          <span *ngIf="ingrediente.bebidas">{{ ingrediente.bebidas.nombre }} - {{ ingrediente.cantidad }}</span>
+          <span *ngIf="ingrediente.ingredientenobd">{{ ingrediente.ingredientenobd }} - {{ ingrediente.cantidad }}</span>
         </li>
       </ul>
     </ion-card-content>

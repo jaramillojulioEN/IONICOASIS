@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ModalController, NumericValueAccessor } from '@ionic/angular';
 import { DetalleComponentReceta } from 'src/app/Components/Modals/RecetasModals/detalle/detalle.component';
 import { UserServiceService } from 'src/app/services/Users/user-service.service';
@@ -6,21 +6,25 @@ import { interval, Subscription } from 'rxjs';
 import { OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.component'
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
+
+interface Timer {
+  id: number;
+  elapsedTime: Date;
+  subscription: Subscription | undefined;
+}
+
 @Component({
   selector: 'app-detalleorden',
   templateUrl: './detalleorden.component.html',
   styleUrls: ['./detalleorden.component.scss'],
 })
-export class DetalleordenComponent implements OnInit, OnDestroy {
+export class DetalleordenComponent implements OnInit {
   @Input() mesa: any = [];
   @Input() ordenC: any = [];
   orden: any = [];
   estimados: any;
   rol: any = [];
-  elapsedTime: Date = new Date(0);
-  timerSubscription: Subscription | undefined;
-  timerRunning = false;
-  intervalId: any;
+  tiempo: number = 0;
 
   constructor(
     private ac: AlertServiceService,
@@ -29,7 +33,67 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
     private OrdenesService: OrdenesService
   ) { }
 
+
+
+  intervalId: any;
+
+  @Input() activetimers: { [id: number]: Timer } = {};
+  timers: { [id: number]: Timer } = {};
+  nextId = 1;
+
+  @Output() timersUpdated = new EventEmitter<{ [id: number]: Timer }>();
+  private closeModalCallback: ((timers: { [id: number]: Timer }) => void) | undefined;
+
+  setCloseModalCallback(callback: (timers: { [id: number]: Timer }) => void) {
+    this.closeModalCallback = callback;
+  }
+  private emitTimersUpdate() {
+    this.timersUpdated.emit({ ...this.activetimers });
+    if (this.closeModalCallback) {
+      this.closeModalCallback(this.activetimers);
+    }
+  }
+
+  startTimer(orderId: number) {
+    if (!this.activetimers[orderId]) {
+      const newTimer: Timer = {
+        id: orderId,
+        elapsedTime: new Date(0),
+        subscription: interval(1000).subscribe(() => {
+          newTimer.elapsedTime = new Date(newTimer.elapsedTime.getTime() + 1000);
+          this.emitTimersUpdate();
+        })
+      };
+      this.activetimers[orderId] = newTimer;
+      this.alterstate(2)
+      this.emitTimersUpdate();
+    }
+  }
+
+  stopTimer(orderId: number) {
+    this.tiempo = this.getElapsedSeconds(this.getElapsedTime(this.orden.id));
+    this.alterstate(3)
+    delete this.activetimers[orderId];
+    this.emitTimersUpdate();
+  }
+  getElapsedTime(ordenid: any): Date {
+      return this.activetimers[ordenid]?.elapsedTime || new Date(0);
+  }
+
+  formatTime(seconds: number): string {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    // Pad with leading zeros if necessary
+    const minutesString = minutes.toString().padStart(2, '0');
+    const secondsString = remainingSeconds.toString().padStart(2, '0');
+
+    return `${minutesString}:${secondsString}`;
+  }
+
+
   ngOnInit() {
+    console.log(this.activetimers)
     window.addEventListener('success', () => {
       this.buscarOrden();
     })
@@ -46,19 +110,7 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
     }, 5000);
   }
 
-  ngOnDestroy() {
-    if (this.timerSubscription) {
-      this.timerSubscription.unsubscribe();
-    }
-  }
 
-  stopTimer() {
-    if (this.timerSubscription) {
-      this.timerSubscription.unsubscribe();
-      this.timerRunning = false;
-    }
-    this.alterstate(3);
-  }
 
   async VerReceta(receta: any): Promise<void> {
     const modal = await this.modalController.create({
@@ -86,26 +138,14 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
     this.estimados = [tiempototal, horaEntrega];
   }
 
-  startTimer() {
-    if (this.timerSubscription) {
-      this.timerSubscription.unsubscribe();
-    }
-    this.timerRunning = true;
-    this.elapsedTime = new Date(0);
-    this.timerSubscription = interval(1000).subscribe(() => {
-      this.elapsedTime = new Date(this.elapsedTime.getTime() + 1000);
-    });
 
-    this.alterstate(2);
 
-  }
-
-  Opciones(data: any, platillo : boolean) {
+  Opciones(data: any, platillo: boolean) {
     let butons: any[] = []
     if (this.rol.id === 2 && this.orden.estado === 1) {
-      if(platillo){
+      if (platillo) {
         butons.push({ button: this.ac.btnEliminar, handler: () => this.EliminarPlatillo(data) })
-      }else{
+      } else {
         butons.push({ button: this.ac.btnEliminar, handler: () => this.EliminarBebida(data) })
       }
     }
@@ -139,6 +179,10 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
 
   async alterstate(estado: number): Promise<void> {
     this.orden.estado = estado;
+    if (estado == 3) {
+      this.orden.tiempo = this.tiempo;
+    }
+    console.log(this.orden)
     if (this.orden.estado == 3) {
       this.orden.ordenesplatillos.forEach((element: any) => {
         element.estado = 2
@@ -158,6 +202,17 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
       }
     );
   }
+
+  // Método para formatear el tiempo transcurrido
+  private getElapsedSeconds(elapsedTime: Date): number {
+    return Math.floor(elapsedTime.getTime() / 1000);
+  }
+
+  // Método para añadir un cero a la izquierda si es necesario
+  private padZero(num: number): string {
+    return num < 10 ? '0' + num : num.toString();
+  }
+
 
   async buscarOrden(): Promise<void> {
     (await this.OrdenesService.BuscarOrden(false, this.orden.id)).subscribe(
@@ -229,7 +284,7 @@ export class DetalleordenComponent implements OnInit, OnDestroy {
     this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar la bebida " + bebida.bebidas.nombre, () => this.ConfirmarELiminarBebida(bebida));
   }
 
-  dissmiss(){
+  dissmiss() {
     this.modalController.dismiss()
   }
 

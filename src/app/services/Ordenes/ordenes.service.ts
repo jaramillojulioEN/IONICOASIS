@@ -63,6 +63,7 @@ export class OrdenesService {
       await this.loaderFunctions.StartLoader();
       if (data.idbebida == undefined && data.idplatillo != 0) {
         console.log(data)
+        console.log("Se fue a platillos")
         return this.http.post<any>(`${this.server}api/Detalles/CrearDetallePlatillo`, data);
       }
       if (data.idplatillo == undefined && data.idbebida != 0) {

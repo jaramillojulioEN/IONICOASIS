@@ -2,34 +2,83 @@
 <ion-content>
   <div *ngIf="!sst" class="ion-padding">
     <ion-card *ngIf="orden.length != 0" class="custom-card">
-      <ion-card-header>
-        <ion-card-title>Total de la orden:</ion-card-title>
-      </ion-card-header>
       <ion-card-content>
-        <div *ngFor="let platillo of orden.ordenesplatillos" class="item-container">
-          <ion-label>
-            <h2>{{ platillo.platillos.nombre }}</h2>
-          </ion-label>
-          <ion-label slot="end" class="ion-text-right cantidad">
-            <h2>Cantidad: {{ platillo.cantidad }}</h2>
-            <h2>Precio: ${{platillo.platillos.precio}}</h2>
-          </ion-label>
-          <hr>
+        <div class="item-container">
+          <ion-grid>
+            <ion-row *ngFor="let platillo of orden.ordenesplatillos">
+              <ion-col size="5">
+                <h2 class="platillo-nombre">{{ platillo.cantidad }} {{
+                  platillo.platillos.nombre }}</h2>
+              </ion-col>
+              <ion-col size="7">
+                <h2 class="platillo-precio ion-text-end">${{ platillo.platillos.precio * platillo.cantidad
+                  }}</h2>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+
         </div>
 
-        <div *ngFor="let bebida of orden.ordenesbebidas" class="item-container">
-          <ion-label>
-            <h2>{{ bebida.bebidas.nombre}}</h2>
-          </ion-label>
-          <ion-label slot="end" class="ion-text-right cantidad">
-            <h2>$ {{ bebida.cantidad }}</h2>
+        <div class="item-container" *ngIf="orden.ordenesbebidas.length > 0">
+          <ion-grid>
+            <ion-row *ngFor="let bebida of orden.ordenesbebidas">
+              <ion-col size="5">
+                <h2 class="bebida-nombre">{{ bebida.cantidad }} {{ bebida.bebidas.nombre }}</h2>
+              </ion-col>
+              <ion-col size="7">
+                <h2 class="bebida-cantidad ion-text-end">$ {{ bebida.cantidad * bebida.bebidas.precioventa }}</h2>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+
+        <div class="item-container" *ngIf="lavagregado">
+          <ion-grid>
+            <ion-row>
+              <ion-col size="12">
+                {{lavagregado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}
+              </ion-col>
+              <ion-col size="12">
+                <ion-row *ngFor="let det of lavagregado.lavadodet">
+                  <ion-col size="5">
+                    <h2 class="bebida-nombre">{{det.Servicios.nombre_servicio}}</h2>
+                  </ion-col>
+                  <ion-col size="7">
+                    <h2 class="bebida-cantidad ion-text-end">$ {{det.Servicios.precio}}</h2>
+                  </ion-col>
+                </ion-row>
+                <ion-button color="danger" class="crear" (click)="Eliminar()" expand="full">Eliminar</ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+
+
+        <div class="item-container" *ngIf="lavadospendientes.length >0">
+          <ion-label *ngIf="!lavadoenorden">¿Agregar lavado a la orden?</ion-label>
+          <ion-checkbox *ngIf="!lavadoenorden" [(ngModel)]="lavadoenorden"></ion-checkbox>
+          <ion-select *ngIf="lavadoenorden" [(ngModel)]="lavagregado" interface="action-sheet"
+            placeholder="Lavado a cobrar">
+            <ion-select-option *ngFor="let pend of lavadospendientes" [value]="pend">
+              {{ pend.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo }} - {{ pend.fecha }}
+            </ion-select-option>
+          </ion-select>
+
+        </div>
+
+        <div class="total-container">
+          <ion-label class="ion-text-end total-label">
+            <h5>Total: ${{ lavagregado ? orden.total + lavagregado.total : orden.total }}</h5>
           </ion-label>
         </div>
-        <div>
-          <ion-label class="ion-text-end ">
-            <h5 class="total-label">Total: ${{orden.total}}</h5>
-          </ion-label>
+
+        <div class="item-container">
+          <ion-input style="font-size: 20px;" label="Recibo" labelPlacement="floating" [(ngModel)]="serecibe"
+            (ionChange)="ccambio()" name="serecibe" type="number"></ion-input>
+          <ion-button color="primary" class="crear" (click)="ticket()" expand="full">Siguiente</ion-button>
         </div>
+
       </ion-card-content>
     </ion-card>
 
@@ -38,40 +87,30 @@
         <ion-card-title>Detalles del Lavado</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <div *ngFor="let det of lavado.lavadodet" class="lavado-detalle">
-          <div class="detalle-item">
-            <ion-label>
-              <h2>{{det.Servicios.nombre_servicio}}</h2>
-            </ion-label>
-            <ion-label slot="end" class="ion-text-right" style="padding-right: 30px;">
-              <h2>$ {{det.Servicios.precio}}</h2>
-            </ion-label>
-          </div>
+        <div class="lavado-detalle">
+          <ion-grid>
+            <ion-row *ngFor="let det of lavado.lavadodet">
+              <ion-col size="5">
+                <h2 class="servicio-nombre">{{ det.Servicios.nombre_servicio }}</h2>
+              </ion-col>
+              <ion-col size="7">
+                <h2 class="servicio-precio ion-text-end">$ {{ det.Servicios.precio }}</h2>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
         </div>
-        <div>
-          <ion-label class="ion-text-end ">
-            <h5 class="total-label">Total: ${{lavado.total}}</h5>
+        <div class="total-container">
+          <ion-label class="ion-text-end total-label">
+            <h5>Total: ${{lavado.total}}</h5>
           </ion-label>
         </div>
+        <div class="item-container">
+          <ion-input style="font-size: 20px;" label="Recibo" labelPlacement="floating" [(ngModel)]="serecibe"
+            (ionChange)="ccambio()" name="serecibe" type="number"></ion-input>
+          <ion-button color="primary" class="crear" (click)="ticket()" expand="full">Siguiente</ion-button>
+        </div>
       </ion-card-content>
     </ion-card>
-
-    <ion-card class="custom-card">
-      <ion-card-header>
-        <ion-card-title>Pago</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-item>
-          <ion-label position="stacked">Recibo:</ion-label>
-          <ion-input [(ngModel)]="serecibe" (ionChange)="ccambio()" name="serecibe" type="number"></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Cambio: ${{cambio}}</ion-label>
-        </ion-item>
-        <ion-button color="primary" class="crear" (click)="ticket()" expand="full">Siguiente</ion-button>
-      </ion-card-content>
-    </ion-card>
-
   </div>
 
   <div class="detai" *ngIf="sst">
@@ -79,6 +118,9 @@
     <ion-grid>
       <ion-row>
         <ion-col sm-size="12" lg-size="4" class="ion-margin-top ion-padding">
+          <div class="item-container">
+            <ion-label>Cambio: ${{cambio}}</ion-label>
+          </div>
           <ion-button color="primary" class="crear" (click)="volver()" expand="full">Volver al detalle</ion-button>
           <br>
           <ion-item lines="none">
@@ -86,11 +128,18 @@
             <ion-checkbox [(ngModel)]="imprimirTicket" slot="end"></ion-checkbox>
           </ion-item>
           <br>
+          <!-- <button styleSheetFile="assets/css/custom1.css" printSectionId="print-section" ngxPrint>print</button> -->
+          <button type="button" (click)="printTicket()">
+            Print Form
+         </button>
+          <br>
           <ion-button color="primary" class="crear" (click)="lavado.length !== 0 ? cobrarl() : cobrar()"
             expand="full">Cobrar</ion-button>
         </ion-col>
         <ion-col sm-size="12" lg-size="8">
-          <div class="body-tt ion-margin-top">
+
+          <!--ticket -->
+          <div id="print-section" class="body-tt ion-margin-top">
             <div class="header-tt">
               <p>{{usuario.sucursales.sucursal}}</p>
               <p>{{usuario.sucursales.direccion}}</p>
@@ -102,13 +151,26 @@
                 <span>{{detallep.platillos.nombre}}</span>
                 <span>${{detallep.platillos.precio}}</span>
               </div>
-              <div class="item" *ngFor="let detalleb of orden.ordenesbebidas">
-                <span>{{detalleb.bebidas.nombre}}</span>
-                <span>${{detalleb.platillos.precioventa}}</span>
+              <div *ngIf="orden.ordenesbebidas.length>0">
+                <div class="item" *ngFor="let detalleb of orden.ordenesbebidas">
+                  <span>{{detalleb.bebidas.nombre}}</span>
+                  <span>${{detalleb.bebidas.precioventa}}</span>
+                </div>
               </div>
+              <div class="item" *ngIf="lavagregado">
+                <span>{{lavagregado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</span>
+                <span>{{lavagregado.total}}</span>
+              </div>
+              <div *ngIf="lavagregado">
+                <div class="item" *ngFor="let det of lavagregado.lavadodet">
+                  <span>{{det.Servicios.nombre_servicio}}</span>
+                  <span>${{det.Servicios.precio}}</span>
+                </div>
+              </div>
+
               <div class="item total">
                 <span>Total: </span>
-                <span>${{orden.total}}</span>
+                <span>${{lavagregado ? orden.total + lavagregado.total : orden.total}}</span>
               </div>
             </div>
             <div class="content" *ngIf="lavado.length != 0">

@@ -4,6 +4,16 @@
     <ion-item *ngFor="let pl of PlatilloArry" (click)="Dissmiss(pl)">{{pl.nombre}}</ion-item>
   </ion-list>
   <ion-list lines="none" *ngIf="!isPlatillo">
+    <ion-list-header>
+      Bebidas
+    </ion-list-header>
     <ion-item *ngFor="let bd of BebidaArry" (click)="Dissmiss(bd)">{{bd.nombre}}</ion-item>
   </ion-list>
+  <ion-list lines="none" *ngIf="!isPlatillo">
+    <ion-list-header>
+      Bebidas preparadas
+    </ion-list-header>
+    <ion-item *ngFor="let bd of bebsPrp" (click)="Dissmiss(bd, true)">{{bd.nombre}}</ion-item>
+  </ion-list>
+
 </div>

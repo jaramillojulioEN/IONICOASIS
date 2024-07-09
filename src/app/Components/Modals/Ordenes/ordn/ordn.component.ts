@@ -11,13 +11,14 @@ import { LoaderFunctions } from 'src/functions/utils';
   styleUrls: ['./ordn.component.scss'],
 })
 export class OrdnComponent implements OnInit {
+  isprep: boolean = false;
 
   constructor(
     private ac: AlertServiceService,
     private UserServiceService: UserServiceService,
     private OrdenesService: OrdenesService,
     private pop: PopoverController,
-    private funcs : LoaderFunctions
+    private funcs: LoaderFunctions
   ) { }
 
   OrdenDetalles: any = []
@@ -48,7 +49,7 @@ export class OrdnComponent implements OnInit {
     idorden: 0,
     observaciones: '',
     estado: 0,
-    fecha : this.funcs.obtenerFechaHoraActual()
+    fecha: this.funcs.obtenerFechaHoraActual()
   };
 
   DetalleBebida = {
@@ -57,7 +58,7 @@ export class OrdnComponent implements OnInit {
     cantidad: 0,
     idorden: 0,
     estado: 0,
-    fecha : this.funcs.obtenerFechaHoraActual()
+    fecha: this.funcs.obtenerFechaHoraActual()
   };
   ngOnInit() {
 
@@ -81,6 +82,10 @@ export class OrdnComponent implements OnInit {
   presentresume: any = []
 
   async crearDetalle(detalle: any): Promise<void> {
+    console.log(detalle)
+    if(this.isprep){
+      detalle.cantidad = this.DetalleBebida.cantidad
+    }
     if (this.ordenold.id) {
       detalle.idorden = this.ordenold.id;
       console.log(detalle.idorden);
@@ -91,7 +96,7 @@ export class OrdnComponent implements OnInit {
       await this.procesarDetalle(detalle); // Procesar el detalle después de crear la orden
     }
   }
-  
+
   private async procesarDetalle(detalle: any): Promise<void> {
     try {
       const response = await (await this.OrdenesService.CrearOrdenDetail(detalle)).toPromise();
@@ -104,7 +109,7 @@ export class OrdnComponent implements OnInit {
       console.error('Error en la solicitud:', error);
     }
   }
-  
+
   async CrearOrden(): Promise<void> {
     try {
       const response = await (await this.OrdenesService.CrearOrden(this.NewOrden)).toPromise();
@@ -115,7 +120,7 @@ export class OrdnComponent implements OnInit {
       throw error; // Propagar el error para manejarlo en un nivel superior si es necesario
     }
   }
-  
+
   async buscarOrden(idorden: number): Promise<void> {
     (await this.OrdenesService.BuscarOrden(false, idorden)).subscribe(
       async (response: any) => {
@@ -131,14 +136,14 @@ export class OrdnComponent implements OnInit {
     );
   }
 
-  Opciones(data: any, platillo : boolean) {
+  Opciones(data: any, platillo: boolean) {
     let butons: any[] = []
 
-      if(platillo){
-        butons.push({ button: this.ac.btnEliminar, handler: () => this.EliminarPlatillo(data) })
-      }else{
-        butons.push({ button: this.ac.btnEliminar, handler: () => this.EliminarBebida(data) })
-      }
+    if (platillo) {
+      butons.push({ button: this.ac.btnEliminar, handler: () => this.EliminarPlatillo(data) })
+    } else {
+      butons.push({ button: this.ac.btnEliminar, handler: () => this.EliminarBebida(data) })
+    }
     butons.push({ button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } })
     this.ac.configureAndPresentActionSheet(butons);
   }
@@ -222,9 +227,16 @@ export class OrdnComponent implements OnInit {
         this.detallePlatillo.idplatillo = dataReturned.data.id
         console.log(this.detallePlatillo.idplatillo)
       } else {
-        this.detalleb = dataReturned.data.nombre
-        this.DetalleBebida.idbebida = dataReturned.data.id
-        console.log(this.DetalleBebida.idbebida)
+        if (dataReturned.data.isprep) {
+          this.isprep = dataReturned.data.isprep;
+          this.detalleb = dataReturned.data.nombre
+          this.detallePlatillo.idplatillo = dataReturned.data.id
+        } else {
+          this.detalleb = dataReturned.data.nombre
+          this.DetalleBebida.idbebida = dataReturned.data.id
+          console.log(this.DetalleBebida.idbebida)
+        }
+
       }
     });
     return await modal.present();

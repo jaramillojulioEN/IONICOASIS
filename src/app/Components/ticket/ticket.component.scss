@@ -168,3 +168,90 @@ ion-label {
   padding-left: 15px;
   margin-bottom: 1px;
 }
+
+.item-container {
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.platillo-nombre {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.platillo-precio {
+  font-size: 18px;
+  color: #888;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: #ddd;
+  margin: 10px 0;
+}
+
+.item-container {
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.bebida-nombre {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.bebida-cantidad {
+  font-size: 18px;
+  color: #888;
+}
+
+.lavado-detalle {
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.servicio-nombre {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.servicio-precio {
+  font-size: 18px;
+  color: #888;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: #ddd;
+  margin: 10px 0;
+}
+
+
+.total-container {
+  padding: 10px;
+  margin-top: 20px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: right;
+}
+
+.total-label h5 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}

@@ -17,7 +17,7 @@ export class CierrePage implements OnInit {
   colores: string[] = [
     'rgba(255, 99, 132, 0.2)',
     'rgba(54, 162, 235, 0.2)',
-    'rgba(122, 162, 235, 0.2)',
+    'rgba(122, 39, 15, 0.2)',
     'rgba(255, 206, 86, 0.2)',
     'rgba(75, 192, 192, 0.2)',
     'rgba(153, 102, 255, 0.2)',
@@ -54,7 +54,9 @@ export class CierrePage implements OnInit {
       (await this.cortesService.CortesActivos(2, load)).subscribe(
         async (response: any) => {
           if (response && response.Cortes) {
+            
             this.CortePasado = response.Cortes;
+
           } else {
             console.error('Error: Respuesta inválida');
           }
@@ -136,6 +138,7 @@ export class CierrePage implements OnInit {
     let olddata = [
       cortepasado.totalcaja,
       cortepasado.totalcocina,
+      cortepasado.totalautos,
       cortepasado.sumatotal,
       cortepasado.saliodecaja,
       cortepasado.ganancias,
@@ -156,6 +159,7 @@ export class CierrePage implements OnInit {
     this.data = [
       this.CorteActivo[0].totalcaja,
       this.CorteActivo[0].totalcocina,
+      this.CorteActivo[0].totalautos,
       this.CorteActivo[0].sumatotal,
       this.CorteActivo[0].saliodecaja,
       this.CorteActivo[0].ganancias,
