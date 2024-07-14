@@ -28,6 +28,7 @@ export class PlatilloNuevoComponent implements OnInit {
     precio: '',
     precioempleado: ''
   };
+  loaded: boolean = false;
 
   constructor(
     private modalController: ModalController,
@@ -61,7 +62,7 @@ export class PlatilloNuevoComponent implements OnInit {
       if (this.id == 0) {
         (await this.PlatilloService.CrearPlatillo(this.platillos)).subscribe(
           (response: any) => {
-            console.log(response);
+            this.modalController.dismiss()
             window.dispatchEvent(new Event('success'));
             this.ac.presentCustomAlert("Exito", response.message)
           },
@@ -72,7 +73,6 @@ export class PlatilloNuevoComponent implements OnInit {
       } else {
         (await this.PlatilloService.ActulizarPlatillo(this.platillos)).subscribe(
           (response: any) => {
-            console.log(response);
             this.ac.presentCustomAlert("Exito", response.message)
             window.dispatchEvent(new Event('success'));
           },
@@ -87,23 +87,27 @@ export class PlatilloNuevoComponent implements OnInit {
   }
 
 
-
   async ObtenerRecetas(): Promise<void> {
-    (await this.recetaservice.Recetas(true)).subscribe(
-      async (response: any) => {
-        if (response && response.recetas) {
-          this.recetas = response.recetas;
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+    this.loaded = false; 
+  
+    try {
+      const response: any = await (await this.recetaservice.Recetas(true)).toPromise();
+  
+      if (response && response.recetas) {
+        this.recetas = response.recetas;
+      } else {
+        console.error('Error: Respuesta inválida');
       }
-    );
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true; 
+    }
   }
-
+  
   ObtenerCategorias(): void {
+    this.loaded = false;
+  
     this.categoservice.Categorias().subscribe(
       (response: any) => {
         if (response && response.categorias) {
@@ -114,9 +118,13 @@ export class PlatilloNuevoComponent implements OnInit {
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);
+      },
+      () => {
+        this.loaded = true;
       }
     );
   }
+  
 
   validarPlatillo(platillo: any): { valido: boolean, mensaje: string } {
     if (!platillo.nombre || platillo.nombre.trim().length === 0) {

@@ -5,6 +5,7 @@ import { ModalController } from '@ionic/angular';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 import { Subscription } from 'rxjs';
 import { Howl, Howler } from 'howler';
+import { CortesService } from 'src/app/services/cortes/cortes.service';
 
 interface Timer {
   id: number;
@@ -25,11 +26,14 @@ export class CocinaPage implements OnInit {
   ordeninicial: any = []
   notificaciones: { [idorden: number]: number } = {};
   private sound: Howl;
+  caja: boolean = false;
+  loaded: boolean = false;
 
   constructor(
     private OrdenesService: OrdenesService,
     private ModalController: ModalController,
-    private ac: AlertServiceService
+    private ac: AlertServiceService,
+    private cortesService: CortesService
   ) {
 
     this.sound = new Howl({
@@ -38,12 +42,14 @@ export class CocinaPage implements OnInit {
   }
 
   ngOnInit() {
+    this.obtenerCajaActiva()
     const notificacionesString = localStorage.getItem("notificaciones");
     if (notificacionesString) {
       this.notificaciones = JSON.parse(notificacionesString)
     }
     this.ObtenerOrdenes(true)
     this.intervalId = setInterval(() => {
+      this.obtenerCajaActiva()
       this.ObtenerOrdenes(false);
     }, 5000);
   }
@@ -60,6 +66,8 @@ export class CocinaPage implements OnInit {
         return "Orden cerrada";
       case 5:
         return "Orden Cobrada";
+      case 6:
+        return "Orden Cancelada";
       default:
         return "Estado desconocido";
     }
@@ -70,6 +78,30 @@ export class CocinaPage implements OnInit {
       { button: this.ac.btnVerOrden, handler: () => this.VerOrden(data) },
       { button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }
     ]);
+  }
+
+  async obtenerCajaActiva(load: boolean = false): Promise<void> {
+    try {
+      (await this.cortesService.CortesActivos(1, load)).subscribe(
+        async (response: any) => {
+          if (response && response.Cortes) {
+            if (response.Cortes.length > 0) {
+              this.caja = true;
+            }
+            else {
+              this.caja = false
+            }
+          } else {
+            console.error('Error: Respuesta inválida');
+          }
+        },
+        (error: any) => {
+          console.error('Error en la solicitud:', error);
+        }
+      );
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
   }
 
   async VerOrden(data: any) {
@@ -118,36 +150,68 @@ export class CocinaPage implements OnInit {
     return `${minutesString}:${secondsString}`;
   }
 
+  // async ObtenerOrdenes(load: boolean = true): Promise<void> {
+  //   (await this.OrdenesService.OrdenesPendientes(load)).subscribe(
+  //     async (response: any) => {
+  //       if (response && response.ordenes) {
+  //         this.ordenes = response.ordenes;
+  //         if (this.ordeninicial.length !== this.ordenes.length) {
+  //           this.ordeninicial = response.ordenes;
+  //           console.log("Orden inicial respaldada")
+  //         } else {
+  //           for (let i = 0; i < this.ordenes.length; i++) {
+  //             if (this.ordenes[i].ordenesplatillos.length !== this.ordeninicial[i].ordenesplatillos.length) {
+  //               this.notificaciones[this.ordenes[i].id] = this.ordenes[i].ordenesplatillos.length - this.ordeninicial[i].ordenesplatillos.length
+  //               this.sound.play()
+  //               localStorage.setItem("notificaciones", JSON.stringify(this.notificaciones))
+  //               console.log(this.notificaciones)
+  //             }
+  //           }
+  //           this.ordeninicial = this.ordenes
+  //         }
+  //       } else {
+  //         console.error('Error: Respuesta inválida');
+  //       }
+  //     },
+  //     (error: any) => {
+  //       console.error('Error en la solicitud:', error);
+  //     }
+  //   );
+  // }
+
   async ObtenerOrdenes(load: boolean = true): Promise<void> {
-    (await this.OrdenesService.OrdenesPendientes(load)).subscribe(
-      async (response: any) => {
-        if (response && response.ordenes) {
-          this.ordenes = response.ordenes;
-          if (this.ordeninicial.length !== this.ordenes.length) {
-            this.ordeninicial = response.ordenes;
-            console.log("Orden inicial respaldada")
-          } else {
-            for (let i = 0; i < this.ordenes.length; i++) {
-              if (this.ordenes[i].ordenesplatillos.length !== this.ordeninicial[i].ordenesplatillos.length) {
-                console.log("nueva longitud: " + this.ordenes[i].ordenesplatillos.length)
-                console.log("antes longitud: " + this.ordeninicial[i].ordenesplatillos.length)
-                this.notificaciones[this.ordenes[i].id] = this.ordenes[i].ordenesplatillos.length - this.ordeninicial[i].ordenesplatillos.length
-                this.sound.play()
-                localStorage.setItem("notificaciones", JSON.stringify(this.notificaciones))
-                console.log(this.notificaciones)
-              }
-            }
-            this.ordeninicial = this.ordenes
-          }
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+    try {
+      if (load) {
+        this.loaded = false;
       }
-    );
+      const response: any = await (await this.OrdenesService.OrdenesPendientes(load)).toPromise();
+      if (response && response.ordenes) {
+        this.ordenes = response.ordenes;
+
+        if (this.ordeninicial.length !== this.ordenes.length) {
+          this.ordeninicial = response.ordenes;
+          console.log("Orden inicial respaldada");
+        } else {
+          for (let i = 0; i < this.ordenes.length; i++) {
+            if (this.ordenes[i].ordenesplatillos.length !== this.ordeninicial[i].ordenesplatillos.length) {
+              this.notificaciones[this.ordenes[i].id] = this.ordenes[i].ordenesplatillos.length - this.ordeninicial[i].ordenesplatillos.length;
+              this.sound.play();
+              localStorage.setItem("notificaciones", JSON.stringify(this.notificaciones));
+              console.log(this.notificaciones);
+            }
+          }
+          this.ordeninicial = this.ordenes;
+        }
+      } else {
+        console.error('Error: Respuesta inválida');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
+    }
   }
+
 
   getElapsedTime(orderId: number): Date {
     return this.timers[orderId]?.elapsedTime || new Date(0);

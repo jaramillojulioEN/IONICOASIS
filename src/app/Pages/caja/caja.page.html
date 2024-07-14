@@ -1,7 +1,7 @@
 <app-main-header titulo="Caja"></app-main-header>
 <ion-content [fullscreen]="true" id="main-content">
   <ion-segment [(ngModel)]="segmento" *ngIf="rol.id !==1">
-    <ion-segment-button value="pago">
+    <ion-segment-button *ngIf="caja" value="pago">
       <ion-label>Pendientes</ion-label>
     </ion-segment-button>
     <ion-segment-button value="hoy" (click)="historial()">
@@ -34,7 +34,7 @@
 
 
   <ion-content *ngIf="segmento === 'hoy'" class="ion-padding">
-    <ion-card>
+    <ion-card *ngIf="loaded">
       <ion-card-content class="scroll-container">
         <ion-item slot="end">
           <ion-label *ngIf="rol.id !== 1">Ordenes de hoy</ion-label>
@@ -42,6 +42,9 @@
           <ion-button *ngIf="rol.id === 1" (click)="openFilter($event)" class="crear">
             <ion-icon slot="start" name="filter"></ion-icon>
             <ion-label>Fecha</ion-label>
+          </ion-button>
+          <ion-button  (click)="getordenes(4, true)" class="crear">
+            <ion-label>Recargar</ion-label>
           </ion-button>
           <ion-button style="margin-left: 8px;" color="danger" *ngIf="filtered" (click)="deletefilter()" class="crear">
             <ion-icon slot="start" name="trash"></ion-icon>
@@ -84,9 +87,9 @@
             <ion-icon name="chevron-forward-outline"></ion-icon>
           </ion-button>
         </div>
-
       </ion-card-content>
     </ion-card>
+    <app-skeleton *ngIf="!loaded" [columns]="5" type="cards"></app-skeleton>
   </ion-content>
 
 </ion-content>

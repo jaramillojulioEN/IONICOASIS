@@ -17,78 +17,105 @@ export class EmpleadosService {
     this.server = this.user.getServer()
   }
 
-  async CrearEmpleado(data : object): Promise<Observable<any>> {
-    try {
-      await this.loaderFunctions.StartLoader();
 
-      return this.http.post<any>(`${this.server}api/Empleados/CrearEmpleado`, data);
-    } finally {
-      this.loaderFunctions.StopLoader();
-    }
-  }
-
-  async EliminarEmpleado(id: number): Promise<Observable<any>> {
-    try {
-      const data = {
-        id: id
-      };
-      const options = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json'
-        }),
-        body: data
-      };
-
-      await this.loaderFunctions.StartLoader();
-      return this.http.delete<any>(`${this.server}api/Empleados/EliminarEmpleado`, options);
-    } finally {
-      this.loaderFunctions.StopLoader();
-    }
-  }
-
-  async RefactorizarConsumo(consumo: any, isdelete : boolean): Promise<Observable<any>> {
-    try {
-      const options = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json'
-        }),
-        body: consumo
-      };
-      await this.loaderFunctions.StartLoader();
-      return isdelete ? this.http.delete<any>(`${this.server}api/Empleados/EliminarConsumo`, options)
-      : this.http.put<any>(`${this.server}api/Empleados/EditarConsumo`, options);
-    } finally {
-      this.loaderFunctions.StopLoader();
-    }
-  }
-
-  async ActulizarEmpleado(data: object): Promise<Observable<any>> {
-    try {
-      await this.loaderFunctions.StartLoader();
-      return new Observable(observer => {
-        this.http.put<any>(`${this.server}api/Empleados/AlctualizarEmpleado`, data).subscribe(
-          updatedResponse => {
-            observer.next(updatedResponse);
+  async CrearEmpleado(data: object): Promise<Observable<any>> {
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.post<any>(`${this.server}api/Empleados/CrearEmpleado`, data).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
             observer.complete();
           },
-          error => {
+          async error => {
+            await this.loaderFunctions.StopLoader();
             observer.error(error);
           }
         );
       });
-    } finally {
-      this.loaderFunctions.StopLoader();
-    }
+    });
   }
+  
+  async EliminarEmpleado(id: number): Promise<Observable<any>> {
+    const data = {
+      id: id
+    };
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: data
+    };
+  
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.delete<any>(`${this.server}api/Empleados/EliminarEmpleado`, options).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  
+  async RefactorizarConsumo(consumo: any, isdelete: boolean): Promise<Observable<any>> {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: consumo
+    };
+  
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        const request = isdelete 
+          ? this.http.delete<any>(`${this.server}api/Empleados/EliminarConsumo`, options)
+          : this.http.put<any>(`${this.server}api/Empleados/EditarConsumo`, options);
+  
+        request.subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  
+  async ActulizarEmpleado(data: object): Promise<Observable<any>> {
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.put<any>(`${this.server}api/Empleados/AlctualizarEmpleado`, data).subscribe(
+          async updatedResponse => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(updatedResponse);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  
   
   async Empleados(loader : boolean = true): Promise<Observable<any>> {
     try {
-      if(loader)
-        await this.loaderFunctions.StartLoader();
       return this.http.get<any>(`${this.server}api/Empleados/TodosEmpleados`);
     } finally {
-      if(loader)
-      this.loaderFunctions.StopLoader();
     }
   }
 

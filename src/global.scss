@@ -46,7 +46,7 @@ ion-content {
   --background: #fff
 }
 
-ion-toolbar{
+ion-toolbar {
   --background: #2c507c;
   display: flex;
   align-items: center;
@@ -146,9 +146,16 @@ ion-toolbar ion-title {
 .tabla th,
 .tabla td {
   padding: 12px;
+  text-align: center;
+  /* Alineación horizontal */
+  vertical-align: middle;
+  /* Alineación vertical */
 }
 
 .tabla th {
+  text-align: center;
+  /* Alineación horizontal */
+  vertical-align: middle;
   background-color: #2c507c;
   color: white;
 }
@@ -207,9 +214,9 @@ ion-segment {
 }
 
 .custom-action-delete-sheet-button {
-  background-color: rgba(255, 154, 154, 0.2); 
+  background-color: rgba(255, 154, 154, 0.2);
   color: red;
-  font-weight: bold; 
+  font-weight: bold;
 }
 
 
@@ -251,21 +258,23 @@ ion-segment {
   --padding-start: 0;
   --padding-end: 0;
 }
+
 .tachado {
   text-decoration: line-through;
 }
-.option{
+
+.option {
   cursor: pointer;
 }
 
 .custom-action-delete-sheet-button {
-  background-color: rgba(255, 154, 154, 0.2); 
+  background-color: rgba(255, 154, 154, 0.2);
   color: red;
-  font-weight: bold; 
+  font-weight: bold;
 }
 
 .custom-action-delete-sheet-button {
-  --background: rgba(255, 154, 154, 0.2); 
+  --background: rgba(255, 154, 154, 0.2);
   --color: red;
-  font-weight: bold; 
+  font-weight: bold;
 }

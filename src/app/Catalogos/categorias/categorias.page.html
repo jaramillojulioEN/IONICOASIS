@@ -1,7 +1,7 @@
 <app-main-header titulo="Categorias"></app-main-header>
 
 <ion-content [fullscreen]="true" id="main-content">
-  <div class="container ion-padding">
+  <div class="container ion-padding" *ngIf="loaded">
     <ng-container *ngFor="let subcategoria of subcategorias; let i = index;">
       <ion-accordion-group>
         <ion-accordion value="{{ subcategoria.id }}">
@@ -41,4 +41,6 @@
       </ion-accordion-group>
     </ng-container>
   </div>
+
+  <app-skeleton *ngIf="!loaded" type="text" [columns]="3"></app-skeleton>
 </ion-content>

@@ -1,6 +1,5 @@
 <app-main-header titulo="Ordenes"></app-main-header>
-<ion-content id="main-content">
-
+<ion-content id="main-content" *ngIf="caja">
   <ion-grid>
     <ion-row>
       <ion-col size-lg="4" size-sm="12" *ngFor="let mesa of mesas">
@@ -14,5 +13,12 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+</ion-content>
 
+<ion-content id="main-content" *ngIf="!caja">
+  <ion-card class="custom-card">
+    <ion-card-content>
+      <h5>La caja se encuentra cerrada, no se pueden realizar ordenes aún</h5>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

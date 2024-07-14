@@ -1,4 +1,15 @@
-<app-main-header titulo="Información de la orden" [isModal]="true"></app-main-header>
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dissmiss()" fill="clear">
+        <h1><ion-icon color="light" name="arrow-back-outline"></ion-icon></h1>
+      </ion-button>
+    </ion-buttons>
+    <ion-title slot="start">Información de la orden</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
 <ion-content class="order-details">
   <!-- Sección Detalles de la Orden -->
   <!-- <ion-card class="custom-card">

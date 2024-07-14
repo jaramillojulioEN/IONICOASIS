@@ -28,14 +28,17 @@ import { NgxPrintModule } from 'ngx-print';
 import { InicioComponent } from './Modals/inicio/inicio.component'
 import { RetirarComponent } from './Modals/retirar/retirar.component'
 import { ExistenciasComponent } from './Modals/existencias/existencias.component'
-
+import { TicketcajaComponent } from './ticketcaja/ticketcaja.component'
+import { SkeletonComponent } from './skeleton/skeleton.component'
 @NgModule({
   declarations:
     [
       CardComponent,
+      TicketcajaComponent,
       InicioComponent,
       RetirarComponent,
       DetalleComponentReceta,
+      SkeletonComponent,
       ExistenciasComponent,
       TicketComponent,
       DetalleordenComponent,
@@ -63,7 +66,9 @@ import { ExistenciasComponent } from './Modals/existencias/existencias.component
     DetalleComponentReceta,
     MainHeaderComponent,
     ConsumoComponent,
+    SkeletonComponent,
     InicioComponent,
+    TicketcajaComponent,
     ExistenciasComponent,
     ServiciosComponent,
     ChartsComponent,

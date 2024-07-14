@@ -1,0 +1,37 @@
+<table class="tabla" *ngIf="type ==='tabla'">
+  <thead>
+    <tr>
+      <th *ngFor="let col of columnsarr"><ion-skeleton-text [animated]="true"></ion-skeleton-text></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td *ngFor="let col of columnsarr"><ion-skeleton-text [animated]="true"></ion-skeleton-text></td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="type ==='text'">
+  <h5 *ngFor="let col of columnsarr"><ion-skeleton-text [animated]="true"></ion-skeleton-text></h5>
+</div>
+
+<div *ngIf="type === 'cards'">
+  <ion-card>
+    <ion-card-header>
+      <ion-skeleton-text [animated]="true" width="100%"></ion-skeleton-text>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-skeleton-text [animated]="true" *ngFor="let col of columnsarr"></ion-skeleton-text>
+    </ion-card-content>
+  </ion-card>
+</div>
+
+
+<ion-select-option *ngIf="type === 'option'" disabled="true">
+  Cargando...
+</ion-select-option>
+
+
+<div *ngIf="type !== 'option'" style="text-align: center; font-style: italic; font-weight: bold;font-size: 10px;">
+  <h5>Cargando...</h5>
+</div>

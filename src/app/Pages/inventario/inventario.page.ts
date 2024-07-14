@@ -12,6 +12,7 @@ import {ExistenciasComponent} from 'src/app/Components/Modals/existencias/existe
 export class InventarioPage implements OnInit {
   productos: any = [];
   BebidaArry: any = [];
+  loaded: boolean = false;
 
   constructor(
     private ProductoService : ProductoServiceService,
@@ -21,8 +22,10 @@ export class InventarioPage implements OnInit {
   ) { }
   segmento : string = "productos";
   ngOnInit() {
+
     this.ObtenerProducutos();
     this.ObtenerBebidas();
+
     window.addEventListener('successb', () => {
       this.ObtenerBebidas(false);
     })
@@ -50,35 +53,41 @@ export class InventarioPage implements OnInit {
 
   }
   
-  async ObtenerBebidas(load : boolean = false): Promise<void> {
-    (await this.BebidaService.Bebidas(load)).subscribe(
-      async (response: any) => {
-        if (response && response.bebidas) {
-          this.BebidaArry = response.bebidas;
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
-      }
-    );
-  }
+async ObtenerBebidas(load: boolean = false): Promise<void> {
+  this.loaded = false; 
+  try {
+    const response: any = await (await this.BebidaService.Bebidas(load)).toPromise();
 
-  async ObtenerProducutos(load: boolean = true): Promise<void> {
-    (await this.ProductoService.Productos(load)).subscribe(
-      async (response: any) => {
-        if (response && response.productos) {
-          this.productos = response.productos;
-          console.log(this.productos)
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
-      }
-    );
+    if (response && response.bebidas) {
+      this.BebidaArry = response.bebidas;
+    } else {
+      console.error('Error: Respuesta inválida');
+    }
+  } catch (error) {
+    console.error('Error en la solicitud:', error);
+  } finally {
+    this.loaded = true;
   }
+}
+
+
+async ObtenerProducutos(load: boolean = true): Promise<void> {
+  this.loaded = false; 
+  try {
+    const response: any = await (await this.ProductoService.Productos(load)).toPromise();
+
+    if (response && response.productos) {
+      this.productos = response.productos;
+      console.log(this.productos);
+    } else {
+      console.error('Error: Respuesta inválida');
+    }
+  } catch (error) {
+    console.error('Error en la solicitud:', error);
+  } finally {
+    this.loaded = true; 
+  }
+}
+
 
 }

@@ -3,6 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { MesasService } from 'src/app/services/Mesas/mesas.service'
 import { OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.component'
 import { DetalleordenComponent } from 'src/app/Components/Modals/Mesas/detalleorden/detalleorden.component'
+import { CortesService } from 'src/app/services/cortes/cortes.service';
 @Component({
   selector: 'app-mesero',
   templateUrl: './mesero.page.html',
@@ -15,23 +16,51 @@ export class MeseroPage implements OnInit {
     "https://i.imgur.com/lKYGtBL.png",
   ]
   mesas: any = [];
+  caja: boolean = false;
 
-  constructor(private MesasService: MesasService, private ModalController: ModalController) { }
+  constructor(
+    private MesasService: MesasService, 
+    private cortesService : CortesService,
+    private ModalController: ModalController) { }
 
 
   private intervalId: any;
 
   ngOnInit() {
     this.ObtenerMesas()
-
+    this.obtenerCajaActiva()
     this.intervalId = setInterval(() => {
       this.ObtenerMesas(false);
+      this.obtenerCajaActiva()
     }, 5000);
 
 
     window.addEventListener('success', () => {
       this.ObtenerMesas(false)
     })
+  }
+
+  async obtenerCajaActiva(load: boolean = false): Promise<void> {
+    try {
+      (await this.cortesService.CortesActivos(1, load)).subscribe(
+        async (response: any) => {
+          if (response && response.Cortes) {
+            if (response.Cortes.length > 0){
+              this.caja = true;
+            }else{
+              this.caja = false;
+            }
+          } else {
+            console.error('Error: Respuesta inválida');
+          }
+        },
+        (error: any) => {
+          console.error('Error en la solicitud:', error);
+        }
+      );
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
   }
 
   async VerOrden(data: any, titulo: string = "") {
@@ -46,6 +75,7 @@ export class MeseroPage implements OnInit {
     } else {
       modal = await this.ModalController.create({
         component: OrdnComponent,
+        id:"tomaordenmodal",
         componentProps: {
           titulo: titulo,
           idmesa: data.id,

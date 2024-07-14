@@ -13,6 +13,7 @@ import { AlertServiceService } from '../../services/Alerts/alert-service.service
 export class PlatillosPage implements OnInit {
   PlatilloArry: any = [];
   segmento: string = "platillos"
+  loaded : boolean = false;
   constructor(
     private PlatilloService: PlatilloService,
     private ModalController: ModalController,
@@ -56,20 +57,34 @@ export class PlatillosPage implements OnInit {
   }
 
   async ObtenerPlatillos(load: boolean = true, idsucatego: number): Promise<void> {
-    (await this.PlatilloService.Platillos(load, idsucatego)).subscribe(
-      async (response: any) => {
-        if (response && response.platillos) {
-          this.PlatilloArry = response.platillos;
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
-      }
-    );
-    this.ModalController.dismiss()
+    this.loaded = false;
+    this.PlatilloArry = [];
+  
+    try {
+      await new Promise<void>(async (resolve, reject) => {
+        (await this.PlatilloService.Platillos(load, idsucatego)).subscribe(
+          (response: any) => {
+            if (response && response.platillos) {
+              this.PlatilloArry = response.platillos;
+              resolve();
+            } else {
+              console.error('Error: Respuesta inválida');
+              reject('Respuesta inválida');
+            }
+          },
+          (error: any) => {
+            console.error('Error en la solicitud:', error);
+            reject(error);
+          }
+        );
+      });
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
+    }
   }
+  
 
   async EliminarPlatillo(platillo: any) {
     this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar el platillo: " + platillo.nombre, () => this.ConfirmarELiminar(platillo.id));

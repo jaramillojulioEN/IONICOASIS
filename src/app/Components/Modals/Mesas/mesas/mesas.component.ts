@@ -39,17 +39,14 @@ export class MesasComponent implements OnInit {
       this.mesadata.estado = this.data.estado
     }
   }
-
-
-
-
+  
   async confirmar(): Promise<void> {
     const { valido, mensaje } = this.validarMesa(this.mesadata);
     if (valido) {
       if (this.id == 0) {
+        console.log("crear");
         (await this.MesasService.CrearMesa(this.mesadata)).subscribe(
           (response: any) => {
-            console.log(response);
             window.dispatchEvent(new Event('success'));
             this.ac.presentCustomAlert("Exito", response.message)
           },
@@ -58,9 +55,10 @@ export class MesasComponent implements OnInit {
           }
         );
       } else {
+        console.log("update");
+
         (await this.MesasService.ActulizarMesa(this.mesadata)).subscribe(
           (response: any) => {
-            console.log(response);
             this.ac.presentCustomAlert("Exito", response.message)
             window.dispatchEvent(new Event('success'));
           },

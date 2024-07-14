@@ -90,7 +90,6 @@ export class SideMenuComponent implements OnInit {
     } else if (this.rol.id == 2) {
       this.appPages = [
         { title: 'Mesas', url: '/mesero', icon: 'cafe', open: false },
-        { title: 'Mis mesas', url: '/mesas', icon: 'golf', open: false },
       ]
     }
     else if (this.rol.id == 4) {

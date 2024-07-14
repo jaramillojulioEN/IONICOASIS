@@ -10,13 +10,127 @@ export class RecetasService {
   server: string;
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private loaderFunctions: LoaderFunctions,
-    private user : UserServiceService
+    private user: UserServiceService
   ) {
     this.server = this.user.getServer()
   }
 
+  agregarImagenALista(listaid: number, b64: string) {
+    const url = this.server + 'api/Recetas/CrearImagenes';
+    const body = {
+      idlistaimagen: listaid,
+      cadenab64: b64
+    };
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+  
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.post(url, body, { headers }).pipe(
+          catchError(error => {
+            console.error('Error al agregar la imagen:', error);
+            return throwError('Error al agregar la imagen');
+          })
+        ).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  
+  agregarIngredienteALista(data: any) {
+    const url = this.server + 'api/Recetas/CrearIngredientes';
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+  
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.post(url, data, { headers }).pipe(
+          catchError(error => {
+            console.error('Error al agregar el ingrediente:', error);
+            return throwError('Error al agregar el ingrediente');
+          })
+        ).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  
+  async EliminarIngrediente(idi: number, idl: number): Promise<Observable<any>> {
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.get<any>(`${this.server}api/Recetas/EliminarIngrediente/${idi}/${idl}`).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  
+  async CrearReceta(data: object): Promise<Observable<any>> {
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.post<any>(`${this.server}api/Recetas/CrearReceta`, data).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  
+  async EliminarImagen(idi: number, idl: number): Promise<Observable<any>> {
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.get<any>(`${this.server}api/Recetas/EliminarImagen/${idi}/${idl}`).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  
 
   crearListaIngredientes(descripcion: string) {
     const url = this.server + 'api/Recetas/CrearListaIngredientes';
@@ -52,38 +166,6 @@ export class RecetasService {
     );
   }
 
-  agregarImagenALista(listaid: number, b64: string) {
-    const url = this.server + 'api/Recetas/CrearImagenes';
-    const body = {
-      idlistaimagen: listaid,
-      cadenab64: b64
-    };
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-
-    return this.http.post(url, body, { headers }).pipe(
-      catchError(error => {
-        console.error('Error al agregar la imagen:', error);
-        return throwError('Error al agregar la imagen');
-      })
-    );
-  }
-
-  agregarIngredienteALista(data : any) {
-    const url = this.server + 'api/Recetas/CrearIngredientes';
-
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-
-    return this.http.post(url, data, { headers }).pipe(
-      catchError(error => {
-        console.error('Error al agregar el ingrediente:', error);
-        return throwError('Error al agregar el ingrediente');
-      })
-    );
-  }
 
   obtenerItemsListaIngredientes(id: number) {
     const url = `${this.server}api/Recetas/ObtenerIngredientes/${id}`;
@@ -94,6 +176,7 @@ export class RecetasService {
       })
     );
   }
+
 
   obtenerItemsListaImagenes(id: number) {
     const url = `${this.server}api/Recetas/ObtenerImagenes/${id}`;
@@ -106,44 +189,10 @@ export class RecetasService {
   }
 
 
-  async EliminarIngrediente(idi: number, idl: number): Promise<Observable<any>> {
-    try {
-      await this.loaderFunctions.StartLoader();
-      return this.http.get<any>(`${this.server}api/Recetas/EliminarIngrediente/${idi}/${idl}`);
-    } finally {
-      this.loaderFunctions.StopLoader();
-    }
-  }
-
-  async CrearReceta(data: object): Promise<Observable<any>> {
-    try {
-      await this.loaderFunctions.StartLoader();
-      return this.http.post<any>(`${this.server}api/Recetas/CrearReceta`, data);
-    } finally {
-      this.loaderFunctions.StopLoader();
-    }
-  }
-
   async Recetas(load: Boolean = true): Promise<Observable<any>> {
     try {
-      if (load) {
-        await this.loaderFunctions.StartLoader();
-      }
       return this.http.get<any>(`${this.server}api/Recetas/TodasRecetas`);
     } finally {
-      if (load) {
-        this.loaderFunctions.StopLoader();
-      }
-    }
-  }
-
-
-  async EliminarImagen(idi: number, idl: number): Promise<Observable<any>> {
-    try {
-      await this.loaderFunctions.StartLoader();
-      return this.http.get<any>(`${this.server}api/Recetas/EliminarImagen/${idi}/${idl}`);
-    } finally {
-      this.loaderFunctions.StopLoader();
     }
   }
 

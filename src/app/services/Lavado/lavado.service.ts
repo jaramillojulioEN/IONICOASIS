@@ -17,58 +17,64 @@ export class LavadoService {
   }
   async Vehiculos(loader: boolean = true): Promise<Observable<any>> {
     try {
-      if (loader)
-        await this.loaderFunctions.StartLoader();
       return this.http.get<any>(`${this.server}api/Servicios/TodosServicios`);
     } finally {
-      if (loader)
-        this.loaderFunctions.StopLoader();
+
     }
   }
 
   async Servicios(loader: boolean = true): Promise<Observable<any>> {
     try {
-      if (loader)
-        await this.loaderFunctions.StartLoader();
       return this.http.get<any>(`${this.server}api/Servicios/Servicios`);
     } finally {
-      if (loader)
-        this.loaderFunctions.StopLoader();
     }
   }
 
   async lavados(estado: number, loader: boolean = true): Promise<Observable<any>> {
     try {
-      if (loader)
-        await this.loaderFunctions.StartLoader();
       return this.http.get<any>(`${this.server}api/Servicios/Lavados/${estado}`);
     } finally {
-      if (loader)
-        this.loaderFunctions.StopLoader();
     }
   }
 
   async CrearLavado(data: object, load: boolean = true): Promise<Observable<any>> {
-    console.log(data)
-    try {
-      if (load)
-        await this.loaderFunctions.StartLoader();
-      return this.http.post<any>(`${this.server}api/Servicios/AccionesServicio`, data);
-    } finally {
-      if (load)
-        this.loaderFunctions.StopLoader();
-    }
+    return new Observable(observer => {
+      const loaderPromise = load ? this.loaderFunctions.StartLoader() : Promise.resolve();
+  
+      loaderPromise.then(() => {
+        this.http.post<any>(`${this.server}api/Servicios/AccionesServicio`, data).subscribe(
+          async response => {
+            if (load) await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            if (load) await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
   }
-
-  async ImprimirRecibo(data: object, load: boolean = false): Promise<Observable<any>> {
-    console.log(data)
-    try {
-      if (load)
-        await this.loaderFunctions.StartLoader();
-      return this.http.post<any>(`${this.server}api/Ordenes/Imprimir`, data);
-    } finally {
-      if (load)
-        this.loaderFunctions.StopLoader();
-    }
+  
+  async ImprimirRecibo(data: object, load: boolean = true): Promise<Observable<any>> {
+    return new Observable(observer => {
+      const loaderPromise = load ? this.loaderFunctions.StartLoader("Imprimiendo Ticket") : Promise.resolve();
+  
+      loaderPromise.then(() => {
+        this.http.post<any>(`${this.server}api/Ordenes/Imprimir`, data).subscribe(
+          async response => {
+            if (load) await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            if (load) await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
   }
+  
 }

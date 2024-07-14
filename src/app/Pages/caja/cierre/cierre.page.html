@@ -3,10 +3,10 @@
 <ion-content [fullscreen]="true" id="main-content">
 
     <ion-segment [(ngModel)]="segmento">
-        <ion-segment-button value="estado">
+        <ion-segment-button (click)="obtenerCortesActivos(true)" value="estado">
             <ion-label>Estado de la caja</ion-label>
         </ion-segment-button>
-        <ion-segment-button value="cerradas">
+        <ion-segment-button (click)="obtenerCortesPasados(true)" value="cerradas">
             <ion-label>Estados pasados</ion-label>
         </ion-segment-button>
     </ion-segment>
@@ -17,7 +17,7 @@
                 <ion-grid>
                     <ion-row>
                         <ion-col size-lg="6" size-sm="12">
-                            <ion-card>
+                            <ion-card *ngIf="loaded2">
                                 <ion-card-header>
                                     <ion-card-subtitle>Fecha y hora de inicio</ion-card-subtitle>
                                 </ion-card-header>
@@ -32,24 +32,18 @@
                                             <ion-label slot="end">{{ getpart(corte.fechainicio, 1) }}</ion-label>
                                         </ion-item>
                                         <ion-item>
-                                            <ion-button class="crear" (click)="cerracaja(corte)" expand="full">Cerrar
+                                            <ion-button class="crear" *ngIf="roles.id === 1" (click)="CerarCaja(corte)" expand="full">Cerrar
                                                 la caja</ion-button>
-
+                                            <ion-button class="crear" (click)="vergraficopasado(corte)" expand="full">Ver gráfico</ion-button>
                                         </ion-item>
                                     </ion-list>
                                 </ion-card-content>
                             </ion-card>
-
-                            <ion-card>
-                                <ion-card-content>
-                                    <app-charts [colores]="colores" [labels]="labels" [data]="data"></app-charts>
-                                </ion-card-content>
-                            </ion-card>
+                            <app-skeleton *ngIf="!loaded2" [columns]="3" type="cards"></app-skeleton>
 
                         </ion-col>
                         <ion-col size-lg="6" size-sm="12">
-
-                            <ion-card>
+                            <ion-card *ngIf="loaded2">
                                 <ion-card-header>
                                     <ion-card-subtitle>Datos de la caja</ion-card-subtitle>
                                 </ion-card-header>
@@ -57,9 +51,9 @@
                                     <ion-list lines="none">
                                         <ion-list>
                                             <ion-item *ngFor="let label of labels; let i = index"
-                                            class="ion-margin-bottom"
-                                                [style.background-color]="colores[i]">
-                                                <div style="height: 100%; width: 10px;" [style.background-color]="colores[i]"></div>
+                                                class="ion-margin-bottom" [style.background-color]="colores[i]">
+                                                <div style="height: 100%; width: 10px;"
+                                                    [style.background-color]="colores[i]"></div>
                                                 <ion-label>{{ label }}:</ion-label>
                                                 <ion-label slot="end">${{ data[i] }}</ion-label>
                                             </ion-item>
@@ -67,6 +61,8 @@
                                     </ion-list>
                                 </ion-card-content>
                             </ion-card>
+                            <app-skeleton *ngIf="!loaded2" [columns]="8" type="cards"></app-skeleton>
+
                         </ion-col>
                     </ion-row>
                 </ion-grid>
@@ -76,7 +72,7 @@
             <ion-card-content>
                 <ion-text>La caja fue cerrada, contacta con el administrador para activar la caja o volver a activar la
                     pasada</ion-text>
-                <ion-button class="crear" (click)="Iniciar()" expand="full">Abrir
+                <ion-button *ngIf="roles.id === 1" class="crear" (click)="Iniciar()" expand="full">Abrir
                     la caja</ion-button>
             </ion-card-content>
         </ion-card>
@@ -85,7 +81,7 @@
     <div class="estado" *ngIf="segmento !== 'estado'">
         <div class="container">
             <div class="table-container">
-                <table class="tabla">
+                <table class="tabla" *ngIf="loaded1">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -116,6 +112,8 @@
                         <tr *ngIf="CortePasado.length === 0">No se ha cerrado ninguna caja</tr>
                     </tbody>
                 </table>
+                <app-skeleton *ngIf="!loaded1" [columns]="11" type="tabla"></app-skeleton>
+
             </div>
         </div>
 

@@ -4,10 +4,10 @@
  
 
     <ion-segment [(ngModel)]="segmento">
-        <ion-segment-button value="curso">
+        <ion-segment-button (click)="obtenerCortesActivos()" value="curso">
           <ion-label>Cortes nuevos</ion-label>
         </ion-segment-button>
-        <ion-segment-button value="pasado">
+        <ion-segment-button (click)="obtenerCortesActivos(false, false)" value="pasado">
           <ion-label>Cortes Pasados</ion-label>
         </ion-segment-button>
       </ion-segment>
@@ -28,7 +28,7 @@
           </ion-row>
         </div>
         <div class="table-container">
-          <table class="tabla">
+          <table class="tabla" *ngIf="loaded">
             <thead>
               <tr>
                 <th>ID</th>
@@ -54,13 +54,14 @@
                 <tr>No se han realizado retiros de caja</tr>
             </tbody>
           </table>
+          <app-skeleton *ngIf="!loaded" [columns]="5" type="tabla"></app-skeleton>
         </div>
       </div>
 
 
       <div class="jaj" *ngIf="segmento!=='curso'">
 
-        <ion-card>
+        <ion-card *ngIf="loaded">
           <ion-card-content class="scroll-container">
             <ion-item slot="end">
               <ion-label *ngIf="rol.id ===1">Seleccionar Fecha</ion-label>
@@ -114,8 +115,12 @@
                 <ion-icon name="chevron-forward-outline"></ion-icon>
               </ion-button>
             </div>
-    
           </ion-card-content>
+        </ion-card>
+        <ion-card *ngIf="!loaded">
+          <ion-content>
+            <app-skeleton [columns]="5" type="tabla"></app-skeleton>
+          </ion-content>
         </ion-card>
 
       </div>

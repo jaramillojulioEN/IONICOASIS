@@ -1,7 +1,7 @@
 <app-main-header titulo="Lavado de Vehiculos"></app-main-header>
 <ion-content [fullscreen]="true" id="main-content">
   <ion-segment [(ngModel)]="segmento" *ngIf="rol.id!==1">
-    <ion-segment-button value="pago" (click)="obtenerLavados(1)">
+    <ion-segment-button value="pago" *ngIf="caja" (click)="obtenerLavados(1)">
       <ion-label>Lavado</ion-label>
     </ion-segment-button>
     <ion-segment-button value="hoy" (click)="historial()">
@@ -10,7 +10,7 @@
   </ion-segment>
 
   <div *ngIf="segmento === 'pago'" class="ion-padding">
-    <ion-grid>
+    <ion-grid *ngIf="loaded">
       <ion-row>
         <ion-col size="4">
           <ion-select aria-label="Vehiculo" interface="action-sheet" [(ngModel)]="vehiculo"
@@ -36,7 +36,7 @@
     <ion-card>
       <ion-card-content class="scroll-container">
         <div class="table-wrapper">
-          <table class="tabla">
+          <table class="tabla" *ngIf="loaded">
             <thead>
               <tr>
                 <th>NO</th>
@@ -69,6 +69,7 @@
               </tr>
             </ng-template>
           </table>
+          <app-skeleton *ngIf="!loaded" [columns]="5" type="tabla"></app-skeleton>
         </div>
       </ion-card-content>
     </ion-card>
@@ -77,7 +78,7 @@
   </div>
   <div *ngIf="segmento === 'hoy'" class="ion-padding">
     <ion-card>
-      <ion-card-content class="scroll-container">
+      <ion-card-content class="scroll-container" *ngIf="loaded">
         <ion-item slot="end">
           <ion-label *ngIf="rol.id ===1">Seleccionar Fecha</ion-label>
           <ion-label *ngIf="rol.id !==1">Hoy</ion-label>
@@ -85,6 +86,9 @@
           <ion-button *ngIf="rol.id ===1" (click)="openFilter($event)" class="crear">
             <ion-icon slot="start" name="filter"></ion-icon>
             <ion-label>Fecha</ion-label>
+          </ion-button>
+          <ion-button (click)="obtenerLavados(2, true)" class="crear">
+            <ion-label>Recargar</ion-label>
           </ion-button>
           <ion-button style="margin-left: 8px;" color="danger" *ngIf="filtered" (click)="deletefilter()" class="crear">
             <ion-icon slot="start" name="trash"></ion-icon>
@@ -129,7 +133,9 @@
             <ion-icon name="chevron-forward-outline"></ion-icon>
           </ion-button>
         </div>
-
+      </ion-card-content>
+      <ion-card-content *ngIf="!loaded">
+        <app-skeleton *ngIf="!loaded" [columns]="5" type="tabla"></app-skeleton>
       </ion-card-content>
     </ion-card>
   </div>

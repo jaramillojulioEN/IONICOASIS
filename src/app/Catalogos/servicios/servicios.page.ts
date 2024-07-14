@@ -11,7 +11,7 @@ import { AlertServiceService } from 'src/app/services/Alerts/alert-service.servi
 export class ServiciosPage implements OnInit {
   vehiculos: any = [];
   servicios: any = [];
-
+  loaded: boolean = false;
   constructor(
     private LavadoService: LavadoService,
     private ModalController: ModalController,
@@ -20,41 +20,45 @@ export class ServiciosPage implements OnInit {
   segmento: string = "autos"
   ngOnInit() {
     this.obtenerVehiculos()
+    this.obtenerServicios(false)
     window.addEventListener('success', () => {
       this.obtenerVehiculos(false);
+      this.obtenerServicios(false)
     })
   }
 
   async obtenerVehiculos(load: boolean = true): Promise<void> {
-    (await this.LavadoService.Vehiculos(load)).subscribe(
-      async (response: any) => {
-        if (response && response.Servicios) {
-          this.vehiculos = response.Servicios;
-          this.obtenerServicios(false)
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+    this.loaded = false;
+    try {
+      const response: any = await (await this.LavadoService.Vehiculos(load)).toPromise();
+      if (response && response.Servicios) {
+        this.vehiculos = response.Servicios;
+      } else {
+        console.error('Error: Respuesta inválida');
       }
-    );
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
+    }
   }
 
+
   async obtenerServicios(load: boolean = false): Promise<void> {
-    (await this.LavadoService.Servicios(load)).subscribe(
-      async (response: any) => {
-        if (response && response.Servicios) {
-          this.servicios = response.Servicios;
-          console.log(this.servicios)
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+    try {
+      this.loaded = false;
+      const response: any = await (await this.LavadoService.Servicios(load)).toPromise();
+      if (response && response.Servicios) {
+        this.servicios = response.Servicios;
+        console.log(this.servicios);
+      } else {
+        console.error('Error: Respuesta inválida');
       }
-    );
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
+    }
   }
 
 

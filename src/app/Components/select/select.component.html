@@ -2,18 +2,32 @@
   <ion-searchbar show-cancel-button="focus" [(ngModel)]="criterio" placeholder="Buscar"></ion-searchbar>
   <ion-list lines="none" *ngIf="isPlatillo">
     <ion-item *ngFor="let pl of PlatilloArry" (click)="Dissmiss(pl)">{{pl.nombre}}</ion-item>
+    <ion-item *ngIf="PlatilloArry.length === 0 && loaded">No hay platillos</ion-item>
+    <ion-item *ngIf="!loaded">
+      <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+    </ion-item>
   </ion-list>
   <ion-list lines="none" *ngIf="!isPlatillo">
     <ion-list-header>
       Bebidas
     </ion-list-header>
     <ion-item *ngFor="let bd of BebidaArry" (click)="Dissmiss(bd)">{{bd.nombre}}</ion-item>
+    <ion-item *ngIf="BebidaArry === 0 && loaded">No hay Bebidas</ion-item>
+
+    <ion-item *ngIf="!loaded">
+      <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+    </ion-item>
   </ion-list>
   <ion-list lines="none" *ngIf="!isPlatillo">
     <ion-list-header>
       Bebidas preparadas
     </ion-list-header>
     <ion-item *ngFor="let bd of bebsPrp" (click)="Dissmiss(bd, true)">{{bd.nombre}}</ion-item>
+    <ion-item *ngIf="bebsPrp === 0 && loaded">No hay preparados</ion-item>
+
+    <ion-item *ngIf="!loaded">
+      <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+    </ion-item>
   </ion-list>
 
 </div>

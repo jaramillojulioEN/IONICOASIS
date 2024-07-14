@@ -5,7 +5,8 @@ import { CortesService } from 'src/app/services/cortes/cortes.service';
 import { ChartsComponent } from 'src/app/Components/Extras/charts/charts.component'
 import { InicioComponent } from 'src/app/Components/Modals/inicio/inicio.component';
 import { LoaderFunctions } from 'src/functions/utils';
-
+import { UserServiceService } from 'src/app/services/Users/user-service.service';
+import { TicketcajaComponent } from 'src/app/Components/ticketcaja/ticketcaja.component'
 @Component({
   selector: 'app-cierre',
   templateUrl: './cierre.page.html',
@@ -26,70 +27,77 @@ export class CierrePage implements OnInit {
   data: number[] = [];
   CortePasado: any = [];
   intervalId: any;
+  roles: any = [];
+
+  loaded1: boolean = false
+  loaded2: boolean = false
 
   constructor(private cortesService: CortesService,
     private ac: AlertServiceService,
     private md: ModalController,
-    private functiosn : LoaderFunctions
+    private us: UserServiceService,
+
+    private functiosn: LoaderFunctions
   ) { }
 
   ngOnInit() {
-    this.obtenerCortesActivos();
-    this.obtenerCortesPasados()
+    this.obtenerCortesActivos(true);
+    this.obtenerCortesPasados(true)
 
-    // this.intervalId = setInterval(() => {
-    //   this.obtenerCortesPasados(false)
-    //   this.obtenerCortesActivos(false);
-    // }, 10000);
+    this.roles = this.us.getRol();
+    this.intervalId = setInterval(() => {
+      this.obtenerCortesPasados(false)
+      this.obtenerCortesActivos(false);
+    }, 10000);
 
     window.addEventListener('success', () => {
       this.obtenerCortesActivos(true);
-      this.obtenerCortesPasados(false);
+      this.obtenerCortesPasados(true);
     })
 
   }
 
-  async obtenerCortesPasados(load: boolean = false): Promise<void> {
+  async obtenerCortesPasados(load: boolean = true): Promise<void> {
+    if (load) {
+      this.loaded1 = false
+    }
     try {
-      (await this.cortesService.CortesActivos(2, load)).subscribe(
-        async (response: any) => {
-          if (response && response.Cortes) {
-            
-            this.CortePasado = response.Cortes;
+      const response: any = await (await this.cortesService.CortesActivos(2, load)).toPromise();
 
-          } else {
-            console.error('Error: Respuesta inválida');
-          }
-        },
-        (error: any) => {
-          console.error('Error en la solicitud:', error);
-        }
-      );
+      if (response && response.Cortes) {
+        this.CortePasado = response.Cortes;
+      } else {
+        console.error('Error: Respuesta inválida');
+      }
     } catch (error) {
       console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded1 = true;
     }
   }
+
 
   async obtenerCortesActivos(load: boolean = true): Promise<void> {
+    if (load) {
+      this.loaded2 = false
+    }
     try {
-      (await this.cortesService.CortesActivos(1, load)).subscribe(
-        async (response: any) => {
-          if (response && response.Cortes) {
-            this.CorteActivo = response.Cortes;
-            if (this.CorteActivo.length > 0)
-              this.actualizarDatosGrafico()
-          } else {
-            console.error('Error: Respuesta inválida');
-          }
-        },
-        (error: any) => {
-          console.error('Error en la solicitud:', error);
+      const response: any = await (await this.cortesService.CortesActivos(1, load)).toPromise();
+      if (response && response.Cortes) {
+        this.CorteActivo = response.Cortes;
+        if (this.CorteActivo.length > 0) {
+          this.actualizarDatosGrafico();
         }
-      );
+      } else {
+        console.error('Error: Respuesta inválida');
+      }
     } catch (error) {
       console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded2 = true;
     }
   }
+
 
   cerracaja(caja: any): void {
     caja.estado = 2
@@ -103,8 +111,8 @@ export class CierrePage implements OnInit {
     (await this.cortesService.ActulizarCaja(caja)).subscribe(
       async (response: any) => {
         if (response && response.message) {
-          this.obtenerCortesActivos(false)
-          this.obtenerCortesPasados(false)
+          this.obtenerCortesActivos(true)
+          this.obtenerCortesPasados(true)
           this.ac.presentCustomAlert("Alerta", response.message)
         } else {
           console.error('Error: Respuesta inválida');
@@ -173,6 +181,17 @@ export class CierrePage implements OnInit {
       return fechaarray[indice];
     }
     return '';
+  }
+
+  async CerarCaja(caja: any) {
+    const modal = await this.md.create({
+      component: TicketcajaComponent,
+      componentProps: {
+        caja: caja
+      },
+      backdropDismiss: true
+    });
+    return await modal.present();
   }
 
   async Iniciar(): Promise<void> {

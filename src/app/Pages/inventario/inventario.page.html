@@ -1,16 +1,17 @@
 <app-main-header titulo="Inventario"></app-main-header>
 <ion-content [fullscreen]="true" id="main-content" class="ion-padding">
+
   <ion-segment [(ngModel)]="segmento">
-    <ion-segment-button value="productos">
+    <ion-segment-button (click)="ObtenerProducutos()" value="productos">
       <ion-label>Productos</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="bebidas">
+    <ion-segment-button (click)="ObtenerBebidas()" value="bebidas">
       <ion-label>Bebidas</ion-label>
     </ion-segment-button>
   </ion-segment>
 
   <div class="table-container" *ngIf="segmento === 'productos'">
-    <table class="tabla">
+    <table class="tabla" *ngIf="loaded">
       <thead>
         <tr>
           <th>Producto</th>
@@ -43,10 +44,12 @@
         </tr>
       </tbody>
     </table>
+    <app-skeleton *ngIf="!loaded" [columns]="8" type="tabla"></app-skeleton>
+
   </div>
 
   <div class="table-container" *ngIf="segmento === 'bebidas'">
-    <table class="tabla">
+    <table class="tabla" *ngIf="loaded">
       <thead>
         <tr>
           <th>Bebida</th>
@@ -79,5 +82,6 @@
         </tr>
       </tbody>
     </table>
+    <app-skeleton *ngIf="!loaded" [columns]="8" type="tabla"></app-skeleton>
   </div>
 </ion-content>

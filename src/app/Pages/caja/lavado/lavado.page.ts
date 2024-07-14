@@ -8,6 +8,7 @@ import { PopoverController } from '@ionic/angular';
 import { DatepickerComponent } from 'src/app/Components/Secciones/datepicker/datepicker.component'
 import { LoaderFunctions } from 'src/functions/utils'
 import { formatDate } from '@angular/common';
+import { CortesService } from 'src/app/services/cortes/cortes.service';
 @Component({
   selector: 'app-lavado',
   templateUrl: './lavado.page.html',
@@ -48,6 +49,8 @@ export class LavadoPage implements OnInit {
   fecha: string = "";
   message: string = "Error desconocido, conecta con soporte";
   rol: any;
+  caja: boolean = false;
+  intervalId: any;
 
   constructor(
     private fns: LoaderFunctions,
@@ -56,13 +59,15 @@ export class LavadoPage implements OnInit {
     private ac: AlertServiceService,
     private LavadoService: LavadoService,
     protected UserServiceService: UserServiceService,
-    private funcs: LoaderFunctions
+    private funcs: LoaderFunctions,
+    private cortesService :CortesService
   ) {
     const today = new Date();
     this.fecha = formatDate(today, 'yyyy-MM-dd', 'en-US');
   }
 
   ngOnInit() {
+    this.obtenerCajaActiva()
     this.rol = this.UserServiceService.getRol()
     this.segmento = this.rol.id === 1 ? "hoy" : "pago"
     window.addEventListener('success', () => {
@@ -73,6 +78,9 @@ export class LavadoPage implements OnInit {
     } else {
       this.obtenerLavados(1)
     }
+    this.intervalId = setInterval(() => {
+      this.obtenerCajaActiva()
+    }, 5000);
     this.fechaActual = this.funcs.obtenerFechaHoraActual()
   }
 
@@ -119,32 +127,64 @@ export class LavadoPage implements OnInit {
     return stt
   }
 
-  async obtenerLavados(estado: number, load: boolean = true): Promise<void> {
-    (await this.LavadoService.lavados(estado, load)).subscribe(
-      async (response: any) => {
-        if (response && response.Lavados) {
-          if (estado == 1) {
-            this.lavados = response.Lavados;
-            console.log(this.lavados)
-          } else {
-            this.lavadoshistorial = response.Lavados;
-            this.lavadoshistorialnf = response.Lavados;
-            if (this.rol.id !== 1) {
-              this.lavadoshistorial = this.fns.filterbydate(this.lavadoshistorialnf, this.fechaActual)
+  async obtenerCajaActiva(load: boolean = false): Promise<void> {
+    try {
+      (await this.cortesService.CortesActivos(1, load)).subscribe(
+        async (response: any) => {
+          if (response && response.Cortes) {
+            if (response.Cortes.length > 0){
+              this.caja = true;
+              this.segmento = this.rol.id !==1 ? "pago" : "hoy"
             }
-            this.cargarLavadosHistorialPagina();
+            else{
+              this.caja = false;
+              this.segmento = "hoy"
+            }
+          } else {
+            console.error('Error: Respuesta inválida');
           }
-          this.obtenerServicios()
-        } else {
-          console.error('Error: Respuesta inválida');
+        },
+        (error: any) => {
+          console.error('Error en la solicitud:', error);
         }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
-      }
-    );
-
+      );
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
   }
+
+  loaded :boolean = false;
+  async obtenerLavados(estado: number, load: boolean = true): Promise<void> {  
+    this.loaded = false;
+    try {
+      const response: any = await (await this.LavadoService.lavados(estado, load)).toPromise();
+  
+      if (response && response.Lavados) {
+        if (estado === 1) {
+          this.lavados = response.Lavados;
+          console.log(this.lavados);
+        } else {
+          this.lavadoshistorial = response.Lavados;
+          this.lavadoshistorialnf = response.Lavados;
+          
+          if (this.rol.id !== 1) {
+            this.lavadoshistorial = this.fns.filterbydate(this.lavadoshistorialnf, this.fechaActual);
+          }
+          
+          this.cargarLavadosHistorialPagina();
+        }
+        
+        this.obtenerServicios();
+      } else {
+        console.error('Error: Respuesta inválida');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true; 
+    }
+  }
+  
 
   async Cobrar(lavado: any): Promise<void> {
     const modal = await this.mc.create({

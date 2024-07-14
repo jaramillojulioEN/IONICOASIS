@@ -1,52 +1,36 @@
 import { Injectable } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { LoadingController, ModalController } from '@ionic/angular';
 import { LoaderComponent } from 'src/app/Components/Modals/LoadingModal/loader/loader.component';
+import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class LoaderFunctions {
+    id: string = "defaultLoader";
 
-    constructor(private modalController: ModalController) { }
+    constructor(private modalController: ModalController,
+        private ld: LoadingController
+    ) { }
 
-    async StartLoader() {
-        try {
-            // Obtén el modal en la parte superior de la pila
-            const topModal = await this.modalController.getTop();
-            
-            // Si el modal en la parte superior es el Loader, simplemente retorna
-            if (topModal && topModal.id === "ModalLoading") {
-                return Promise.resolve();
-            }
-            
-            // Cierra cualquier modal existente
-            if (topModal) {
-                await this.modalController.dismiss();
-            }
-            
-            // Crea y presenta el modal de carga
-            const modal = await this.modalController.create({
-                id: "ModalLoading",
-                component: LoaderComponent,
-                backdropDismiss: false
-            });
-            return await modal.present();
-        } catch (error) {
-            console.error('Error starting loader:', error);
-        }
-    }
+    async StartLoader(mensaje: string = "Cargando...") {
+
+        const loading = await this.ld.create({
+          message: mensaje,
+          translucent: true,
+          backdropDismiss: false,
+          spinner: 'bubbles',
+          id: this.id
+        });
+        await loading.present();
+      }
     
-    async StopLoader() {
-        try {
-            // Intenta cerrar el modal de carga
-            await this.modalController.dismiss(null, undefined, "ModalLoading");
-        } catch (error) {
-            // Si el error es que el modal no existe, simplemente ignora
-            if (error !== 'overlay does not exist') {
-                console.error('Error stopping loader:', error);
-            }
+      async StopLoader(id: string = "defaultLoader") {
+        const loading = await this.ld.getTop(); 
+        if (loading && loading.id === id) {
+          await this.ld.dismiss();
         }
-    }
+      }
 
 
 

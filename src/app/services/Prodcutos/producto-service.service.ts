@@ -16,75 +16,91 @@ export class ProductoServiceService {
     this.server = this.user.getServer()
   }
 
-  async CrearProducto(cantidad: number, nombre: string, idcategoria: number, fecha:string): Promise<Observable<any>> {
-    try {
-      await this.loaderFunctions.StartLoader();
-      const data = {
-        nombre: nombre,
-        cantidad: cantidad,
-        fecha : fecha,
-        idcategoria: idcategoria
-      };
-      return this.http.post<any>(`${this.server}api/Productos/CrearProducto`, data);
-    } finally {
-      this.loaderFunctions.StopLoader();
-    }
-  }
-
-  async Productos(load : boolean): Promise<Observable<any>> {
-    try {
-      if(load)
-        await this.loaderFunctions.StartLoader();
-      return this.http.get<any>(`${this.server}api/Productos/TodosProductos`);
-    } finally {
-      if(load)
-        this.loaderFunctions.StopLoader();
-    }
-  }
-
-  async EliminarProductos(id: number): Promise<Observable<any>> {
-    try {
-      const data = {
-        id: id
-      };
-      const options = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json'
-        }),
-        body: data
-      };
-
-      await this.loaderFunctions.StartLoader();
-      return this.http.delete<any>(`${this.server}api/Productos/EliminarProducto`, options);
-    } finally {
-      this.loaderFunctions.StopLoader();
-    }
-  }
-  async buscarProducto(id: number): Promise<Observable<any>> {
-    try {
-      await this.loaderFunctions.StartLoader();
-      return this.http.get<any>(`${this.server}api/Productos/BuscarProducto/${id}`);
-    } finally {
-      this.loaderFunctions.StopLoader();
-    }
-  }
-
-  async ActulizarProducto(data: object): Promise<Observable<any>> {
-    try {
-      await this.loaderFunctions.StartLoader();
-      return new Observable(observer => {
-        this.http.put<any>(`${this.server}api/Productos/AlctualizarProducto`, data).subscribe(
-          updatedResponse => {
-            observer.next(updatedResponse);
+  async CrearProducto(cantidad: number, nombre: string, idcategoria: number, fecha: string): Promise<Observable<any>> {
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        const data = {
+          nombre: nombre,
+          cantidad: cantidad,
+          fecha: fecha,
+          idcategoria: idcategoria
+        };
+  
+        this.http.post<any>(`${this.server}api/Productos/CrearProducto`, data).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
             observer.complete();
           },
-          error => {
+          async error => {
+            await this.loaderFunctions.StopLoader();
             observer.error(error);
           }
         );
       });
+    });
+  }
+  
+  async EliminarProductos(id: number): Promise<Observable<any>> {
+    const data = {
+      id: id
+    };
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: data
+    };
+  
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.delete<any>(`${this.server}api/Productos/EliminarProducto`, options).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  
+  async ActulizarProducto(data: object): Promise<Observable<any>> {
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.put<any>(`${this.server}api/Productos/AlctualizarProducto`, data).subscribe(
+          async updatedResponse => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(updatedResponse);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  
+
+  async Productos(load : boolean): Promise<Observable<any>> {
+    try {
+      return this.http.get<any>(`${this.server}api/Productos/TodosProductos`);
     } finally {
-      this.loaderFunctions.StopLoader();
+    
+    }
+  }
+
+
+  async buscarProducto(id: number): Promise<Observable<any>> {
+    try {
+      return this.http.get<any>(`${this.server}api/Productos/BuscarProducto/${id}`);
+    } finally {
     }
   }
 }

@@ -129,9 +129,6 @@
           </ion-item>
           <br>
           <!-- <button styleSheetFile="assets/css/custom1.css" printSectionId="print-section" ngxPrint>print</button> -->
-          <button type="button" (click)="printTicket()">
-            Print Form
-         </button>
           <br>
           <ion-button color="primary" class="crear" (click)="lavado.length !== 0 ? cobrarl() : cobrar()"
             expand="full">Cobrar</ion-button>
@@ -142,6 +139,7 @@
           <div id="print-section" class="body-tt ion-margin-top">
             <div class="header-tt">
               <p>{{usuario.sucursales.sucursal}}</p>
+              <img src="https://i.imgur.com/fvrkb3f.png" width="150" alt="">
               <p>{{usuario.sucursales.direccion}}</p>
               <p>Tel: (123) 456-7890</p>
               <p *ngIf="orden.length != 0">Fecha: {{orden.fecha}}</p>
@@ -157,11 +155,12 @@
                   <span>${{detalleb.bebidas.precioventa}}</span>
                 </div>
               </div>
-              <div class="item" *ngIf="lavagregado">
+              <!-- <div class="item" *ngIf="lavagregado">
                 <span>{{lavagregado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</span>
                 <span>{{lavagregado.total}}</span>
-              </div>
-              <div *ngIf="lavagregado">
+              </div> -->
+              <div *ngIf="lavagregado" style="font-weight: bolder;">
+                <div>---------Lavados-------</div>
                 <div class="item" *ngFor="let det of lavagregado.lavadodet">
                   <span>{{det.Servicios.nombre_servicio}}</span>
                   <span>${{det.Servicios.precio}}</span>

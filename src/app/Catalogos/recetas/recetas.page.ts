@@ -12,6 +12,7 @@ import { UserServiceService } from 'src/app/services/Users/user-service.service'
 })
 export class RecetasPage implements OnInit {
   recetas: any;
+  loaded: boolean = false;
 
   constructor(
     private modalController: ModalController,
@@ -40,20 +41,24 @@ export class RecetasPage implements OnInit {
   }
 
   async ObtenerRecetas(): Promise<void> {
-    (await this.RecetasService.Recetas()).subscribe(
-      async (response: any) => {
-        if (response && response.recetas) {
-          this.recetas = response.recetas;
-          console.log(this.recetas)
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+    this.loaded = false;
+  
+    try {
+      const response: any = await (await this.RecetasService.Recetas()).toPromise();
+  
+      if (response && response.recetas) {
+        this.recetas = response.recetas;
+        console.log(this.recetas);
+      } else {
+        console.error('Error: Respuesta inválida');
       }
-    );
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
+    }
   }
+  
 
 
   Opciones(data: any) {

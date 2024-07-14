@@ -1,67 +1,104 @@
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    padding: 16px;
-    box-sizing: border-box;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.login-card-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 800px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-image img {
+  width: 300px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.login-form {
+  flex: 1;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+ion-item {
+  --inner-padding-start: 16px;
+  --inner-padding-end: 16px;
+  margin-bottom: 16px;
+}
+
+.rounded-input {
+  --border-radius: 20px;
+  --padding-start: 16px;
+}
+
+ion-button {
+  margin-top: 16px;
+  border-radius: 20px;
+}
+
+.login-card-content {
+  flex-direction: column;
+}
+
+.login-image {
+  margin-bottom: 16px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.login-image img {
+  width: 80%;
+  max-width: 100%;
+  height: auto;
+}
+
+.login-form {
+  width: 100%;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: -12px;
+  margin-bottom: 12px;
+}
+
+/* Media query for larger screens (PC) */
+@media (min-width: 1400px) {
   .login-card-content {
-    display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 800px;
-    width: 100%;
-    box-sizing: border-box;
   }
-  
+
   .login-image img {
-    width: 300px;
-    height: auto;
-    border-radius: 8px;
+    width: 40%;
+    margin-bottom: 16px;
   }
-  
-  .login-form {
-    flex: 1;
-    padding: 16px;
-    box-sizing: border-box;
-  }
-  
-  ion-item {
-    --inner-padding-start: 16px;
-    --inner-padding-end: 16px;
-    margin-bottom: 16px;  /* Agrega un margen inferior para evitar el recorte */
-  }
-  
-  .rounded-input {
-    --border-radius: 20px;
-    --padding-start: 16px;
-  }
-  
-  ion-button {
-    margin-top: 16px;
-    border-radius: 20px;
-  }
-  
-  @media (max-width: 768px) {
-    .login-card-content {
-      flex-direction: column;
-    }
-  
-    .login-image img {
-      width: 100%;
-      margin-bottom: 16px;
-    }
-  
-    .login-form {
-      width: 100%;
-    }
-  }
-  .error-message {
-    color: red;
-    font-size: 14px;
-    margin-top: -12px;
-    margin-bottom: 12px;
-  }  
+}
+
+/* Ensure content does not slide when focusing on inputs */
+ion-content {
+  --offset-bottom: 0;
+  --offset-top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+ion-content .scroll-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}

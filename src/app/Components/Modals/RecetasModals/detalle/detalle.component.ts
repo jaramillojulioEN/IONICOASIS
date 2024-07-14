@@ -9,7 +9,9 @@ export class DetalleComponentReceta  implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    
+  }
 
   @Input() receta : any =[]
 

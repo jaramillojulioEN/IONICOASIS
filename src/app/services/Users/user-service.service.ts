@@ -12,25 +12,34 @@ export class UserServiceService {
   constructor(private http: HttpClient, private router: Router, private loader: LoaderFunctions) { }
 
   login(user: string, password: string, load: boolean = false): Observable<any> {
-    try {
-      if (load)
-        this.loader.StartLoader()
-      return this.http.get<any>(`${this.getServer()}/api/Users/login/${user}/${password}`);
-    }
-    finally {
-      if (load)
-        this.loader.StopLoader()
-    }
+    return new Observable(observer => {
+      const loaderPromise = load ? this.loader.StartLoader("Iniciando sesión...") : Promise.resolve();
+      loaderPromise.then(() => {
+        this.http.get<any>(`${this.getServer()}/api/Users/login/${user}/${password}`).subscribe(
+          async response => {
+            if (load) await this.loader.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            if (load) await this.loader.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
   }
+  
 
   getServer(): string {
+    
     let server = "https://muddywatter26-001-site1.ftempurl.com/"
     // let server = "https://localhost:44397/"
     let port = "44397"
     return `${server}/`
   }
 
-  getRol(usuario: string = "", contra: string = ""): string {
+  getRol(usuario: string = "", contra: string = ""): any {
     if (usuario != "" && contra != "") {
       this.login(usuario, contra).subscribe((response: any) => {
         if (response && response.usuario) {

@@ -77,7 +77,7 @@ export class DetalleordenComponent implements OnInit {
     this.emitTimersUpdate();
   }
   getElapsedTime(ordenid: any): Date {
-      return this.activetimers[ordenid]?.elapsedTime || new Date(0);
+    return this.activetimers[ordenid]?.elapsedTime || new Date(0);
   }
 
   formatTime(seconds: number): string {
@@ -168,13 +168,15 @@ export class DetalleordenComponent implements OnInit {
         return "Orden cerrada";
       case 5:
         return "Orden Cobrada";
+      case 6:
+        return "Orden Cancelada";
       default:
         return "Estado desconocido";
     }
   }
 
-  CerrarOrden(): any {
-    this.ac.presentCustomAlert("Cerrar Orden", "Estás seguro de Cerrar esta Orden", () => this.alterstate(4));
+  CerrarOrden(estado: number = 4): any {
+    this.ac.presentCustomAlert("Cerrar Orden", `Estás seguro de ${estado == 4 ? 'cerrar' : 'cancelar'} esta Orden`, () => this.alterstate(estado));
   }
 
   async alterstate(estado: number): Promise<void> {
@@ -182,7 +184,6 @@ export class DetalleordenComponent implements OnInit {
     if (estado == 3) {
       this.orden.tiempo = this.tiempo;
     }
-    console.log(this.orden)
     if (this.orden.estado == 3) {
       this.orden.ordenesplatillos.forEach((element: any) => {
         element.estado = 2

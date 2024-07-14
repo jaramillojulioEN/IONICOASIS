@@ -1,0 +1,81 @@
+<app-main-header [isModal]="true" titulo="Cierre de caja"></app-main-header>
+<ion-content id="main-content">
+
+
+  <ion-grid>
+    <ion-row>
+      <ion-col sm-size="12" lg-size="4" class="ion-margin-top ion-padding">
+        <ion-card class="custom-card">
+          <ion-card-content>
+            <h5>Fecha de inicio: </h5>
+            <h5>{{caja.fechainicio}}</h5>
+            <h5>Fecha de cierre: </h5>
+            <h5>{{fecha}}</h5>
+          </ion-card-content>
+        </ion-card>
+        <ion-item lines="none">
+          <ion-label slot="start">Imprimir ticket</ion-label>
+          <ion-checkbox slot="end" [(ngModel)]="imprimirTicket" slot="end"></ion-checkbox>
+        </ion-item>
+        <br>
+        <ion-button color="primary" class="crear" expand="full" (click)="cerracaja(caja)">Cerrar Caja</ion-button>
+      </ion-col>
+      <ion-col sm-size="12" lg-size="8">
+
+        <!--ticket -->
+        <div id="print-section" class="body-tt ion-margin-top">
+          <div class="header-tt">
+            <p>{{usuario.sucursales.sucursal}}</p>
+            <img src="https://i.imgur.com/fvrkb3f.png" width="150" alt="">
+            <p>{{usuario.sucursales.direccion}}</p>
+            <p>Fecha: {{fecha}}</p>
+          </div>
+          <div class="content">
+
+            <div class="item">
+              <span>Fecha de inicio: </span>
+              <span></span>
+            </div>
+            {{caja.fechainicio}}
+            <div class="item">
+              <span>Fecha de cierre: </span>
+              <span></span>
+            </div>
+            <span>{{fecha}}</span>
+            <div class="item">
+              <span>Total de autos: </span>
+              <span>${{caja.totalautos}}</span>
+            </div>
+            <div class="item">
+              <span>Total de cocina</span>
+              <span>${{caja.totalcocina}}</span>
+            </div>
+            <div class="item">
+              <span>Total en caja</span>
+              <span>${{caja.totalcaja}}</span>
+            </div>
+            <div class="item">
+              <span>Suma total</span>
+              <span>${{caja.sumatotal}}</span>
+            </div>
+            <div class="item">
+              <span>Salió de caja</span>
+              <span>${{caja.saliodecaja}}</span>
+            </div>
+            <div class="item total">
+              <span>Ganancias: ${{caja.ganancias}}</span>
+              <span></span>
+            </div>
+          </div>
+
+          <div class="footer">
+            <p>Cierre exitoso</p>
+            <p>{{fecha}}</p>
+          </div>
+        </div>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

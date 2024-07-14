@@ -13,6 +13,7 @@ export class MesasPage implements OnInit {
 
   mesas: any = []
 
+  loaded : boolean = false
   constructor(
     private MesasService: MesasService,
     private ModalController: ModalController,
@@ -40,21 +41,22 @@ export class MesasPage implements OnInit {
   }
 
   async ObtenerMesas(load: boolean = true): Promise<void> {
-    (await this.MesasService.Mesas(load)).subscribe(
-      async (response: any) => {
-        if (response && response.mesas) {
-          this.mesas = response.mesas;
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+    this.loaded = false; 
+    try {
+      const response: any = await (await this.MesasService.Mesas(load)).toPromise();
+  
+      if (response && response.mesas) {
+        this.mesas = response.mesas;
+      } else {
+        console.error('Error: Respuesta inválida');
       }
-    );
-    this.ModalController.dismiss()
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
+    }
   }
-
+  
   EliminarMesa(mesa: any) {
     this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar la mesa: " + mesa.descripcion, () => this.ConfirmarELiminar(mesa.id));
   }

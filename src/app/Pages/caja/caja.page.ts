@@ -7,6 +7,7 @@ import { PopoverController } from '@ionic/angular';
 import { DatepickerComponent } from 'src/app/Components/Secciones/datepicker/datepicker.component';
 import { LoaderFunctions } from 'src/functions/utils'
 import { UserServiceService } from 'src/app/services/Users/user-service.service';
+import { CortesService } from 'src/app/services/cortes/cortes.service';
 @Component({
   selector: 'app-caja',
   templateUrl: './caja.page.html',
@@ -22,23 +23,31 @@ export class CajaPage implements OnInit {
   cobradasfilter: any = [];
   fecha: any = this.fns.obtenerFechaHoraActual();
   cobradasnofilter: any = [];
+  caja: boolean = false;
+  loaded: boolean = false;
   constructor(
     private os: OrdenesService,
     protected pop: PopoverController,
     private mc: ModalController,
     private fns: LoaderFunctions,
-    private userservice: UserServiceService
+    private userservice: UserServiceService,
+    private cortesService: CortesService,
   ) { }
 
   ngOnInit() {
+    this.obtenerCajaActiva()
     this.rol = this.userservice.getRol()
     this.segmento = this.rol.id !== 1 ? "pago" : "hoy"
     this.fechaActual = this.fns.obtenerFechaHoraActual();
     if (this.rol.id !== 1) {
       this.getordenes(4, true);
+
       this.intervalId = setInterval(() => {
+        this.obtenerCajaActiva()
         this.getordenes(4);
       }, 5000);
+
+
     } else {
       this.getordenes(5, true);
     }
@@ -46,6 +55,34 @@ export class CajaPage implements OnInit {
     window.addEventListener('success', () => {
       this.getordenes(4, true);
     })
+  }
+
+
+  async obtenerCajaActiva(load: boolean = false): Promise<void> {
+    try {
+      (await this.cortesService.CortesActivos(1, load)).subscribe(
+        async (response: any) => {
+          if (response && response.Cortes) {
+            if (response.Cortes.length > 0) {
+              this.caja = true;
+              if (this.rol.id === 1) {
+                this.segmento = "hoy"
+              }
+            } else {
+              this.caja = false
+              this.segmento = "hoy"
+            }
+          } else {
+            console.error('Error: Respuesta inválida');
+          }
+        },
+        (error: any) => {
+          console.error('Error en la solicitud:', error);
+        }
+      );
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
   }
 
   historial(): void {
@@ -96,7 +133,7 @@ export class CajaPage implements OnInit {
 
   deletefilter() {
     this.historial()
-    this.filtered=false
+    this.filtered = false
   }
 
   paginaAnterior() {
@@ -126,27 +163,32 @@ export class CajaPage implements OnInit {
 
 
   async getordenes(estado: number, load: boolean = false): Promise<void> {
-    (await this.os.OrdenesPendientes(load, estado)).subscribe(
-      async (response: any) => {
-        if (response.ordenes != null) {
-          if (estado == 4) {
-            this.ordenes = response.ordenes
-          }
-          else {
-            this.cobradasfilter = response.ordenes
-            this.cobradasnofilter = response.ordenes
-            if (this.rol.id !== 1 && estado === 5) {
-              this.cobradasfilter = this.fns.filterbydate(this.cobradasnofilter, this.fechaActual)
-            }
-            this.cargarCobradasPagina();
-          }
-        }
-      },
-      (error: any) => {
-        console.log(error)
-      }
-    );
+    if (load) {
+      this.loaded = false;
+    }
 
+    try {
+      const response: any = await (await this.os.OrdenesPendientes(load, estado)).toPromise();
+
+      if (response && response.ordenes != null) {
+        if (estado === 4) {
+          this.ordenes = response.ordenes;
+        } else {
+          this.cobradasfilter = response.ordenes;
+          this.cobradasnofilter = response.ordenes;
+          if (this.rol.id !== 1 && estado === 5) {
+            this.cobradasfilter = this.fns.filterbydate(this.cobradasnofilter, this.fechaActual);
+          }
+          this.cargarCobradasPagina();
+        }
+      } else {
+        console.error('Error: Respuesta inválida');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
+    }
   }
 
 }

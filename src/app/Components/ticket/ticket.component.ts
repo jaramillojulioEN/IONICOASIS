@@ -44,16 +44,16 @@ export class TicketComponent implements OnInit {
     this.sst = true
   }
 
-   async printTicket() {
+
+  async printTicket() {
     const printContents = document.getElementById('print-section')!.innerHTML;
     const base64PrintContents = btoa(printContents);
     var data = {
       bs64recipt: base64PrintContents
     };
-    (await this.lav.ImprimirRecibo(data)).subscribe(
+    (await this.lav.ImprimirRecibo(data, false)).subscribe(
       async (response: any) => {
         if (response && response.message) {
-          this.ac.presentCustomAlert("Exito", response.message)
         } else {
           console.error('Error: Respuesta inválida');
         }
@@ -65,12 +65,19 @@ export class TicketComponent implements OnInit {
 
     console.log(base64PrintContents);
   }
-  
-  async cobrarl(): Promise<void> {
-    this.lavado.estado = 2;
-    if(this.lavagregado){
-      this.lavagregado.estado=2
+
+  async cobrarl(print :boolean = true): Promise<void> {
+
+    if(this.imprimirTicket && print){
+      this.printTicket()
     }
+
+
+    this.lavado.estado = 2;
+    if (this.lavagregado) {
+      this.lavagregado.estado = 2
+    }
+
     let body: any = {
       tipoEntidad: "lavado",
       entidad: !this.lavagregado ? this.lavado : this.lavagregado
@@ -108,9 +115,16 @@ export class TicketComponent implements OnInit {
   }
 
   async cobrar(): Promise<void> {
-    if (this.lavagregado) {
-      this.cobrarl();
+
+    if (this.imprimirTicket) {
+      this.printTicket()
     }
+
+
+    if (this.lavagregado) {
+      this.cobrarl(false);
+    }
+
     this.orden.estado = 5;
     (await this.os.ActualizarOrden(this.orden)).subscribe(
       async (response: any) => {

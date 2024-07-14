@@ -17,6 +17,7 @@ export class ProductosComponent implements OnInit {
   fecha : string;
 
   categorias?: any[];
+  loaded: boolean= false;
 
   constructor(
     private modalController: ModalController, 
@@ -51,18 +52,24 @@ export class ProductosComponent implements OnInit {
   }
   
 
-  ObtenerCategorias(): void {
-    this.CategoriasService.Categorias(2).subscribe(
+  ObtenerCategorias(idCategoria: number = 2): void {
+    this.loaded = false;
+  
+    this.CategoriasService.Categorias(idCategoria).subscribe(
       (response: any) => {
         if (response && response.categorias) {
           this.categorias = response.categorias;
-          this.categoria = this.idcategoria
+          this.categoria = idCategoria; 
         } else {
           console.error('Error: Respuesta inválida');
         }
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);
+      },
+      () => {
+        this.loaded = true; 
+        console.log("just loaded")
       }
     );
   }

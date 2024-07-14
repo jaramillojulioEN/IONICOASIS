@@ -11,6 +11,7 @@ import { LoaderFunctions } from 'src/functions/utils';
 })
 export class BebidaComponent  implements OnInit {
   categorias: any = [];
+  loaded: boolean = false;
   constructor(
     private modalController: ModalController,
     private BebidaService: BebidaService,
@@ -45,8 +46,10 @@ export class BebidaComponent  implements OnInit {
     fecha : this.fn.obtenerFechaHoraActual()
   };
 
-  ObtenerCategorias(): void {
-    this.categoservice.Categorias(1).subscribe(
+  ObtenerCategorias(id: number = 1): void {
+    this.loaded = false;
+  
+    this.categoservice.Categorias(id).subscribe(
       (response: any) => {
         if (response && response.categorias) {
           this.categorias = response.categorias;
@@ -56,9 +59,13 @@ export class BebidaComponent  implements OnInit {
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);
+      },
+      () => {
+        this.loaded = true;
       }
     );
   }
+  
 
 
   async confirmar(): Promise<void> {

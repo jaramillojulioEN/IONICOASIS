@@ -1,4 +1,3 @@
-
 <app-main-header titulo="{{titulo}} Platillos" [isModal]="true"></app-main-header>
 
 <ion-content>
@@ -15,18 +14,20 @@
         <ion-item lines="none">
           <ion-select labelPlacement="floating" interface="action-sheet" label="Categoria" name="idcategoria"
             placeholder="ID Categoría" [(ngModel)]="platillos.idcategoria">
-            <ion-select-option value="0">Selecciona una categoria</ion-select-option>
+            <ion-select-option value="0" *ngIf="loaded">Selecciona una categoria</ion-select-option>
             <ion-select-option *ngFor="let categoria of categorias"
               value="{{categoria.id}}">{{categoria.categoria}}</ion-select-option>
+            <app-skeleton *ngIf="!loaded" [columns]="1" type="option"></app-skeleton>
           </ion-select>
         </ion-item>
 
         <ion-item lines="none">
           <ion-select labelPlacement="floating" interface="action-sheet" label="Receta" name="idreceta"
             placeholder="ID Receta" [(ngModel)]="platillos.idreceta">
-            <ion-select-option value="1">Selecciona una receta</ion-select-option>
+            <ion-select-option value="1" *ngIf="loaded">Selecciona una receta</ion-select-option>
             <ion-select-option *ngFor="let receta of recetas"
               value="{{receta.id}}">{{receta.listaingredientes.descripcion}}</ion-select-option>
+            <app-skeleton *ngIf="!loaded" [columns]="1" type="option"></app-skeleton>
           </ion-select>
         </ion-item>
 

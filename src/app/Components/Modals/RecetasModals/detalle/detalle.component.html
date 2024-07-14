@@ -20,8 +20,9 @@
       <ul>
         <li *ngFor="let ingrediente of receta.listaingredientes.ingredientes">
           <span *ngIf="ingrediente.productos">{{ ingrediente.productos.nombre }} x {{ ingrediente.cantidad }}</span>
-          <span *ngIf="ingrediente.bebidas">{{ ingrediente.bebidas.nombre }} - {{ ingrediente.cantidad }}</span>
-          <span *ngIf="ingrediente.ingredientenobd">{{ ingrediente.ingredientenobd }} - {{ ingrediente.cantidad }}</span>
+          <span *ngIf="ingrediente.bebidas">{{ ingrediente.bebidas.nombre }} x {{ ingrediente.cantidad }}</span>
+          <span *ngIf="ingrediente.ingredientenobd">{{ ingrediente.ingredientenobd }} x {{ ingrediente.cantidad }}</span>
+          <span *ngIf="!ingrediente.bebidas && !ingrediente.productos && !ingrediente.ingredientenobd">Ingrediente no encontrado</span>
         </li>
       </ul>
     </ion-card-content>

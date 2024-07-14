@@ -3,7 +3,7 @@ import { SelectComponent } from '../../../select/select.component';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service'
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { UserServiceService } from 'src/app/services/Users/user-service.service'
-import { PopoverController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
 import { LoaderFunctions } from 'src/functions/utils';
 @Component({
   selector: 'app-ordn',
@@ -18,7 +18,8 @@ export class OrdnComponent implements OnInit {
     private UserServiceService: UserServiceService,
     private OrdenesService: OrdenesService,
     private pop: PopoverController,
-    private funcs: LoaderFunctions
+    private funcs: LoaderFunctions,
+    private md : ModalController
   ) { }
 
   OrdenDetalles: any = []
@@ -83,7 +84,7 @@ export class OrdnComponent implements OnInit {
 
   async crearDetalle(detalle: any): Promise<void> {
     console.log(detalle)
-    if(this.isprep){
+    if (this.isprep) {
       detalle.cantidad = this.DetalleBebida.cantidad
     }
     if (this.ordenold.id) {
@@ -117,7 +118,7 @@ export class OrdnComponent implements OnInit {
       console.log(this.ordenold.id);
     } catch (error) {
       console.error('Error en la solicitud:', error);
-      throw error; // Propagar el error para manejarlo en un nivel superior si es necesario
+      throw error;
     }
   }
 
@@ -222,24 +223,33 @@ export class OrdnComponent implements OnInit {
     });
     modal.onDidDismiss().then((dataReturned: any) => {
       console.log(dataReturned.data);
-      if (isPlatillo) {
-        this.detallep = dataReturned.data.nombre
-        this.detallePlatillo.idplatillo = dataReturned.data.id
-        console.log(this.detallePlatillo.idplatillo)
-      } else {
-        if (dataReturned.data.isprep) {
-          this.isprep = dataReturned.data.isprep;
-          this.detalleb = dataReturned.data.nombre
+      if (dataReturned.data) {
+        if (isPlatillo) {
+          this.detallep = dataReturned.data.nombre
           this.detallePlatillo.idplatillo = dataReturned.data.id
+          console.log(this.detallePlatillo.idplatillo)
         } else {
-          this.detalleb = dataReturned.data.nombre
-          this.DetalleBebida.idbebida = dataReturned.data.id
-          console.log(this.DetalleBebida.idbebida)
+          if (dataReturned.data.isprep) {
+            this.isprep = dataReturned.data.isprep;
+            this.detalleb = dataReturned.data.nombre
+            this.detallePlatillo.idplatillo = dataReturned.data.id
+          } else {
+            this.detalleb = dataReturned.data.nombre
+            this.DetalleBebida.idbebida = dataReturned.data.id
+            console.log(this.DetalleBebida.idbebida)
+          }
         }
-
       }
+
     });
     return await modal.present();
+  }
+
+  async dissmiss(){
+    let id = "tomaordenmodal"
+    const loading = await this.md.getTop(); 
+    loading?.dismiss()
+
   }
 
 }

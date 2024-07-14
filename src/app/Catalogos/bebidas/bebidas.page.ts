@@ -11,6 +11,7 @@ import { AlertServiceService } from '../../services/Alerts/alert-service.service
 })
 export class BebidasPage implements OnInit {
   BebidaArry: any = [];
+  loaded: boolean = false;
 
   constructor(
     private BebidaService: BebidaService,
@@ -38,21 +39,22 @@ export class BebidasPage implements OnInit {
     return await modal.present();
   }
 
-  async ObtenerBebidas(load : boolean = true): Promise<void> {
-    (await this.BebidaService.Bebidas(load)).subscribe(
-      async (response: any) => {
-        if (response && response.bebidas) {
-          this.BebidaArry = response.bebidas;
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+  async ObtenerBebidas(load: boolean = true): Promise<void> {
+    this.loaded= false;
+    try {
+      const response: any = await (await this.BebidaService.Bebidas(load)).toPromise();
+      if (response && response.bebidas) {
+        this.BebidaArry = response.bebidas;
+      } else {
+        console.error('Error: Respuesta inválida');
       }
-    );
-    this.ModalController.dismiss()
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded= true;
+    }
   }
+  
 
   async Eliminarbebida(bebida: any) {
     this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar la bebida: " + bebida.nombre, () => this.ConfirmarELiminar(bebida.id));

@@ -53,6 +53,10 @@
             Añadir detalles a la orden
             <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
           </ion-button>
+          <ion-button (click)="CerrarOrden(6)" *ngIf="rol.id!==4 && orden.estado === 1" slot="end" color="danger">
+            Cancelar Orden
+            <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+          </ion-button>
           <ion-button (click)="CerrarOrden()" *ngIf="rol.id!==4 && orden.estado === 3" slot="end" color="primary">
             Cerrar Orden
             <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>

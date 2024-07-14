@@ -14,6 +14,7 @@ export class SelectComponent implements OnInit {
   criterio: string = ""
   @Input() isPlatillo: boolean = true
   bebsPrp: any = [];
+  loaded: boolean = false;;
 
   constructor(
     private PlatilloService: PlatilloService,
@@ -27,34 +28,40 @@ export class SelectComponent implements OnInit {
   }
 
   async ObtenerPlatillos(load: boolean = false): Promise<void> {
-    (await this.PlatilloService.Platillos(load, 2)).subscribe(
-      async (response: any) => {
-        if (response && response.platillos) {
-          this.PlatilloArry = response.platillos;
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+    try {
+      this.loaded = false;
+      const response: any = await (await this.PlatilloService.Platillos(load, 2)).toPromise();
+
+      if (response && response.platillos) {
+        this.PlatilloArry = response.platillos;
+      } else {
+        console.error('Error: Respuesta inválida');
       }
-    );
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
+    }
   }
 
+
   async ObtenerBebidasPrp(load: boolean = false): Promise<void> {
-    (await this.PlatilloService.Platillos(load, 1)).subscribe(
-      async (response: any) => {
-        if (response && response.platillos) {
-          this.bebsPrp = response.platillos;
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+    try {
+      this.loaded = false;
+      const response: any = await (await this.PlatilloService.Platillos(load, 1)).toPromise();
+
+      if (response && response.platillos) {
+        this.bebsPrp = response.platillos;
+      } else {
+        console.error('Error: Respuesta inválida');
       }
-    );
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
+    }
   }
+
 
   Dissmiss(data: any, isprp: boolean = false) {
     if (isprp) {
@@ -64,18 +71,21 @@ export class SelectComponent implements OnInit {
   }
 
   async ObtenerBebidas(load: boolean = false): Promise<void> {
-    (await this.BebidaService.Bebidas(load)).subscribe(
-      async (response: any) => {
-        if (response && response.bebidas) {
-          this.BebidaArry = response.bebidas;
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+    try {
+      this.loaded = false; 
+      const response: any = await (await this.BebidaService.Bebidas(load)).toPromise();
+  
+      if (response && response.bebidas) {
+        this.BebidaArry = response.bebidas;
+      } else {
+        console.error('Error: Respuesta inválida');
       }
-    );
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
+    }
   }
+  
 
 }

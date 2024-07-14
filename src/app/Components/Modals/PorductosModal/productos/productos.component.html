@@ -31,6 +31,8 @@
         <ion-select [(ngModel)]="categoria" [disabled]="idcategoria !== 0" placeholder="Categoría">
           <ion-select-option *ngFor="let categoria of categorias" [value]="categoria.id">{{ categoria.categoria
             }}</ion-select-option>
+          <app-skeleton *ngIf="!loaded" [columns]="1" type="option"></app-skeleton>
+
         </ion-select>
       </ion-item>
 

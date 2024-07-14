@@ -33,6 +33,7 @@ export class RecetasComponent implements OnInit {
   idlistaimagenes: number = 0;
   categorias: any = [];
   BebidaArry: any = [];
+  loaded: boolean = false;
 
 
 
@@ -84,22 +85,26 @@ export class RecetasComponent implements OnInit {
     }
   }
 
-  ObtenerCategorias(): void {
+  ObtenerCategorias(id: number = 1): void {
+    this.loaded = false;
 
-    this.CategoriasService.Categorias().subscribe(
+    this.CategoriasService.Categorias(id).subscribe(
       (response: any) => {
         if (response && response.categorias) {
           this.categorias = response.categorias;
-          console.log(this.categorias)
         } else {
           console.error('Error: Respuesta inválida');
         }
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);
+      },
+      () => {
+        this.loaded = true;
       }
     );
   }
+
 
 
   validar(): { estado: boolean, mensaje: string } {
@@ -189,21 +194,23 @@ export class RecetasComponent implements OnInit {
     }
   }
 
+
   async ObtenerProducutos(): Promise<void> {
-    (await this.ProductoService.Productos(true)).subscribe(
-      async (response: any) => {
-        if (response && response.productos) {
-          this.productos = response.productos;
-          console.log(this.productos)
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+    try {
+      this.loaded = false;
+      const response: any = await (await this.ProductoService.Productos(true)).toPromise();
+      if (response && response.productos) {
+        this.productos = response.productos;
+      } else {
+        console.error('Error: Respuesta inválida');
       }
-    );
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
+    }
   }
+
 
   isingredient: boolean = true
   isibebida: boolean = false
@@ -293,18 +300,19 @@ export class RecetasComponent implements OnInit {
   }
 
   async ObtenerBebidas(load: boolean = false): Promise<void> {
-    (await this.BebidaService.Bebidas(load)).subscribe(
-      async (response: any) => {
-        if (response && response.bebidas) {
-          this.BebidaArry = response.bebidas;
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+    try {
+      this.loaded = false;
+      const response: any = await (await this.BebidaService.Bebidas(load)).toPromise();
+      if (response && response.bebidas) {
+        this.BebidaArry = response.bebidas;
+      } else {
+        console.error('Error: Respuesta inválida');
       }
-    );
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
+    }
   }
 
 

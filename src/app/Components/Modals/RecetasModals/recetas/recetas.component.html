@@ -1,8 +1,5 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>{{titulo}} Detalle de Receta</ion-title>
-  </ion-toolbar>
-</ion-header>
+
+<app-main-header titulo="{{titulo}} Detalle de Receta" [isModal]="true"></app-main-header>
 <ion-content class="ion-padding custom-content">
   <ion-grid>
     <ion-card class="custom-card">
@@ -13,17 +10,16 @@
             <ion-row>
               <ion-col size="6">
                 <ion-item lines="none">
-                  <ion-label position="floating">Nombre receta:</ion-label>
-                  <ion-input [(ngModel)]="nombrereceta" type="text" name="nombrereceta" id="nombrereceta"></ion-input>
+                  <ion-input label="Nombre receta" labelPlacement="floating" [(ngModel)]="nombrereceta" type="text" name="nombrereceta" id="nombrereceta"></ion-input>
                 </ion-item>
               </ion-col>
               <ion-col size="6">
                 <ion-item lines="none">
-                  <ion-label position="floating">Categoria:</ion-label>
-                  <ion-select [(ngModel)]="idcategoria" name="idcategoria">
-                    <ion-select-option [value]="0">Selecciona una categoria</ion-select-option>
+                  <ion-select label="Categoria" [(ngModel)]="idcategoria" name="idcategoria">
+                    <ion-select-option *ngIf="loaded" [value]="0">Selecciona una categoria</ion-select-option>
                     <ion-select-option *ngFor="let categoria of categorias" [value]="categoria.id">{{
                       categoria.categoria }}</ion-select-option>
+                    <app-skeleton *ngIf="!loaded" [columns]="1" type="option"></app-skeleton>
                   </ion-select>
                 </ion-item>
               </ion-col>
@@ -43,8 +39,7 @@
           <ion-col size="12">
             <h1>Pasos</h1>
             <ion-item lines="none">
-              <ion-label position="floating">Paso:</ion-label>
-              <ion-input type="text" id="pasos" name="pasos" [(ngModel)]="pasos"></ion-input>
+              <ion-input label="Paso" labelPlacement="floating" type="text" id="pasos" name="pasos" [(ngModel)]="pasos"></ion-input>
             </ion-item>
             <ion-button expand="block" (click)="agregaPaso()">
               <ion-icon name="add-outline"></ion-icon> Agregar paso
@@ -82,19 +77,19 @@
         <ion-row>
           <ion-col size="6">
             <ion-item lines="none" *ngIf="isingredient">
-              <ion-label position="floating">Ingrediente:</ion-label>
-              <ion-select [(ngModel)]="producto" name="producto">
-                <ion-select-option [value]="0">Selecciona un ingrediente</ion-select-option>
+              <ion-select label="Ingrediente" [(ngModel)]="producto" name="producto">
+                <ion-select-option *ngIf="loaded" [value]="0">Selecciona un ingrediente</ion-select-option>
                 <ion-select-option *ngFor="let producto of productos" [value]="producto">{{ producto.nombre
                   }}</ion-select-option>
+                <app-skeleton *ngIf="!loaded" [columns]="1" type="option"></app-skeleton>
               </ion-select>
             </ion-item>
 
             <ion-item lines="none" *ngIf="isibebida">
-              <ion-label position="floating">Bebida:</ion-label>
-              <ion-select [(ngModel)]="bebida" name="bebida">
+              <ion-select label="Bebida" [(ngModel)]="bebida" name="bebida">
                 <ion-select-option *ngFor="let bebida of BebidaArry" [value]="bebida">{{ bebida.nombre
                   }}</ion-select-option>
+                <app-skeleton *ngIf="!loaded" [columns]="1" type="option"></app-skeleton>
               </ion-select>
             </ion-item>
 
@@ -106,24 +101,23 @@
           </ion-col>
           <ion-col size="6">
             <ion-item lines="none">
-              <ion-label position="floating">Cantidad:</ion-label>
-              <ion-input type="number" id="cantidadi" name="cantidadi" [(ngModel)]="cantidadi"></ion-input>
+              <ion-input label="Cantidad" labelPlacement="floating" type="number" id="cantidadi" name="cantidadi" [(ngModel)]="cantidadi"></ion-input>
             </ion-item>
           </ion-col>
         </ion-row>
         <ion-button expand="block" (click)="agregarIngrediente()">
           <ion-icon name="add-circle-outline"></ion-icon> Agregar ingrediente
         </ion-button>
-          <ion-list>
-            <ion-item lines="none" *ngFor="let prd of prodsArray; let index = index">
-              <ion-label *ngIf="prd.productos">{{ prd.productos.nombre }} {{ prd.cantidad }}</ion-label>
-              <ion-label *ngIf="prd.bebidas">{{ prd.bebidas.nombre }} {{ prd.cantidad }}</ion-label>
-              <ion-label *ngIf="prd.ingredientenobd">{{ prd.ingredientenobd }} {{ prd.cantidad }}</ion-label>
-              <ion-button fill="clear" color="danger" (click)="eliminaringrediente(prd.id, prd.idlistaingredientes)">
-                <ion-icon name="trash-outline"></ion-icon> Eliminar
-              </ion-button>
-            </ion-item>
-          </ion-list>
+        <ion-list>
+          <ion-item lines="none" *ngFor="let prd of prodsArray; let index = index">
+            <ion-label *ngIf="prd.productos">{{ prd.productos.nombre }} {{ prd.cantidad }}</ion-label>
+            <ion-label *ngIf="prd.bebidas">{{ prd.bebidas.nombre }} {{ prd.cantidad }}</ion-label>
+            <ion-label *ngIf="prd.ingredientenobd">{{ prd.ingredientenobd }} {{ prd.cantidad }}</ion-label>
+            <ion-button fill="clear" color="danger" (click)="eliminaringrediente(prd.id, prd.idlistaingredientes)">
+              <ion-icon name="trash-outline"></ion-icon> Eliminar
+            </ion-button>
+          </ion-item>
+        </ion-list>
       </ion-card-content>
     </ion-card>
     <ion-card class="custom-card">

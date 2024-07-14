@@ -15,6 +15,7 @@ import { AlertServiceService } from '../../services/Alerts/alert-service.service
 export class CategoriasPage implements OnInit {
   subcategorias: any;
   categorias: any;
+  loaded: boolean = false;
   constructor(
     private CategoriasService: CategoriaServiceService,
     private ModalController: ModalController, 
@@ -57,22 +58,34 @@ export class CategoriasPage implements OnInit {
 
 
 
-  ObtenerCategorias(): void {
-    
-    this.CategoriasService.Categorias().subscribe(
-      (response: any) => {
-        if (response && response.categorias) {
-          this.categorias = response.categorias;
-          console.log(this.categorias)
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
-      }
-    );
+  async ObtenerCategorias(): Promise<void> {
+    this.loaded = false;
+    try {
+      await new Promise<void>((resolve, reject) => {
+        this.CategoriasService.Categorias().subscribe(
+          (response: any) => {
+            if (response && response.categorias) {
+              this.categorias = response.categorias;
+              console.log(this.categorias);
+              resolve();
+            } else {
+              console.error('Error: Respuesta inválida');
+              reject('Respuesta inválida');
+            }
+          },
+          (error: any) => {
+            console.error('Error en la solicitud:', error);
+            reject(error);
+          }
+        );
+      });
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
+    }
   }
+  
 
   filterCategoriesBySubcategory(categorias: any[] | undefined, subcategoryId: number): any[] {
     return categorias?.filter(categoria => categoria?.idsubcategoria === subcategoryId) || [];
@@ -99,7 +112,6 @@ export class CategoriasPage implements OnInit {
   }
 
   async ObtenerSubCategorias(): Promise<void> {
-    await this.loaderFunctions.StartLoader();
     try{
       this.CategoriasService.SubCategorias().subscribe(
         (response: any) => {
@@ -115,8 +127,6 @@ export class CategoriasPage implements OnInit {
       );
     }catch(error){
 
-    }finally{
-      this.loaderFunctions.StopLoader();
     }
   }
 

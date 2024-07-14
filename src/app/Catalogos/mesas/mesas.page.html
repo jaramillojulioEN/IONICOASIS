@@ -1,7 +1,7 @@
 <app-main-header titulo="Mesas"></app-main-header>
 <ion-content class="main" id="main-content">
   <div class="container">
-    <div class="ion-grid">
+    <div class="ion-grid" *ngIf="loaded">
       <ion-row>
         <ion-col size="12">
           <div class="header-container">
@@ -14,7 +14,7 @@
       </ion-row>
     </div>
     <div class="table-container">
-      <table class="tabla">
+      <table class="tabla" *ngIf="loaded">
         <thead>
           <tr>
             <th>ID</th>
@@ -40,6 +40,7 @@
           </tr>
         </tbody>
       </table>
+      <app-skeleton *ngIf="!loaded" [columns] = "5" type="table"></app-skeleton>
     </div>
   </div>
 </ion-content>

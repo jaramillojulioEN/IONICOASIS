@@ -11,6 +11,7 @@ import { AlertServiceService } from '../../services/Alerts/alert-service.service
 })
 export class ProductosPage implements OnInit {
   productos: any = [];
+  loaded: boolean = false
   constructor(
     private AlertController: AlertController,
     private ProductoService: ProductoServiceService,
@@ -44,26 +45,29 @@ export class ProductosPage implements OnInit {
   }
 
   async ObtenerProducutos(load: boolean = true): Promise<void> {
-    (await this.ProductoService.Productos(load)).subscribe(
-      async (response: any) => {
-        if (response && response.productos) {
-          this.productos = response.productos;
-          console.log(this.productos)
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+    this.loaded = false;
+    try {
+      const response: any = await (await this.ProductoService.Productos(load)).toPromise();
+      if (response && response.productos) {
+        this.productos = response.productos;
+        console.log(this.productos);
+      } else {
+        console.error('Error: Respuesta inválida');
       }
-    );
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
+    }
   }
+
 
   async EliminarProducto(producto: any): Promise<void> {
     this.ac.presentCustomAlert("Eliminar", "Estas seguro de eilimina el producto: " + producto.nombre, () => this.ConfirmarEliminar(producto.id))
   }
 
   async ConfirmarEliminar(id: number): Promise<void> {
+
     (await this.ProductoService.EliminarProductos(id)).subscribe(
       async (response: any) => {
         if (response) {

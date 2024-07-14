@@ -15,9 +15,11 @@
         <ion-item lines="none">
           <ion-select labelPlacement="floating" interface="action-sheet" label="Categoria" name="idcategoria"
             placeholder="ID Categoría" [(ngModel)]="bebidas.idcategoria">
-            <ion-select-option value="0">Selecciona una categoria</ion-select-option>
+            <ion-select-option *ngIf="loaded" value="0">Selecciona una categoria</ion-select-option>
             <ion-select-option *ngFor="let categoria of categorias"
               value="{{categoria.id}}">{{categoria.categoria}}</ion-select-option>
+            <app-skeleton *ngIf="!loaded" [columns]="1" type="option"></app-skeleton>
+
           </ion-select>
         </ion-item>
 

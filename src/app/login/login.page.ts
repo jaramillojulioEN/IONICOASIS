@@ -14,7 +14,7 @@ export class LoginPage implements OnInit {
   ngOnInit() {
     if (this.UserService.isAuth()) {
       this.user = this.UserService.getUser()
-      //this.UserService.RedirigirRol(this.user.idrol)
+      this.UserService.RedirigirRol(this.user.idrol)
     }
   }
 

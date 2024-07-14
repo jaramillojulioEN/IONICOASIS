@@ -21,7 +21,7 @@ export class CortePage implements OnInit {
   ) { }
 
   segmento: string = "curso"
-
+  loaded : boolean = false
   cortescurso: any = []
   rol: any;
   ngOnInit() {
@@ -111,33 +111,35 @@ export class CortePage implements OnInit {
 
 
   async obtenerCortesActivos(load: boolean = true, activos: boolean = true): Promise<void> {
+    this.loaded = false;
+  
     try {
-      (await this.cortesService.RetirosActivos(load, activos)).subscribe(
-        async (response: any) => {
-          if (response && response.Cortes) {
-            if (activos) {
-              this.cortescurso = response.Cortes;
-            } else {
-              this.retiroshistorial = response.Cortes;
-              this.retiroshistorialnofiltrado = response.Cortes;
-              if (this.rol.id !== 1) {
-                this.retiroshistorial = this.funcions.filterbydate(this.retiroshistorialnofiltrado, this.filterdate)
-              }
-              this.cargarLavadosHistorialPagina()
-              console.log(this.retiroshistorial)
-            }
-          } else {
-            console.error('Error: Respuesta inválida');
+      const response: any = await (await this.cortesService.RetirosActivos(load, activos)).toPromise();
+  
+      if (response && response.Cortes) {
+        if (activos) {
+          this.cortescurso = response.Cortes;
+        } else {
+          this.retiroshistorial = response.Cortes;
+          this.retiroshistorialnofiltrado = response.Cortes;
+  
+          if (this.rol.id !== 1) {
+            this.retiroshistorial = this.funcions.filterbydate(this.retiroshistorialnofiltrado, this.filterdate);
           }
-        },
-        (error: any) => {
-          console.error('Error en la solicitud:', error);
+  
+          this.cargarLavadosHistorialPagina();
+          console.log(this.retiroshistorial);
         }
-      );
+      } else {
+        console.error('Error: Respuesta inválida');
+      }
     } catch (error) {
       console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
     }
   }
+  
 
   async Opciones(data: any) {
 

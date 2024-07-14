@@ -14,112 +14,151 @@ export class OrdenesService {
     this.server = this.UserServiceService.getServer()
   }
 
+  async ActualizarOrden(orden: object): Promise<Observable<any>> {
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.put<any>(`${this.server}api/Ordenes/AlctualizarOrden`, orden).subscribe(
+          async updatedResponse => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(updatedResponse);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  
+  async CrearOrden(data: object): Promise<Observable<any>> {
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.post<any>(`${this.server}api/Ordenes/CrearOrden`, data).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  
+  async CrearOrdenDetail(data: any): Promise<Observable<any>> {
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        let request: Observable<any>;
+        if (data.idbebida === undefined && data.idplatillo != 0) {
+          request = this.http.post<any>(`${this.server}api/Detalles/CrearDetallePlatillo`, data);
+        } else if (data.idplatillo === undefined && data.idbebida != 0) {
+          request = this.http.post<any>(`${this.server}api/Detalles/CrearDetalleBebida`, data);
+        } else {
+          request = new Observable<any>();
+        }
+  
+        request.subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  
+  async EliminarBDetalle(data: any): Promise<Observable<any>> {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: data
+    };
+  
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.delete<any>(`${this.server}api/Detalles/EliminarBebidaDetalle`, options).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  
+  async EliminarPDetalle(data: any): Promise<Observable<any>> {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: data
+    };
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.delete<any>(`${this.server}api/Detalles/EliminarPlatilloDetalle`, options).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  
+
+  total(orden: any): number {
+    let total = 0;
+    if (Array.isArray(orden.ordenesplatillos)) {
+      orden.ordenesplatillos.forEach((ordenplatillo: any) => {
+        total += (ordenplatillo.platillos.precio * ordenplatillo.cantidad);
+      });
+    }
+  
+    if (Array.isArray(orden.ordenesbebidas)) {
+      orden.ordenesbebidas.forEach((ordenbebida: any) => {
+        total += (ordenbebida.bebidas.precioventa * ordenbebida.cantidad);
+      });
+    }
+  
+    return total;
+  }
+  
+
   async OrdenesPendientes(loader: boolean = true, estado : number = 0): Promise<Observable<any>> {
+    console.log(estado)
     try {
-      if (loader)
-        await this.loaderFunctions.StartLoader();
       return this.http.get<any>(`${this.server}api/Ordenes/TodasOrdenes/${estado}`);
     } finally {
-      if (loader)
-        this.loaderFunctions.StopLoader();
     }
   }
 
   async BuscarOrden(loader: boolean = false, id: number): Promise<Observable<any>> {
     try {
-      if (loader)
-        await this.loaderFunctions.StartLoader();
       return this.http.get<any>(`${this.server}api/Ordenes/BuscarOrden/${id}`);
     } finally {
-      if (loader)
-        this.loaderFunctions.StopLoader();
     }
   }
 
-  async ActualizarOrden(orden: object): Promise<Observable<any>> {
-    return new Observable(observer => {
-      this.http.put<any>(`${this.server}api/Ordenes/AlctualizarOrden`, orden).subscribe(
-        updatedResponse => {
-          observer.next(updatedResponse);
-          observer.complete();
-        },
-        error => {
-          observer.error(error);
-        }
-      );
-    });
-  } 
 
-
-  async CrearOrden(data: object): Promise<Observable<any>> {
-    try {
-      return this.http.post<any>(`${this.server}api/Ordenes/CrearOrden`, data);
-    } finally {
-    }
-  }
-
-  async CrearOrdenDetail(data: any): Promise<Observable<any>> {
-    try {
-      await this.loaderFunctions.StartLoader();
-      if (data.idbebida == undefined && data.idplatillo != 0) {
-        console.log(data)
-        console.log("Se fue a platillos")
-        return this.http.post<any>(`${this.server}api/Detalles/CrearDetallePlatillo`, data);
-      }
-      if (data.idplatillo == undefined && data.idbebida != 0) {
-        console.log(data)
-
-        return this.http.post<any>(`${this.server}api/Detalles/CrearDetalleBebida`, data);
-      }
-      return new Observable<any>
-    } finally {
-      console.log("agregando detalles")
-      this.loaderFunctions.StopLoader();
-    }
-  }
-
-  total (orden : any) : number{
-    let total = 0
-    orden.ordenesplatillos.forEach((ordenplatillo: any) => {
-      total += (ordenplatillo.platillos.precio * ordenplatillo.cantidad)
-    });
-    orden.ordenesbebidas.forEach((ordenbebida: any) => {
-      total += (ordenbebida.bebidas.precioventa * ordenbebida.cantidad)
-    });
-    return total
-  }
-
-  async EliminarBDetalle(data: any): Promise<Observable<any>> {
-    try {
-      const options = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json'
-        }),
-        body: data
-      };
-
-      await this.loaderFunctions.StartLoader();
-      return this.http.delete<any>(`${this.server}api/Detalles/EliminarBebidaDetalle`, options);
-
-    } finally {
-      this.loaderFunctions.StopLoader();
-    }
-  }
-
-  async EliminarPDetalle(data: any): Promise<Observable<any>> {
-    try {
-      const options = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json'
-        }),
-        body: data
-      };
-
-      await this.loaderFunctions.StartLoader();
-      return this.http.delete<any>(`${this.server}api/Detalles/EliminarPlatilloDetalle`, options);
-
-    } finally {
-      this.loaderFunctions.StopLoader();
-    }
-  }
 }
