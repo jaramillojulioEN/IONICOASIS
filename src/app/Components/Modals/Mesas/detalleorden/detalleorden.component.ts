@@ -104,6 +104,8 @@ export class DetalleordenComponent implements OnInit {
       this.orden = this.mesa.ordenes[0];
     }
     this.Getestimandos();
+    console.log(this.orden)
+
     this.intervalId = setInterval(() => {
       this.Getestimandos();
       this.buscarOrden();

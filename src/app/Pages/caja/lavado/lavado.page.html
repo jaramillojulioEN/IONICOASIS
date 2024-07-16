@@ -13,14 +13,14 @@
     <ion-grid *ngIf="loaded">
       <ion-row>
         <ion-col size="4">
-          <ion-select aria-label="Vehiculo" interface="action-sheet" [(ngModel)]="vehiculo"
+          <ion-select label="Vehiculo" interface="action-sheet" [(ngModel)]="vehiculo"
             placeholder="Selecciona un tipo de vehiculos">
             <ion-select-option *ngFor="let vehiculo of vehiculos"
               [value]="vehiculo">{{vehiculo.tipo_vehiculo}}</ion-select-option>
           </ion-select>
         </ion-col>
         <ion-col size="4">
-          <ion-select aria-label="Servicios" [multiple]="true" [(ngModel)]="servicios"
+          <ion-select label="Servicios" [multiple]="true" [(ngModel)]="servicios"
             placeholder="Selecciona los servicios">
             <ion-select-option
               [value]="{id_servicio:servcios.id_servicio, id_tipo_vehiculo : servcios.id_tipo_vehiculo}"

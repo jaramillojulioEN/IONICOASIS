@@ -30,12 +30,15 @@ import { RetirarComponent } from './Modals/retirar/retirar.component'
 import { ExistenciasComponent } from './Modals/existencias/existencias.component'
 import { TicketcajaComponent } from './ticketcaja/ticketcaja.component'
 import { SkeletonComponent } from './skeleton/skeleton.component'
+import { EditLavComponent } from './Modals/edit-lav/edit-lav.component'
 @NgModule({
   declarations:
     [
       CardComponent,
+      EmpleadosComponent,
       TicketcajaComponent,
       InicioComponent,
+      EditLavComponent,
       RetirarComponent,
       DetalleComponentReceta,
       SkeletonComponent,
@@ -66,6 +69,7 @@ import { SkeletonComponent } from './skeleton/skeleton.component'
     DetalleComponentReceta,
     MainHeaderComponent,
     ConsumoComponent,
+    EditLavComponent,
     SkeletonComponent,
     InicioComponent,
     TicketcajaComponent,

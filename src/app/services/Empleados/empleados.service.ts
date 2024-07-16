@@ -19,6 +19,7 @@ export class EmpleadosService {
 
 
   async CrearEmpleado(data: object): Promise<Observable<any>> {
+    console.log(data)
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
         this.http.post<any>(`${this.server}api/Empleados/CrearEmpleado`, data).subscribe(
@@ -93,7 +94,8 @@ export class EmpleadosService {
     });
   }
   
-  async ActulizarEmpleado(data: object): Promise<Observable<any>> {
+  async ActulizarEmpleado(data: any): Promise<Observable<any>> {
+    console.log(data);
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
         this.http.put<any>(`${this.server}api/Empleados/AlctualizarEmpleado`, data).subscribe(

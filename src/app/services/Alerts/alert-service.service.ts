@@ -32,6 +32,24 @@ export class AlertServiceService {
     cssClass: ''
   }
   
+  public btnAgregarconsumo: ActionSheetButton = {
+    text: 'Agregar Consumo',
+    handler: () => { },
+    cssClass: ''
+  }
+
+  public btnProps: ActionSheetButton = {
+    text: 'Ver detalles',
+    handler: () => { },
+    cssClass: ''
+  }
+  public btnConsumo: ActionSheetButton = {
+    text: 'Ver consumo',
+    handler: () => { },
+    cssClass: ''
+  }
+
+
   public btncobrar: ActionSheetButton = {
     cssClass: 'custom-action-delete-sheet-button',
     text: 'Cobrar',

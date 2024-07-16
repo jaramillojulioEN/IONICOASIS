@@ -1,0 +1,23 @@
+<app-main-header titulo="Editar lavado" [isModal]="true"></app-main-header>
+<ion-content class="ion-padding">
+  <ion-card class="custom-card">
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-select label="Vehiculo" [(ngModel)]="vehiculo" placeholder="Selecciona un tipo de vehiculos">
+          <ion-select-option *ngFor="let vehiculo of vehiculos"
+            [value]="vehiculo">{{vehiculo.tipo_vehiculo}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-list lines="none">
+        <ion-item *ngFor="let servicio of vehiculo.Servicio_Tipo_Vehiculo">
+          <ion-label>{{servicio.Servicios.nombre_servicio}} ${{servicio.Servicios.precio}}</ion-label>
+          <ion-checkbox slot="end" (ionChange)="toggleSeleccion(servicio)" [checked]="servicio.seleccionado">
+          </ion-checkbox>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-button class="crear" style="width: 100%;">Actulizar</ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

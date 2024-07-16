@@ -8,6 +8,7 @@ import { PopoverController } from '@ionic/angular';
 import { DatepickerComponent } from 'src/app/Components/Secciones/datepicker/datepicker.component'
 import { LoaderFunctions } from 'src/functions/utils'
 import { formatDate } from '@angular/common';
+import { EditLavComponent } from 'src/app/Components/Modals/edit-lav/edit-lav.component'
 import { CortesService } from 'src/app/services/cortes/cortes.service';
 @Component({
   selector: 'app-lavado',
@@ -60,10 +61,10 @@ export class LavadoPage implements OnInit {
     private LavadoService: LavadoService,
     protected UserServiceService: UserServiceService,
     private funcs: LoaderFunctions,
-    private cortesService :CortesService
+    private cortesService: CortesService,
+    private md : ModalController
   ) {
-    const today = new Date();
-    this.fecha = formatDate(today, 'yyyy-MM-dd', 'en-US');
+    this.fecha = this.fns.obtenerFechaHoraActual();
   }
 
   ngOnInit() {
@@ -87,6 +88,7 @@ export class LavadoPage implements OnInit {
   async Guardar(): Promise<void> {
     this.lavado.entidad.idsucursal = this.UserServiceService.getUser().idsucursal
     this.lavado.entidad.lavadodet = this.servicios
+    this.lavado.entidad.fecha = this.fns.obtenerFechaHoraActual()
     if (this.ValidarLavado()) {
       (await this.LavadoService.CrearLavado(this.lavado)).subscribe(
         (response: any) => {
@@ -108,14 +110,27 @@ export class LavadoPage implements OnInit {
   Opciones(data: any) {
     let buttons = []
     let rol: any = this.UserServiceService.getRol()
-    buttons.push({ button: this.ac.btncobrar, handler: () => { this.Cobrar(data); } })
     if (rol.rol == 1) {
       buttons.push({ button: this.ac.btnEliminar, handler: () => this.Eliminar(data) })
+    }
+    else {
+      buttons.push({ button: this.ac.btncobrar, handler: () => { this.Cobrar(data); } })
+      buttons.push({ button: this.ac.btnActualizar, handler: () => { this.AbrirModalLavado(data); } })
+
     }
     buttons.push({ button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } })
     this.ac.configureAndPresentActionSheet(buttons);
   }
 
+  async AbrirModalLavado(data: any = null) {
+    const modal = await this.md.create({
+      component: EditLavComponent,
+      componentProps: {
+        data: data
+      },
+    });
+    return await modal.present();
+  }
 
 
   ValidarLavado(): boolean {
@@ -132,11 +147,12 @@ export class LavadoPage implements OnInit {
       (await this.cortesService.CortesActivos(1, load)).subscribe(
         async (response: any) => {
           if (response && response.Cortes) {
-            if (response.Cortes.length > 0){
+            if (response.Cortes.length > 0) {
               this.caja = true;
-              this.segmento = this.rol.id !==1 ? "pago" : "hoy"
+              if (this.rol.id === 1)
+                this.segmento = "hoy"
             }
-            else{
+            else {
               this.caja = false;
               this.segmento = "hoy"
             }
@@ -153,27 +169,26 @@ export class LavadoPage implements OnInit {
     }
   }
 
-  loaded :boolean = false;
-  async obtenerLavados(estado: number, load: boolean = true): Promise<void> {  
+  loaded: boolean = false;
+  async obtenerLavados(estado: number, load: boolean = true): Promise<void> {
     this.loaded = false;
     try {
       const response: any = await (await this.LavadoService.lavados(estado, load)).toPromise();
-  
+
       if (response && response.Lavados) {
         if (estado === 1) {
           this.lavados = response.Lavados;
-          console.log(this.lavados);
         } else {
           this.lavadoshistorial = response.Lavados;
           this.lavadoshistorialnf = response.Lavados;
-          
+
           if (this.rol.id !== 1) {
             this.lavadoshistorial = this.fns.filterbydate(this.lavadoshistorialnf, this.fechaActual);
           }
-          
+
           this.cargarLavadosHistorialPagina();
         }
-        
+
         this.obtenerServicios();
       } else {
         console.error('Error: Respuesta inválida');
@@ -181,10 +196,10 @@ export class LavadoPage implements OnInit {
     } catch (error) {
       console.error('Error en la solicitud:', error);
     } finally {
-      this.loaded = true; 
+      this.loaded = true;
     }
   }
-  
+
 
   async Cobrar(lavado: any): Promise<void> {
     const modal = await this.mc.create({

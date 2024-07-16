@@ -6,7 +6,7 @@
         <ion-col size-lg="11" size-sm="8"></ion-col>
         <ion-col size-lg="1" size-sm="4">
           <div class="header-cotainer">
-            <ion-button (click)="AbrirModalEmpleados(0, 'Nuevo')" class="crear">
+            <ion-button (click)="AbrirModalEmpleados()" class="crear">
               <ion-icon name="add-circle-outline"></ion-icon>
               <div class="button-text">Crear</div>
             </ion-button>
@@ -23,8 +23,7 @@
             <th>Cargo</th>
             <th>Teléfono</th>
             <th>Día de Pago</th>
-            <th>Salario</th>
-            <th>Acciones</th>
+            <th colspan="2">Salario</th>
           </tr>
         </thead>
         <tbody *ngFor="let empleado of empleados">
@@ -32,11 +31,17 @@
             <td>{{ empleado.id }}</td>
             <td>{{ empleado.nombrecompleto }}</td>
             <td>{{ empleado.cargo }}</td>
-            <td role="button" style="cursor: pointer;" (click)="verPropiedades(empleado, $event)">{{ empleado.telefono }}</td>
+            <td role="button" style="cursor: pointer;" (click)="verPropiedades(empleado, $event)">{{ empleado.telefono
+              }}</td>
             <td>{{ empleado.diapago ? empleado.diapago : '-' }}</td>
             <td class="ion-text-end">${{ empleado.salario ? empleado.salario : '-' }}</td>
-            <td>
-              <ion-button fill="clear" (click)="verConsumo(empleado)">
+            <td class="actions-cell">
+              <ion-button fill="clear" (click)="Opciones(empleado, $event)">
+                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+              </ion-button>
+            </td>
+            <!-- <td> -->
+              <!-- <ion-button fill="clear" (click)="verConsumo(empleado)">
                 <ion-icon name="eye-outline"></ion-icon>
               </ion-button>
               <ion-button fill="clear" (click)="AbrirModalEmpleados(empleado.id, 'Actualizar', empleado)">
@@ -47,18 +52,22 @@
               </ion-button>
               <ion-button fill="clear" (click)="AbrirModalConsumo(0, 'Nuevo Consumo')">
                 <ion-icon name="fast-food-outline"></ion-icon>
-              </ion-button>
-            </td>
+              </ion-button> -->
+            <!-- </td> -->
           </tr>
           <ng-container *ngIf="detallesVisibles[empleado.id]">
             <tr *ngFor="let consumo of empleado.consumoEmpleado">
               <td colspan="3"></td>
               <td>{{ consumo.fecha }}</td>
-              <td *ngIf="consumo.bebidas != null">{{ consumo.bebidas.nombre }} ({{ consumo.cantidad }} * ${{ consumo.bebidas.precioempleados }})</td>
-              <td *ngIf="consumo.platillos != null">{{ consumo.platillos.nombre }} ({{ consumo.cantidad }} * ${{ consumo.platillos.precioempleado }})</td>
+              <td *ngIf="consumo.bebidas != null">{{ consumo.bebidas.nombre }} ({{ consumo.cantidad }} * ${{
+                consumo.bebidas.precioempleados }})</td>
+              <td *ngIf="consumo.platillos != null">{{ consumo.platillos.nombre }} ({{ consumo.cantidad }} * ${{
+                consumo.platillos.precioempleado }})</td>
               <td *ngIf="consumo.concepto != null">{{ consumo.concepto }}</td>
-              <td *ngIf="consumo.bebidas != null" class="ion-text-end">- ${{ consumo.cantidad * consumo.bebidas.precioempleados }}</td>
-              <td *ngIf="consumo.platillos != null" class="ion-text-end">- ${{ consumo.cantidad * consumo.platillos.precioempleado }}</td>
+              <td *ngIf="consumo.bebidas != null" class="ion-text-end">- ${{ consumo.cantidad *
+                consumo.bebidas.precioempleados }}</td>
+              <td *ngIf="consumo.platillos != null" class="ion-text-end">- ${{ consumo.cantidad *
+                consumo.platillos.precioempleado }}</td>
               <td *ngIf="consumo.concepto != null" class="ion-text-end">- ${{ consumo.cantidad }}</td>
               <td>
                 <ion-button fill="clear" (click)="RefactorizarConsumo(consumo, false)">

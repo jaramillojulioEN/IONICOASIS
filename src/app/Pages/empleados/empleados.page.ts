@@ -5,7 +5,8 @@ import { EmpleadosService } from 'src/app//services/Empleados/empleados.service'
 import { AlertServiceService } from '../../services/Alerts/alert-service.service'
 import { PopoverController } from '@ionic/angular';
 import { PropiedadesComponent } from 'src/app/Components/Secciones/Empleado/propiedades/propiedades.component'
-import {ConsumoComponent} from 'src/app/Components/Modals/consumo/consumo.component'
+import { ConsumoComponent } from 'src/app/Components/Modals/consumo/consumo.component'
+import { EmpleadosComponent } from 'src/app/Components/Modals/Empleados/empleados/empleados.component'
 @Component({
   selector: 'app-empleados',
   templateUrl: './empleados.page.html',
@@ -19,9 +20,14 @@ export class EmpleadosPage implements OnInit {
     private ModalController: ModalController,
     private ac: AlertServiceService,
     private popoverController: PopoverController,
-  ) { }
+  ) {
+    
+  }
 
   ngOnInit() {
+
+
+
     this.ObtenerEmpleados()
     window.addEventListener('success', () => {
       this.ModalController.dismiss()
@@ -41,12 +47,10 @@ export class EmpleadosPage implements OnInit {
     return await modal.present();
   }
 
-  async AbrirModalEmpleados(id: number, titulo: string, data: any = null) {
+  async AbrirModalEmpleados(data: any = null) {
     const modal = await this.ModalController.create({
-      component: MesasComponent,
+      component: EmpleadosComponent,
       componentProps: {
-        id: id,
-        titulo: titulo,
         data: data
       },
     });
@@ -90,11 +94,11 @@ export class EmpleadosPage implements OnInit {
     );
   }
 
-  RefactorizarConsumo(consumo : any, isdelete : boolean){
+  RefactorizarConsumo(consumo: any, isdelete: boolean) {
     console.log(consumo)
-    if(isdelete){
-      this.ac.presentCustomAlert("Eliminar", "¿Estás seguro de eliminar este elemento?: " , () => this.CEliminarConsumo(consumo));
-    }else{
+    if (isdelete) {
+      this.ac.presentCustomAlert("Eliminar", "¿Estás seguro de eliminar este elemento?: ", () => this.CEliminarConsumo(consumo));
+    } else {
     }
   }
 
@@ -119,39 +123,48 @@ export class EmpleadosPage implements OnInit {
     this.detallesVisibles[empleadoId] = !this.detallesVisibles[empleadoId];
   }
 
+
+  Opciones(data: any, event: Event) {
+    this.ac.configureAndPresentActionSheet([
+      { button: this.ac.btnEliminar, handler: () => this.EliminarEmpleados(data) },
+      { button: this.ac.btnActualizar, handler: () => { this.AbrirModalEmpleados(data); } },
+      { button: this.ac.btnAgregarconsumo, handler: () => { this.AbrirModalConsumo(0, 'Nuevo Consumo'); } },
+      { button: this.ac.btnProps, handler: () => { this.verPropiedades(data, event); } },
+      { button: this.ac.btnConsumo, handler: () => { this.verConsumo(data); } },
+      { button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }
+    ]);
+  }
+
   async verPropiedades(empleado: any, event: Event): Promise<void> {
-    const popover = await this.popoverController.create({
+    const popover = await this.ModalController.create({
       component: PropiedadesComponent,
-      componentProps: {empleado : empleado},
-      event: event,
-      size : 'cover',
-      translucent: true,
-      animated: true, 
-      mode: 'ios', 
+      componentProps: { empleado: empleado },
+      animated: true,
+      mode: 'ios',
       showBackdrop: true,
-      backdropDismiss: true
+      backdropDismiss: false
     });
     await popover.present();
   }
 
-  total (empleado : any) : number{
-    let total : number = 0
-    if(empleado.consumoEmpleado != null){
+  total(empleado: any): number {
+    let total: number = 0
+    if (empleado.consumoEmpleado != null) {
       for (let index = 0; index < empleado.consumoEmpleado.length; index++) {
-        if(empleado.consumoEmpleado[index].bebidas != null){
+        if (empleado.consumoEmpleado[index].bebidas != null) {
           total += empleado.consumoEmpleado[index].bebidas.precioempleados * empleado.consumoEmpleado[index].cantidad
         }
-        if(empleado.consumoEmpleado[index].concepto != null){
+        if (empleado.consumoEmpleado[index].concepto != null) {
           total += empleado.consumoEmpleado[index].cantidad
         }
-        if(empleado.consumoEmpleado[index].platillos != null){
+        if (empleado.consumoEmpleado[index].platillos != null) {
           total += empleado.consumoEmpleado[index].platillos.precioempleado * empleado.consumoEmpleado[index].cantidad
         }
       }
     }
     return empleado.salario - total
   }
-  
-  
+
+
 
 }

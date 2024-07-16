@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MenuController, ModalController } from '@ionic/angular';
+import { MenuController, ModalController, NavController } from '@ionic/angular';
 import { UserServiceService } from 'src/app/services/Users/user-service.service';
 
 @Component({
@@ -10,7 +10,8 @@ import { UserServiceService } from 'src/app/services/Users/user-service.service'
 export class MainHeaderComponent implements OnInit {
 
   constructor(private menu: MenuController, private us : UserServiceService,
-    private md : ModalController
+    private md : ModalController,
+    protected navCtrl : NavController
   ) { }
   @Input() titulo: string = ""
   @Input() isModal: boolean = false
@@ -18,6 +19,10 @@ export class MainHeaderComponent implements OnInit {
   user : any = []
   ngOnInit() {
     this.user = this.us.getUser()
+  }
+
+  goBack() {
+    this.navCtrl.back();
   }
 
   openFirst() {

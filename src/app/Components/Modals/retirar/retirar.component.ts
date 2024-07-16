@@ -60,7 +60,7 @@ export class RetirarComponent implements OnInit {
 
   async confirmar() {
     console.log(this.retiro);
-    if ((this.caja[0].sumatotal - this.caja[0].totalcaja) >= this.retiro.monto) {
+    if ((this.caja[0].ganancias) >= this.retiro.monto) {
       (await this.cortes.Retirar(this.retiro)).subscribe(
         (response: any) => {
           window.dispatchEvent(new Event('success'));

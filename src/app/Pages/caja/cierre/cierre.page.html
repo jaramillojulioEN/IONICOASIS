@@ -2,7 +2,7 @@
 
 <ion-content [fullscreen]="true" id="main-content">
 
-    <ion-segment [(ngModel)]="segmento">
+    <ion-segment [(ngModel)]="segmento" *ngIf="roles.id === 1">
         <ion-segment-button (click)="obtenerCortesActivos(true)" value="estado">
             <ion-label>Estado de la caja</ion-label>
         </ion-segment-button>
@@ -14,8 +14,10 @@
     <div class="estado ion-padding" *ngIf="segmento === 'estado'">
         <ion-card class="custom-card" *ngIf="CorteActivo.length > 0">
             <ion-card-content *ngFor="let corte of CorteActivo">
+                <h5>Información de la caja</h5>
                 <ion-grid>
                     <ion-row>
+
                         <ion-col size-lg="6" size-sm="12">
                             <ion-card *ngIf="loaded2">
                                 <ion-card-header>
@@ -32,9 +34,11 @@
                                             <ion-label slot="end">{{ getpart(corte.fechainicio, 1) }}</ion-label>
                                         </ion-item>
                                         <ion-item>
-                                            <ion-button class="crear" *ngIf="roles.id === 1" (click)="CerarCaja(corte)" expand="full">Cerrar
+                                            <ion-button class="crear" *ngIf="roles.id === 1" (click)="CerarCaja(corte)"
+                                                expand="full">Cerrar
                                                 la caja</ion-button>
-                                            <ion-button class="crear" (click)="vergraficopasado(corte)" expand="full">Ver gráfico</ion-button>
+                                            <ion-button class="crear" (click)="vergraficopasado(corte)"
+                                                expand="full">Ver gráfico</ion-button>
                                         </ion-item>
                                     </ion-list>
                                 </ion-card-content>

@@ -1,10 +1,11 @@
-import { Component, ElementRef, Input, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, Output, EventEmitter, ViewChild, input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { ProductoServiceService } from 'src/app/services/Prodcutos/producto-service.service';
 import { RecetasService } from 'src/app/services/Recetas/recetas.service';
 import { AlertController } from '@ionic/angular';
 import { CategoriaServiceService } from 'src/app/services/Categorias/categoria-service.service';
 import { BebidaService } from 'src/app/services/Bebidas/bebida.service';
+import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 
 @Component({
   selector: 'app-recetas',
@@ -35,18 +36,19 @@ export class RecetasComponent implements OnInit {
   BebidaArry: any = [];
   loaded: boolean = false;
 
+  @Input() datareceta: any
 
 
   constructor(
     public alertController: AlertController,
     private CategoriasService: CategoriaServiceService,
     private BebidaService: BebidaService,
+    private ac: AlertServiceService,
     private RecetasService: RecetasService, private modalController: ModalController, private ProductoService: ProductoServiceService) {
     this.pasos = "";
   }
 
-  @Input() titulo: string = "";
-  @Input() id: number = 0;
+
   @ViewChild('fileInput', { static: false }) fileInput: ElementRef | undefined;
   @Output() imagesSelectedEvent = new EventEmitter<string[]>();
 
@@ -59,6 +61,56 @@ export class RecetasComponent implements OnInit {
     await alert.present();
   }
 
+  nuevo: boolean = true
+  ngOnInit() {
+
+    this.ObtenerBebidas();
+    this.ObtenerProducutos();
+    this.ObtenerCategorias();
+    if (this.datareceta) {
+      this.preparedata();
+      this.nuevo = false;
+    }
+  }
+
+  preparedata() {
+    this.pasosArray = this.convertirHTMLaArray(this.datareceta.pasoshtml)
+    this.nombrereceta = this.datareceta.listaingredientes.descripcion
+    this.idcategoria = this.datareceta.idcategoria
+    this.dura = this.datareceta.tiempopreparacion
+    this.prodsArray = this.datareceta.listaingredientes.ingredientes
+    this.Imagenes = this.datareceta.listaimagenes.imagenes
+    this.idlistaingredientes = this.datareceta.idlistaingredientes
+    this.idlistaimagenes = this.datareceta.idlistaimagenes
+
+  }
+
+  pasoindex: number = -1
+  editarPaso(index: number) {
+    this.pasos = this.pasosArray[index]
+    this.pasoindex = index
+  }
+
+  eliminarPaso(index: number) {
+    this.ac.presentCustomAlert("Eliminar", "¿Estás seguro de querer eliminar este paso?", () => this.CONF(index));
+  }
+
+  async CONF(index: number): Promise<void> {
+    this.pasosArray.splice(index, 1)
+  }
+
+  convertirHTMLaArray(html: string): string[] {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const paragraphs = doc.querySelectorAll('p');
+    const result: string[] = Array.from(paragraphs).map(p => {
+      let text = p.textContent?.trim() || '';
+      text = text.replace(/^\d+\.\s*/, '');
+      return text;
+    });
+    return result;
+  }
+
   async guardar(): Promise<void> {
     const resultadoValidacion = this.validar();
     let estadoValidacion = resultadoValidacion.estado;
@@ -66,11 +118,16 @@ export class RecetasComponent implements OnInit {
     if (estadoValidacion) {
       try {
         const data = {
+          id: this.datareceta.id,
           pasoshtml: this.pasoshtml,
           idlistaimagenes: this.idlistaimagenes,
           idlistaingredientes: this.idlistaingredientes,
           tiempopreparacion: this.dura,
-          idcategoria: this.idcategoria
+          idcategoria: this.idcategoria,
+          listaingredientes : {
+            id : this.idlistaingredientes,
+            descripcion : this.nombrereceta
+          }
         };
         const respuesta = await (await this.RecetasService.CrearReceta(data)).toPromise();
         if (respuesta) {
@@ -85,10 +142,9 @@ export class RecetasComponent implements OnInit {
     }
   }
 
-  ObtenerCategorias(id: number = 1): void {
+  ObtenerCategorias(): void {
     this.loaded = false;
-
-    this.CategoriasService.Categorias(id).subscribe(
+    this.CategoriasService.Categorias().subscribe(
       (response: any) => {
         if (response && response.categorias) {
           this.categorias = response.categorias;
@@ -145,11 +201,7 @@ export class RecetasComponent implements OnInit {
   }
 
 
-  ngOnInit() {
-    this.ObtenerBebidas();
-    this.ObtenerProducutos();
-    this.ObtenerCategorias();
-  }
+
 
   dismissModal(): void {
     this.modalController.dismiss();
@@ -160,7 +212,6 @@ export class RecetasComponent implements OnInit {
 
     for (const element of this.imagesArray) {
       console.log(this.idlistaimagenes);
-
       if (this.idlistaimagenes === 0) {
         try {
           await this.crearListaImagenes("images");
@@ -246,9 +297,6 @@ export class RecetasComponent implements OnInit {
   data: any = {};
 
   async agregarIngrediente(): Promise<void> {
-
-
-
     if (this.validaringrediente()) {
       if (this.idlistaingredientes === 0) {
         try {
@@ -433,8 +481,14 @@ export class RecetasComponent implements OnInit {
   }
 
   agregaPaso(): void {
+    console.log(this.pasoindex)
     if (this.pasos.trim() !== "") {
-      this.pasosArray.push(this.pasos);
+      if (this.pasoindex != -1) {
+        this.pasosArray[this.pasoindex] = this.pasos.trim();
+      } else {
+        this.pasosArray.push(this.pasos);
+      }
+      this.pasoindex = -1
       this.pasos = "";
     } else {
       this.presentAlert("Error", "Para agregar un paso, debe escribirlo")

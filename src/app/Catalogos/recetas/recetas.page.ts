@@ -42,10 +42,9 @@ export class RecetasPage implements OnInit {
 
   async ObtenerRecetas(): Promise<void> {
     this.loaded = false;
-  
+
     try {
       const response: any = await (await this.RecetasService.Recetas()).toPromise();
-  
       if (response && response.recetas) {
         this.recetas = response.recetas;
         console.log(this.recetas);
@@ -58,29 +57,28 @@ export class RecetasPage implements OnInit {
       this.loaded = true;
     }
   }
-  
+
 
 
   Opciones(data: any) {
     let buttons = [];
-    if (this.rol.id === 2) {
+    if (this.rol.id !== 2) {
       buttons.push({ button: this.ac.btnEliminar, handler: () => this.eliminarReceta(data) },)
+      buttons.push({ button: this.ac.btnActualizar, handler: () => this.AbrirModalRecetas(data) },)
       buttons.push({ button: this.ac.btnVer, handler: () => this.verRecetaCompleta(data) },)
-      buttons.push({ button: this.ac.btnActualizar, handler: () => { this.editarReceta(data.id); } },)
-      buttons.push({ button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }    )
-    }else{
+      buttons.push({ button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } })
+    } else {
       buttons.push({ button: this.ac.btnVer, handler: () => this.verRecetaCompleta(data) },)
-      buttons.push({ button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }    )
+      buttons.push({ button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } })
     }
     this.ac.configureAndPresentActionSheet(buttons);
   }
 
-  async AbrirModalRecetas(id: number, titulo: string) {
+  async AbrirModalRecetas(data : any  = null) {
     const modal = await this.modalController.create({
       component: RecetasComponent,
       componentProps: {
-        id: id,
-        titulo: titulo
+        datareceta: data
       },
     });
     return await modal.present();
@@ -88,5 +86,24 @@ export class RecetasPage implements OnInit {
 
   editarReceta(receta: any) { }
 
-  eliminarReceta(receta: any) { }
+  eliminarReceta(receta: any) {
+    this.ac.presentCustomAlert("Seguro?", "Estas seguro de querer eliminar la receta", () => this.confirmareliminar(receta))
+  }
+
+  async confirmareliminar(receta: any): Promise<void> {
+    (await this.RecetasService.EliminarReceta(receta.id)).subscribe(
+      async (response: any) => {
+        if (response) {
+          this.ObtenerRecetas();
+          this.ac.presentCustomAlert("Exito", response.message)
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
+  }
+
 }

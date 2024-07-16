@@ -1,5 +1,5 @@
 
-<app-main-header titulo="{{titulo}} Detalle de Receta" [isModal]="true"></app-main-header>
+<app-main-header titulo="Detalle de Receta" [isModal]="true"></app-main-header>
 <ion-content class="ion-padding custom-content">
   <ion-grid>
     <ion-card class="custom-card">
@@ -45,8 +45,14 @@
               <ion-icon name="add-outline"></ion-icon> Agregar paso
             </ion-button>
             <ion-list>
-              <ion-item lines="none" *ngFor="let paso of pasosArray; let index = index">
-                <ion-label>{{index + 1}}. {{ paso }}</ion-label>
+              <ion-item lines="none" *ngFor="let paso of pasosArray; let i = index">
+                <ion-label>{{ i + 1 }}. {{ paso }}</ion-label>
+                <ion-button fill="clear" slot="end" (click)="editarPaso(i)">
+                  <ion-icon name="create-outline"></ion-icon>
+                </ion-button>
+                <ion-button fill="clear" slot="end" (click)="eliminarPaso(i)">
+                  <ion-icon name="trash-outline"></ion-icon>
+                </ion-button>
               </ion-item>
             </ion-list>
           </ion-col>

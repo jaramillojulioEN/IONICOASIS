@@ -10,7 +10,7 @@ export class DetalleComponentReceta  implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    
+      console.log(this.receta)
   }
 
   @Input() receta : any =[]

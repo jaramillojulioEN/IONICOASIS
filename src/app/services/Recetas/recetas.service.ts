@@ -94,6 +94,24 @@ export class RecetasService {
       });
     });
   }
+
+  async EliminarReceta(idr: number): Promise<Observable<any>> {
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.get<any>(`${this.server}api/Recetas/EliminarRecetas/${idr}`).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
   
   async CrearReceta(data: object): Promise<Observable<any>> {
     return new Observable(observer => {

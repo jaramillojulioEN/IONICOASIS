@@ -44,10 +44,10 @@
       <ion-card-title>Imágenes</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ng-container *ngIf="receta.imagenes && receta.imagenes.length > 0; else noImagesTemplate">
+      <ng-container *ngIf="receta.listaimagenes && receta.listaimagenes.imagenes.length > 0; else noImagesTemplate">
         <div class="images">
-          <ion-item *ngFor="let imagen of receta.imagenes">
-            <img [src]="imagen.url" alt="Imagen de receta" />
+          <ion-item *ngFor="let imagen of receta.listaimagenes.imagenes">
+            <img [src]="imagen.cadenab64" alt="Imagen" class="recipe-image" />
           </ion-item>
         </div>
       </ng-container>

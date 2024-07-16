@@ -1,3 +1,93 @@
-<p>
-  empleados works!
-</p>
+<app-main-header [isModal]="true" titulo="Detalle de Empleado"></app-main-header>
+
+<ion-content>
+  <!-- Tarjeta de Datos de Usuario -->
+  <ion-card class="custom-card">
+    <ion-card-header>
+      <ion-card-title>
+        Datos de Usuario
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <!-- Nombre Completo -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-input fill="outline" label="Nombre Completo" labelPlacement="floating"
+              [(ngModel)]="Usuario.nombre"></ion-input>
+          </ion-col>
+        </ion-row>
+        <!-- Nombre de Usuario y Contraseña -->
+        <ion-row>
+          <ion-col size="6">
+            <ion-input fill="outline" label="Usuario" labelPlacement="floating"
+              [(ngModel)]="Usuario.nombreusuario"></ion-input>
+          </ion-col>
+          <ion-col size="6">
+            <ion-input fill="outline" label="Contraseña" labelPlacement="floating" type="password"
+              [(ngModel)]="contrasena"></ion-input>
+          </ion-col>
+        </ion-row>
+        <!-- Rol y Sucursal -->
+        <ion-row>
+          <ion-col size="6">
+            <ion-select fill="outline" label="Rol" labelPlacement="floating" [(ngModel)]="Usuario.idrol">
+              <ion-select-option *ngFor="let rol of roless" [value]="rol.id">{{rol.rol}}</ion-select-option>
+            </ion-select>
+          </ion-col>
+          <ion-col size="6">
+            <ion-select [disabled]="true" fill="outline" label="Sucursal" labelPlacement="floating" [(ngModel)]="Usuario.idsucursal">
+              <ion-select-option [value]="user.sucursales.id">{{user.sucursales.sucursal}}</ion-select-option>
+            </ion-select>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Tarjeta de Datos de Empleado -->
+  <ion-card class="custom-card">
+    <ion-card-header>
+      <ion-card-title>
+        Datos de Empleado
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <!-- Correo y Teléfono -->
+        <ion-row>
+          <ion-col size="6">
+            <ion-input fill="outline" label="Correo" labelPlacement="floating" type="email"
+              [(ngModel)]="Empleados.correo"></ion-input>
+          </ion-col>
+          <ion-col size="6">
+            <ion-input fill="outline" label="Teléfono" labelPlacement="floating"
+              [(ngModel)]="Empleados.telefono"></ion-input>
+          </ion-col>
+        </ion-row>
+        <!-- Cargo y Salario -->
+        <ion-row>
+          <ion-col size="6">
+            <ion-input fill="outline" label="Cargo" labelPlacement="floating" [(ngModel)]="Empleados.cargo"></ion-input>
+          </ion-col>
+          <ion-col size="6">
+            <ion-input fill="outline" label="Salario" labelPlacement="floating" type="number"
+              [(ngModel)]="Empleados.salario"></ion-input>
+          </ion-col>
+        </ion-row>
+        <!-- Fecha de Pago -->
+        <ion-row>
+          <ion-col size="12">
+            <label for="Dia de pago"></label>
+              <ion-datetime fill="outline" label="Fecha de Pago" labelPlacement="floating" [(ngModel)]="Empleados.diapago" presentation="date-time" [preferWheel]="true"></ion-datetime>
+          </ion-col>
+          <ion-col size="12">
+            <ion-button class="crear" (click)="Guardar()" style="width: 100%; height: 100%;">
+              Guardar
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

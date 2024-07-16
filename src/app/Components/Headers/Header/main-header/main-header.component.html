@@ -1,21 +1,18 @@
 <ion-header>
-  <!-- <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button (click)="openFirst()">
-        <ion-icon slot="icon-only" color="light" name="menu"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>{{titulo}}</ion-title>
-  </ion-toolbar> -->
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button *ngIf="!isModal" color="light" auto-hide="false"></ion-menu-button>
+      <ion-button *ngIf="!isModal" (click)="goBack()" fill="clear">
+        <ion-icon slot="icon-only" color="light" name="chevron-back-outline"></ion-icon>
+      </ion-button>
       <ion-button *ngIf="isModal" (click)="dissmiss()" fill="clear">
-        <h1><ion-icon color="light" name="arrow-back-outline"></ion-icon></h1>
+        <ion-icon slot="icon-only" color="light" name="arrow-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title slot="start">{{titulo}}</ion-title>
-    <ion-title slot="end" *ngIf="!isModal"></ion-title>
+    <ion-title>{{ titulo }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-menu-button *ngIf="!isModal" color="light" auto-hide="false"></ion-menu-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
 <app-side-menu></app-side-menu>
