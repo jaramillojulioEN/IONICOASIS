@@ -1,0 +1,36 @@
+<app-main-header titulo="Administrar Ordenes"></app-main-header>
+<ion-content [fullscreen]="true" id="main-content">
+    <div class="table-container ion-padding">
+        <table class="tabla" *ngIf="loaded">
+            <thead>
+                <tr>
+                    <th>ID ORDEN</th>
+                    <th>Mesa</th>
+                    <th>Mesero</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th colspan="2">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="option" *ngFor="let orden of ordenes">
+                    <td>#ORDN{{ orden.id }}</td>
+                    <td>{{ orden.mesas.descripcion }}</td>
+                    <td>{{orden.usuarios.nombre}}</td>
+                    <td>{{ orden.fecha }}</td>
+                    <td>{{ getEstado(orden.estado) }}</td>
+                    <td>${{ orden.total }}</td>
+                    <td class="actions-cell">
+                        <ion-button fill="clear" (click)="Opciones(orden)">
+                            <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                        </ion-button>
+                    </td>
+                </tr>
+                <tr *ngIf="ordenes.length === 0">
+                    <td colspan="7">No hay ordenes disponibles</td>
+                </tr>
+            </tbody>
+        </table>
+        <app-skeleton [columns]="7" *ngIf="!loaded" type="tabla"></app-skeleton>
+    </div>
+</ion-content>

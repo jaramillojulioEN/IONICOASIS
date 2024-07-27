@@ -1,5 +1,5 @@
-<ion-header>
-  <ion-toolbar>
+<ion-header *ngIf="rol.id !== 4">
+  <ion-toolbar >
     <ion-title>Detalles de la Orden</ion-title>
     <ion-buttons slot="start" color="light">
       <ion-button (click)="dissmiss()" fill="clear">
@@ -15,8 +15,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-
+  
   <div *ngIf="orden.estado === 4">
     <ion-card class="custom-card">
       <ion-card-content>
@@ -26,7 +25,7 @@
     </ion-card>
   </div>
 
-  <ion-card *ngIf="orden.estado !== 4">
+  <ion-card *ngIf="orden.estado !== 4" style="overflow-y: auto;">
     <ion-card-header>
       <ion-card-title>Orden #ORD{{orden.id}}</ion-card-title>
       <ion-card-subtitle>Fecha y Hora: {{orden.fecha}}</ion-card-subtitle>
@@ -51,6 +50,10 @@
         <div class="order-section">
           <ion-button (click)="AgregarAOrden(orden)" *ngIf="rol.id!==4" slot="end" color="primary">
             Añadir detalles a la orden
+            <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+          </ion-button>
+          <ion-button (click)="enviarcocina(1)" *ngIf="rol.id!==4 && orden.estado === -1" slot="end" color="warning">
+            Enviar a cocina
             <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
           </ion-button>
           <ion-button (click)="CerrarOrden(6)" *ngIf="rol.id!==4 && orden.estado === 1" slot="end" color="danger">
@@ -110,4 +113,3 @@
       </div>
     </ion-card-content>
   </ion-card>
-</ion-content>

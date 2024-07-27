@@ -19,7 +19,7 @@ export class OrdnComponent implements OnInit {
     private OrdenesService: OrdenesService,
     private pop: PopoverController,
     private funcs: LoaderFunctions,
-    private md : ModalController
+    private md: ModalController
   ) { }
 
   OrdenDetalles: any = []
@@ -70,8 +70,10 @@ export class OrdnComponent implements OnInit {
     this.NewOrden.idmesa = this.idmesa
     if (this.ordenold.id != null) {
       this.OrdenDetalles = this.ordenold
-      this.DetalleBebida.estado = 1
-      this.detallePlatillo.estado = 1
+      if (this.ordenold.estado === 2) {
+        this.DetalleBebida.estado = 1
+        this.detallePlatillo.estado = 1
+      }
       this.NewOrden.total = this.total()
     }
 
@@ -83,13 +85,12 @@ export class OrdnComponent implements OnInit {
   presentresume: any = []
 
   async crearDetalle(detalle: any): Promise<void> {
-    console.log(detalle)
     if (this.isprep) {
       detalle.cantidad = this.DetalleBebida.cantidad
     }
     if (this.ordenold.id) {
       detalle.idorden = this.ordenold.id;
-      console.log(detalle.idorden);
+      console.log(detalle);
       await this.procesarDetalle(detalle); // Procesar el detalle directamente
     } else {
       await this.CrearOrden(); // Esperar a que se cree la orden
@@ -112,10 +113,10 @@ export class OrdnComponent implements OnInit {
   }
 
   async CrearOrden(): Promise<void> {
+    this.NewOrden.estado = -1
     try {
       const response = await (await this.OrdenesService.CrearOrden(this.NewOrden)).toPromise();
       this.ordenold.id = response.id;
-      console.log(this.ordenold.id);
     } catch (error) {
       console.error('Error en la solicitud:', error);
       throw error;
@@ -222,12 +223,10 @@ export class OrdnComponent implements OnInit {
       mode: 'ios'
     });
     modal.onDidDismiss().then((dataReturned: any) => {
-      console.log(dataReturned.data);
       if (dataReturned.data) {
         if (isPlatillo) {
           this.detallep = dataReturned.data.nombre
           this.detallePlatillo.idplatillo = dataReturned.data.id
-          console.log(this.detallePlatillo.idplatillo)
         } else {
           if (dataReturned.data.isprep) {
             this.isprep = dataReturned.data.isprep;
@@ -236,7 +235,6 @@ export class OrdnComponent implements OnInit {
           } else {
             this.detalleb = dataReturned.data.nombre
             this.DetalleBebida.idbebida = dataReturned.data.id
-            console.log(this.DetalleBebida.idbebida)
           }
         }
       }
@@ -245,9 +243,9 @@ export class OrdnComponent implements OnInit {
     return await modal.present();
   }
 
-  async dissmiss(){
+  async dissmiss() {
     let id = "tomaordenmodal"
-    const loading = await this.md.getTop(); 
+    const loading = await this.md.getTop();
     loading?.dismiss()
 
   }

@@ -1,0 +1,56 @@
+<app-main-header titulo="Detalles de la orden" [isModal]="true"></app-main-header>
+<ion-content>
+
+  <div class="table-container ion-padding" *ngIf="ordenes.ordenesplatillos.length > 0">
+    <h5>Platillos</h5>
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Platillo</th>
+          <th>cantidad</th>
+          <th>Observaciones</th>
+          <th colspan="2">Precio</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="option" *ngFor="let detallep of ordenes.ordenesplatillos">
+          <td>{{detallep.platillos.nombre}}</td>
+          <td>{{detallep.cantidad}}</td>
+          <td>{{detallep.observaciones}}</td>
+          <td>{{detallep.platillos.precio}}</td>
+          <td class="actions-cell">
+            <ion-button fill="clear" (click)="Opciones(detallep, false)">
+              <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+            </ion-button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-container ion-padding" *ngIf="ordenes.ordenesbebidas.length > 0">
+    <h5>Bebidas</h5>
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Bebida</th>
+          <th>cantidad</th>
+          <th colspan="2">Precio</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="option" *ngFor="let detalleb of ordenes.ordenesbebidas">
+          <td>{{detalleb.bebidas.nombre}}</td>
+          <td>{{detalleb.cantidad}}</td>
+          <td>{{detalleb.bebidas.precioventa}}</td>
+          <td class="actions-cell">
+            <ion-button fill="clear" (click)="Opciones(detalleb, true)">
+              <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+            </ion-button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</ion-content>

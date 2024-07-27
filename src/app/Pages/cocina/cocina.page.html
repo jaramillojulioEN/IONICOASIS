@@ -1,20 +1,25 @@
 <app-main-header titulo="Ordenes Pendientes"></app-main-header>
 <ion-content [fullscreen]="true" id="main-content" *ngIf="caja">
-  <ion-card *ngIf="ordenes.length === 0" class="custom-card">
+  <ion-card *ngIf="ordenes.length === 0 && loaded" class="custom-card">
     <ion-card-content>
       <h5 class="ion-text-center ion-padding">No se ha realizado ninguna orden todavia</h5>
     </ion-card-content>
   </ion-card>
   <ion-grid>
- 
+
     <ion-row *ngIf="ordenes.length !== 0 && loaded">
-      <ion-col lg-size="6" sm-size="12" *ngFor="let orden of ordenes">
-        <ion-card class="custom-card option notif" (click)="Opciones(orden)">
+      <ion-col size-lg="4" size-sm="12" *ngFor="let orden of ordenes">
+        <ion-card class="custom-card option notif">
           <div class="notification-circle" *ngIf="notificaciones[orden.id]">+{{notificaciones[orden.id]}}</div>
+          <div class="seps" *ngIf="notificaciones[orden.id]">
+            <br><br>
+          </div>
           <ion-card-content>
-            <ion-grid class="custom-label">
-              <ion-row>
-                <ion-col size="12">
+            <app-detalleorden [mesa]="orden.mesas" [ordenC]="orden"></app-detalleorden>
+            <!-- <ion-grid class="custom-label"> -->
+            <!-- <ion-row> -->
+
+            <!-- <ion-col size="12">
                   <ion-row>
                     <ion-col size="11">
                       <h2>ID Orden: #ORD{{ orden.id }}</h2>
@@ -55,15 +60,9 @@
                     <span *ngIf="orden.estado===3">Se Preparó en: {{ formatTime(orden.tiempo) }} (pausado hasta nuevo
                       pedido)</span>
                   </p>
-                </ion-col>
-                <!-- <ion-col lg-size="4" sm-size="12">
-                  <ion-button color="primary" (click)="VerOrden(orden)">
-                    Ver Detalle
-                    <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
-                  </ion-button>
                 </ion-col> -->
-              </ion-row>
-            </ion-grid>
+            <!-- </ion-row>
+            </ion-grid> -->
           </ion-card-content>
         </ion-card>
       </ion-col>

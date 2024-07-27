@@ -10,7 +10,7 @@ export class OrdenesService {
 
   server: string;
 
-  constructor(private UserServiceService : UserServiceService,private http: HttpClient, private loaderFunctions: LoaderFunctions) {
+  constructor(private UserServiceService: UserServiceService, private http: HttpClient, private loaderFunctions: LoaderFunctions) {
     this.server = this.UserServiceService.getServer()
   }
 
@@ -31,7 +31,7 @@ export class OrdenesService {
       });
     });
   }
-  
+
   async CrearOrden(data: object): Promise<Observable<any>> {
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
@@ -49,7 +49,7 @@ export class OrdenesService {
       });
     });
   }
-  
+
   async CrearOrdenDetail(data: any): Promise<Observable<any>> {
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
@@ -61,7 +61,7 @@ export class OrdenesService {
         } else {
           request = new Observable<any>();
         }
-  
+
         request.subscribe(
           async response => {
             await this.loaderFunctions.StopLoader();
@@ -76,7 +76,7 @@ export class OrdenesService {
       });
     });
   }
-  
+
   async EliminarBDetalle(data: any): Promise<Observable<any>> {
     const options = {
       headers: new HttpHeaders({
@@ -84,7 +84,7 @@ export class OrdenesService {
       }),
       body: data
     };
-  
+
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
         this.http.delete<any>(`${this.server}api/Detalles/EliminarBebidaDetalle`, options).subscribe(
@@ -101,7 +101,7 @@ export class OrdenesService {
       });
     });
   }
-  
+
   async EliminarPDetalle(data: any): Promise<Observable<any>> {
     const options = {
       headers: new HttpHeaders({
@@ -125,7 +125,7 @@ export class OrdenesService {
       });
     });
   }
-  
+
 
   total(orden: any): number {
     let total = 0;
@@ -134,21 +134,53 @@ export class OrdenesService {
         total += (ordenplatillo.platillos.precio * ordenplatillo.cantidad);
       });
     }
-  
+
     if (Array.isArray(orden.ordenesbebidas)) {
       orden.ordenesbebidas.forEach((ordenbebida: any) => {
         total += (ordenbebida.bebidas.precioventa * ordenbebida.cantidad);
       });
     }
-  
+
     return total;
   }
-  
 
-  async OrdenesPendientes(loader: boolean = true, estado : number = 0): Promise<Observable<any>> {
-    console.log(estado)
+
+
+  public estados: any = [
+    { value: -1, label: 'Tomando orden' },
+    { value: 1, label: 'Orden pendiente' },
+    { value: 2, label: 'Cocinando' },
+    { value: 3, label: 'Listo para recoger (terminada)' },
+    { value: 4, label: 'Orden cerrada' },
+    { value: 5, label: 'Orden Cobrada' },
+    { value: 6, label: 'Orden Cancelada' }
+  ];
+
+
+  getEstado(estado: number): string {
+    switch (estado) {
+      case -1:
+        return "Tomando orden";
+      case 1:
+        return "Orden pendiente";
+      case 2:
+        return "Cocinando";
+      case 3:
+        return "Listo para recoger (terminada)";
+      case 4:
+        return "Orden cerrada";
+      case 5:
+        return "Orden Cobrada";
+      case 6:
+        return "Orden Cancelada";
+      default:
+        return "Estado desconocido";
+    }
+  }
+
+  async OrdenesPendientes(loader: boolean = true, estado: number = 0, rol: number = 0): Promise<Observable<any>> {
     try {
-      return this.http.get<any>(`${this.server}api/Ordenes/TodasOrdenes/${estado}`);
+      return this.http.get<any>(`${this.server}api/Ordenes/TodasOrdenes/${estado}/${rol}`);
     } finally {
     }
   }
@@ -159,6 +191,8 @@ export class OrdenesService {
     } finally {
     }
   }
+
+
 
 
 }

@@ -31,6 +31,12 @@ export class AlertServiceService {
     handler: () => { },
     cssClass: ''
   }
+
+  public btnestado: ActionSheetButton = {
+    text: 'Cambiar Estado',
+    handler: () => { },
+    cssClass: ''
+  }
   
   public btnAgregarconsumo: ActionSheetButton = {
     text: 'Agregar Consumo',

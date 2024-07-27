@@ -31,6 +31,8 @@ import { ExistenciasComponent } from './Modals/existencias/existencias.component
 import { TicketcajaComponent } from './ticketcaja/ticketcaja.component'
 import { SkeletonComponent } from './skeleton/skeleton.component'
 import { EditLavComponent } from './Modals/edit-lav/edit-lav.component'
+import {DetalleadminComponent} from 'src/app/Components/Modals/detalleadmin/detalleadmin.component'
+import {EstadoComponent} from  'src/app/Components/Modals/estado/estado.component'
 @NgModule({
   declarations:
     [
@@ -41,6 +43,8 @@ import { EditLavComponent } from './Modals/edit-lav/edit-lav.component'
       EditLavComponent,
       RetirarComponent,
       DetalleComponentReceta,
+      EstadoComponent,
+      DetalleadminComponent,
       SkeletonComponent,
       ExistenciasComponent,
       TicketComponent,
@@ -70,7 +74,9 @@ import { EditLavComponent } from './Modals/edit-lav/edit-lav.component'
     MainHeaderComponent,
     ConsumoComponent,
     EditLavComponent,
+    EstadoComponent,
     SkeletonComponent,
+    DetalleadminComponent,
     InicioComponent,
     TicketcajaComponent,
     ExistenciasComponent,

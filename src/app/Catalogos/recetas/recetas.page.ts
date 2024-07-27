@@ -61,8 +61,9 @@ export class RecetasPage implements OnInit {
 
 
   Opciones(data: any) {
+    console.log(this.rol)
     let buttons = [];
-    if (this.rol.id !== 2) {
+    if (this.rol.id !== 4) {
       buttons.push({ button: this.ac.btnEliminar, handler: () => this.eliminarReceta(data) },)
       buttons.push({ button: this.ac.btnActualizar, handler: () => this.AbrirModalRecetas(data) },)
       buttons.push({ button: this.ac.btnVer, handler: () => this.verRecetaCompleta(data) },)

@@ -125,6 +125,20 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: { expectedRoles: ["Administrador"] }
   },
+  {
+    path: 'pasado',
+    loadChildren: () => import('./Pages/pasado/pasado.module').then( m => m.PasadoPageModule),
+    canActivate: [RoleGuard],
+    data: { expectedRoles: ["Cocinero"] }
+  },
+  {
+    path: 'adminordenes',
+    loadChildren: () => import('./Pages/adminordenes/adminordenes.module').then( m => m.AdminordenesPageModule),
+    canActivate: [RoleGuard],
+    data: { expectedRoles: ["Administrador"] }
+  },
+
+
 
 ];
 

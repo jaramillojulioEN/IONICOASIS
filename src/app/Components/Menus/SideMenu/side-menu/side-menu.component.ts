@@ -70,6 +70,7 @@ export class SideMenuComponent implements OnInit {
       this.appPages = [
         { title: 'Inicio', url: '/admin', icon: 'home', open: false },
         { title: 'Inventario', url: '/inventario', icon: 'cash', open: false },
+        { title: 'Administrar Ordenes', url: '/adminordenes', icon: 'receipt', open: false },
         {
           title: 'Catálogos',
           url: '/incio',
@@ -95,6 +96,7 @@ export class SideMenuComponent implements OnInit {
     else if (this.rol.id == 4) {
       this.appPages = [
         { title: 'Ordenes pendientes', url: '/cocina', icon: 'receipt', open: false },
+        { title: 'Ordenes pasadas', url: '/pasado', icon: 'receipt', open: false },
         { title: 'Recetas', url: '/recetas', icon: 'receipt' },
 
       ]

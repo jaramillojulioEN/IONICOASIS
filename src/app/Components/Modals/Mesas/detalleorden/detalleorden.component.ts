@@ -93,23 +93,25 @@ export class DetalleordenComponent implements OnInit {
 
 
   ngOnInit() {
-    console.log(this.activetimers)
     window.addEventListener('success', () => {
       this.buscarOrden();
     })
     this.rol = this.userService.getRol();
     if (this.rol.id === 4) {
       this.orden = this.ordenC;
+      console.log(this.orden)
     } else {
       this.orden = this.mesa.ordenes[0];
     }
     this.Getestimandos();
-    console.log(this.orden)
 
-    this.intervalId = setInterval(() => {
-      this.Getestimandos();
-      this.buscarOrden();
-    }, 5000);
+    if (this.rol.id !== 4) {
+      this.intervalId = setInterval(() => {
+        this.Getestimandos();
+        this.buscarOrden();
+      }, 5000);
+    }
+
   }
 
 
@@ -172,6 +174,8 @@ export class DetalleordenComponent implements OnInit {
         return "Orden Cobrada";
       case 6:
         return "Orden Cancelada";
+      case -1:
+        return "Tomando orden";
       default:
         return "Estado desconocido";
     }
@@ -180,6 +184,11 @@ export class DetalleordenComponent implements OnInit {
   CerrarOrden(estado: number = 4): any {
     this.ac.presentCustomAlert("Cerrar Orden", `Estás seguro de ${estado == 4 ? 'cerrar' : 'cancelar'} esta Orden`, () => this.alterstate(estado));
   }
+
+  enviarcocina(estado: number) {
+    this.ac.presentCustomAlert("Enviar a cocina", "Estas seguro de querer enviar a cocina", () => this.alterstate(estado))
+  }
+
 
   async alterstate(estado: number): Promise<void> {
     this.orden.estado = estado;

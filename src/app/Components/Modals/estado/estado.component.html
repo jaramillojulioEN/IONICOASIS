@@ -1,0 +1,25 @@
+<app-main-header titulo="Estado de la orden" [isModal]="true"></app-main-header>
+<ion-content>
+
+    <div class="container">
+        <ion-card class="custom-card">
+            <ion-card-content>
+                <h5>Mesa: {{ ordenes.mesas.descripcion }}</h5>
+                <h5>Mesero que atiende: {{ordenes.usuarios.nombre}}</h5>
+                <h5>Fecha: {{ ordenes.fecha }}</h5>
+                <h5>Estado: {{ getEstado(ordenes.estado) }}</h5>
+                <h5>Total: ${{ ordenes.total }}</h5>
+            </ion-card-content>
+        </ion-card>
+        <ion-card class="custom-card">
+            <ion-card-content>
+                <h5>Modificar el estado</h5>
+                <ion-select [(ngModel)]="estado" label="Estado" labelplacement="floating" (ionChange)="onEstadoChange()">
+                    <ion-select-option value="0">Selecciona un estado</ion-select-option>
+                    <ion-select-option *ngFor="let estado of estados" [value]="estado.value">{{ estado.label }}</ion-select-option>
+                  </ion-select>
+            </ion-card-content>
+        </ion-card>
+    </div>
+
+</ion-content>

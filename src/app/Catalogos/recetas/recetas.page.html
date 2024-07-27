@@ -14,41 +14,71 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-      <ion-grid>
-        <ion-row>
-          <ion-col class="table-container" size="12">
-            <table class="tabla" *ngIf="loaded">
-              <thead>
-                <tr>
-                  <th>Nombre de la receta</th>
-                  <th>Imagen</th>
-                  <th colspan="2">Tiempo de preparación</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let receta of recetas">
-                  <td>{{ receta.listaingredientes.descripcion }}</td>
-                  <td>
-                    <img [src]="receta.listaimagenes.imagenes[0]?.cadenab64 || 'assets/img/no-image.png'"
-                      alt="Imagen de la receta" class="recipe-image">
-                  </td>
-                  <td>{{ receta.tiempopreparacion }} minutos</td>
-                  <td class="actions-cell">
-                    <ion-button fill="clear" (click)="Opciones(receta)">
-                      <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-                    </ion-button>
-                  </td>
-                </tr>
-              </tbody>
-              <tbody *ngIf="!recetas || recetas.length === 0">
-                <tr>
-                  <td colspan="4">Aún no has registrado recetas</td>
-                </tr>
-              </tbody>
-            </table>
-            <app-skeleton *ngIf="!loaded" type="tabla" [columns]="4"></app-skeleton>
-          </ion-col >
-        </ion-row>
-      </ion-grid>
+    <ion-grid>
+      <ion-row>
+        <div *ngIf="loaded" class="cards-container">
+          <ion-col size-lg="4" size-sm="12" *ngFor="let receta of recetas">
+            <ion-card (click)="Opciones(receta)" style="cursor: pointer;">
+              <ion-card-header>
+                <ion-card-title>{{ receta.listaingredientes.descripcion }}</ion-card-title>
+                <ion-card-subtitle>Tiempo de preparación: {{ receta.tiempopreparacion }} minutos</ion-card-subtitle>
+
+              </ion-card-header>
+              <ion-card-content>
+                <div class="image-container">
+                  <img [src]="receta.listaimagenes.imagenes[0]?.cadenab64 || 'assets/img/no-image.png'"
+                    alt="Imagen de la receta" class="recipe-image">
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <div *ngIf="!recetas || recetas.length === 0" class="no-recipes">
+            <p>Aún no has registrado recetas</p>
+          </div>
+        </div>
+
+      </ion-row>
+      <ion-row *ngIf="!loaded">
+        <ion-col size="4"> <app-skeleton *ngIf="!loaded" [columns]="5" type="cards"></app-skeleton>
+        </ion-col>
+        <ion-col size="4"> <app-skeleton *ngIf="!loaded" [columns]="5" type="cards"></app-skeleton>
+        </ion-col>
+        <ion-col size="4"> <app-skeleton *ngIf="!loaded" [columns]="5" type="cards"></app-skeleton>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
 </ion-content>
+
+<style>
+  .cards-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    /* Ajusta el espacio entre las cards según sea necesario */
+  }
+
+  .no-recipes {
+    width: 100%;
+    text-align: center;
+  }
+
+  .image-container {
+    width: 100%;
+    padding-top: 56.25%;
+    /* 16:9 Aspect Ratio */
+    position: relative;
+    overflow: hidden;
+  }
+
+  .recipe-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Hace que la imagen mantenga su aspecto y llene el contenedor */
+  }
+</style>
