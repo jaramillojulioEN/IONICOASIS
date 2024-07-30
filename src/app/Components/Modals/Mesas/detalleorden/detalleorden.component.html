@@ -6,12 +6,12 @@
         <h1><ion-icon color="light" name="arrow-back-outline"></ion-icon></h1>
       </ion-button>
     </ion-buttons>
-    <!-- *ngIf="rol.id !== 2" -->
+    <!-- *ngIf="rol.id !== 2"
     <div slot="end" *ngIf="rol.id !== 2">
       <ion-icon style="width: 50px;" name="time-outline" color="light" slot="icon-only"></ion-icon>
       <span *ngIf="orden.estado!==3" class="timer">{{ getElapsedTime(orden.id) | date:'mm:ss' }}</span>
       <span *ngIf="orden.estado===3" class="timer">{{ formatTime(orden.tiempo) }} (Pausado hasta pedido nuevo)</span>
-    </div>
+    </div> -->
   </ion-toolbar>
 </ion-header>
 
@@ -34,11 +34,7 @@
       <ion-card-subtitle>Estado: {{getEstado(orden.estado)}}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <ion-button slot="end" color="primary" (click)="startTimer(orden.id)" *ngIf="orden.estado === 1 && rol.id!==2">
-        Iniciar a preparar
-        <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
-      </ion-button>
-      <ion-button slot="end" color="primary" (click)="stopTimer(orden.id)" *ngIf="orden.estado === 2 && rol.id!==2">
+      <ion-button slot="end" color="primary" (click)="alterstate(3)" *ngIf="orden.estado === 2 && rol.id!==2">
         Terminar Orden
         <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
       </ion-button>
@@ -52,7 +48,7 @@
             Añadir detalles a la orden
             <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
           </ion-button>
-          <ion-button (click)="enviarcocina(1)" *ngIf="rol.id!==4 && orden.estado === -1" slot="end" color="warning">
+          <ion-button (click)="enviarcocina(2)" *ngIf="rol.id!==4 && orden.estado === -1" slot="end" color="warning">
             Enviar a cocina
             <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
           </ion-button>

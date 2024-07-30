@@ -6,6 +6,7 @@ import { AlertServiceService } from 'src/app/services/Alerts/alert-service.servi
 import { Subscription } from 'rxjs';
 import { Howl, Howler } from 'howler';
 import { CortesService } from 'src/app/services/cortes/cortes.service';
+import { LoaderFunctions } from 'src/functions/utils';
 
 interface Timer {
   id: number;
@@ -21,7 +22,7 @@ interface Timer {
 export class CocinaPage implements OnInit {
   ordenes: any = [];
   intervalId: any | undefined;
-  timers: { [idorden: number]: Timer } = {};
+
 
   ordeninicial: any = []
   notificaciones: { [idorden: number]: number } = {};
@@ -33,44 +34,46 @@ export class CocinaPage implements OnInit {
     private OrdenesService: OrdenesService,
     private ModalController: ModalController,
     private ac: AlertServiceService,
-    private cortesService: CortesService
+    private cortesService: CortesService,
+    private fn: LoaderFunctions
   ) {
-
+    this.startCleaningInterval();
     this.sound = new Howl({
       src: ['assets/audio/file.mp3']
     });
   }
 
+  private startCleaningInterval(): void {
+    this.intervalId = setInterval(() => {
+      this.clearNotifications();
+    }, 20000);
+  }
+
+  // Limpia el elemento 'notificaciones' del localStorage
+  private clearNotifications(): void {
+    localStorage.removeItem('notificaciones');
+
+  }
+
   ngOnInit() {
-    this.obtenerCajaActiva()
     const notificacionesString = localStorage.getItem("notificaciones");
     if (notificacionesString) {
       this.notificaciones = JSON.parse(notificacionesString)
     }
-    this.ObtenerOrdenes(true)
+    if (!this.loaded) {
+      this.ObtenerOrdenes(true)
+      this.obtenerCajaActiva()
+    }
+
     this.intervalId = setInterval(() => {
       this.obtenerCajaActiva()
       this.ObtenerOrdenes(false);
-    }, 5000);
+    }, 1000);
+
   }
 
   getEstado(estado: number): string {
-    switch (estado) {
-      case 1:
-        return "Orden pendiente";
-      case 2:
-        return "Cocinando";
-      case 3:
-        return "Listo para recoger (terminada)";
-      case 4:
-        return "Orden cerrada";
-      case 5:
-        return "Orden Cobrada";
-      case 6:
-        return "Orden Cancelada";
-      default:
-        return "Estado desconocido";
-    }
+    return this.OrdenesService.getEstado(estado)
   }
 
   Opciones(data: any) {
@@ -105,79 +108,28 @@ export class CocinaPage implements OnInit {
   }
 
   async VerOrden(data: any) {
-    if (this.notificaciones[data.id]) {
-      delete this.notificaciones[data.id]
-    }
-    localStorage.setItem("notificaciones", JSON.stringify(this.notificaciones))
+
     var modal: any = null;
     modal = await this.ModalController.create({
       component: DetalleordenComponent,
       canDismiss: true,
       componentProps: {
-        activetimers: this.timers,
         mesa: data.mesas,
         ordenC: data,
-        closeModalCallback: this.handleCloseModal.bind(this),
       },
     });
 
     return await modal.present();
   }
 
-  handleCloseModal(timers: { [id: number]: Timer }) {
-    this.timers = timers
-    this.startTimers()
-  }
-
-  startTimers() {
-    Object.values(this.timers).forEach(timer => {
-      if (timer) {
-        timer.subscription = setInterval(() => {
-          timer.elapsedTime = new Date(timer.elapsedTime.getTime() + 1);
-        }, 1000) as any; // Usar 'as any' si TypeScript muestra errores
-      }
-    });
-  }
-
   formatTime(seconds: number): string {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-
-    // Pad with leading zeros if necessary
     const minutesString = minutes.toString().padStart(2, '0');
     const secondsString = remainingSeconds.toString().padStart(2, '0');
 
     return `${minutesString}:${secondsString}`;
   }
-
-  // async ObtenerOrdenes(load: boolean = true): Promise<void> {
-  //   (await this.OrdenesService.OrdenesPendientes(load)).subscribe(
-  //     async (response: any) => {
-  //       if (response && response.ordenes) {
-  //         this.ordenes = response.ordenes;
-  //         if (this.ordeninicial.length !== this.ordenes.length) {
-  //           this.ordeninicial = response.ordenes;
-  //           console.log("Orden inicial respaldada")
-  //         } else {
-  //           for (let i = 0; i < this.ordenes.length; i++) {
-  //             if (this.ordenes[i].ordenesplatillos.length !== this.ordeninicial[i].ordenesplatillos.length) {
-  //               this.notificaciones[this.ordenes[i].id] = this.ordenes[i].ordenesplatillos.length - this.ordeninicial[i].ordenesplatillos.length
-  //               this.sound.play()
-  //               localStorage.setItem("notificaciones", JSON.stringify(this.notificaciones))
-  //               console.log(this.notificaciones)
-  //             }
-  //           }
-  //           this.ordeninicial = this.ordenes
-  //         }
-  //       } else {
-  //         console.error('Error: Respuesta inválida');
-  //       }
-  //     },
-  //     (error: any) => {
-  //       console.error('Error en la solicitud:', error);
-  //     }
-  //   );
-  // }
 
   async ObtenerOrdenes(load: boolean = true): Promise<void> {
     try {
@@ -212,10 +164,54 @@ export class CocinaPage implements OnInit {
     }
   }
 
+  tiemposTranscurridos: { [id: string]: number } = {}; // Objeto para guardar tiempos transcurridos en segundos por id
+  tiemposPausados: { [id: string]: number } = {}; // Objeto para guardar tiempos pausados en segundos por id
 
-  getElapsedTime(orderId: number): Date {
-    return this.timers[orderId]?.elapsedTime || new Date(0);
+  updateTimer(orden: any, running: boolean = true): string {
+    return this.transcurrido(orden);
   }
+
+  transcurrido(orden: any): string {
+    let hoy = new Date().getTime();
+    let fechaorden: Date = new Date(orden.fecha);
+    let inicio = fechaorden.getTime();
+    let diffInSeconds = Math.floor((hoy - inicio) / 1000) + (orden.tiempo || 0);
+
+    // Si la orden está pausada, actualizamos el tiempo pausado
+    if (orden.estado === 3 && orden.pausado) {
+      let pausa: Date = new Date(orden.pausado);
+      let tiempoPausa = Math.floor((hoy - pausa.getTime()) / 1000);
+
+      if (!this.tiemposPausados[orden.id]) {
+        this.tiemposPausados[orden.id] = 0;
+      }
+
+      this.tiemposPausados[orden.id] += tiempoPausa;
+      return "Pausado";
+    }
+
+    // Restar el tiempo pausado del tiempo total transcurrido
+    if (this.tiemposPausados[orden.id]) {
+      diffInSeconds -= this.tiemposPausados[orden.id];
+    }
+
+    // Guardar el tiempo transcurrido en segundos en el objeto tiemposTranscurridos
+    this.tiemposTranscurridos[orden.id] = diffInSeconds;
+
+    var hours = Math.floor(diffInSeconds / 3600);
+    diffInSeconds %= 3600;
+    var minutes = Math.floor(diffInSeconds / 60);
+    var seconds = Math.floor(diffInSeconds % 60);
+
+    var hoursStr = String(hours).padStart(2, '0');
+    var minutesStr = String(minutes).padStart(2, '0');
+    var secondsStr = String(seconds).padStart(2, '0');
+
+    var tiempoFormateado = `${hoursStr}:${minutesStr}:${secondsStr}`;
+
+    return tiempoFormateado;
+  }
+
 
 
   Getestimandos(orden: any): any {

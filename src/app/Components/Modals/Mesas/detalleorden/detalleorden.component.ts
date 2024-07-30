@@ -6,6 +6,7 @@ import { interval, Subscription } from 'rxjs';
 import { OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.component'
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
+import { LoaderFunctions } from 'src/functions/utils';
 
 interface Timer {
   id: number;
@@ -21,100 +22,76 @@ interface Timer {
 export class DetalleordenComponent implements OnInit {
   @Input() mesa: any = [];
   @Input() ordenC: any = [];
-  orden: any = [];
+  @Input()orden: any = [];
   estimados: any;
   rol: any = [];
-  tiempo: number = 0;
+  @Input() tiempo: number = 0;
 
   constructor(
     private ac: AlertServiceService,
     private userService: UserServiceService,
     private modalController: ModalController,
-    private OrdenesService: OrdenesService
+    private OrdenesService: OrdenesService,
+    private fn : LoaderFunctions
   ) { }
 
 
 
   intervalId: any;
 
-  @Input() activetimers: { [id: number]: Timer } = {};
-  timers: { [id: number]: Timer } = {};
-  nextId = 1;
+  // @Input() activetimers: { [id: number]: Timer } = {};
+  // timers: { [id: number]: Timer } = {};
 
-  @Output() timersUpdated = new EventEmitter<{ [id: number]: Timer }>();
-  private closeModalCallback: ((timers: { [id: number]: Timer }) => void) | undefined;
+  // @Output() timersUpdated = new EventEmitter<{ [id: number]: Timer }>();
+  // private closeModalCallback: ((timers: { [id: number]: Timer }) => void) | undefined;
 
-  setCloseModalCallback(callback: (timers: { [id: number]: Timer }) => void) {
-    this.closeModalCallback = callback;
-  }
-  private emitTimersUpdate() {
-    this.timersUpdated.emit({ ...this.activetimers });
-    if (this.closeModalCallback) {
-      this.closeModalCallback(this.activetimers);
-    }
-  }
+  // setCloseModalCallback(callback: (timers: { [id: number]: Timer }) => void) {
+  //   this.closeModalCallback = callback;
+  // }
+  // private emitTimersUpdate() {
+  //   this.timersUpdated.emit({ ...this.activetimers });
+  //   if (this.closeModalCallback) {
+  //     this.closeModalCallback(this.activetimers);
+  //   }
+  // }
 
-  startTimer(orderId: number) {
-    if (!this.activetimers[orderId]) {
-      const newTimer: Timer = {
-        id: orderId,
-        elapsedTime: new Date(0),
-        subscription: interval(1000).subscribe(() => {
-          newTimer.elapsedTime = new Date(newTimer.elapsedTime.getTime() + 1000);
-          this.emitTimersUpdate();
-        })
-      };
-      this.activetimers[orderId] = newTimer;
-      this.alterstate(2)
-      this.emitTimersUpdate();
-    }
-  }
-
-  stopTimer(orderId: number) {
-    this.tiempo = this.getElapsedSeconds(this.getElapsedTime(this.orden.id));
-    this.alterstate(3)
-    delete this.activetimers[orderId];
-    this.emitTimersUpdate();
-  }
-  getElapsedTime(ordenid: any): Date {
-    return this.activetimers[ordenid]?.elapsedTime || new Date(0);
-  }
-
-  formatTime(seconds: number): string {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-
-    // Pad with leading zeros if necessary
-    const minutesString = minutes.toString().padStart(2, '0');
-    const secondsString = remainingSeconds.toString().padStart(2, '0');
-
-    return `${minutesString}:${secondsString}`;
-  }
-
+  
+  notificaciones: { [idorden: number]: number } = {};
 
   ngOnInit() {
+    const notificacionesString = localStorage.getItem("notificaciones");
+    if (notificacionesString) {
+      this.notificaciones = JSON.parse(notificacionesString)
+    }
+
     window.addEventListener('success', () => {
       this.buscarOrden();
     })
     this.rol = this.userService.getRol();
     if (this.rol.id === 4) {
       this.orden = this.ordenC;
-      console.log(this.orden)
     } else {
       this.orden = this.mesa.ordenes[0];
     }
     this.Getestimandos();
 
     if (this.rol.id !== 4) {
+      console.log("entró")
       this.intervalId = setInterval(() => {
         this.Getestimandos();
         this.buscarOrden();
-      }, 5000);
+      }, 1000);
     }
 
   }
 
 
+  notifs(id : number){
+    if (this.notificaciones[id]) {
+      delete this.notificaciones[id]
+    }
+    localStorage.setItem("notificaciones", JSON.stringify(this.notificaciones))   
+  }
 
   async VerReceta(receta: any): Promise<void> {
     const modal = await this.modalController.create({
@@ -192,10 +169,13 @@ export class DetalleordenComponent implements OnInit {
 
   async alterstate(estado: number): Promise<void> {
     this.orden.estado = estado;
-    if (estado == 3) {
-      this.orden.tiempo = this.tiempo;
+    if(estado == 2){
+      this.orden.fecha = this.fn.obtenerFechaHoraActual()
     }
     if (this.orden.estado == 3) {
+      this.orden.pausado = this.fn.obtenerFechaHoraActual()
+      this.notifs(this.orden.id)
+      this.orden.tiempo = this.tiempo;
       this.orden.ordenesplatillos.forEach((element: any) => {
         element.estado = 2
       });
