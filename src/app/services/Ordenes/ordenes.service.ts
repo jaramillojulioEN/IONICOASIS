@@ -14,17 +14,21 @@ export class OrdenesService {
     this.server = this.UserServiceService.getServer()
   }
 
-  async ActualizarOrden(orden: object): Promise<Observable<any>> {
+  async ActualizarOrden(orden: any): Promise<Observable<any>> {
+    orden.tiempo = Math.trunc(orden.tiempo || 0)
     return new Observable(observer => {
+      window.dispatchEvent(new Event('desactivar'));
       this.loaderFunctions.StartLoader().then(() => {
         this.http.put<any>(`${this.server}api/Ordenes/AlctualizarOrden`, orden).subscribe(
           async updatedResponse => {
             await this.loaderFunctions.StopLoader();
+            window.dispatchEvent(new Event('activar'));
             observer.next(updatedResponse);
             observer.complete();
           },
           async error => {
             await this.loaderFunctions.StopLoader();
+            window.dispatchEvent(new Event('activar'));
             observer.error(error);
           }
         );

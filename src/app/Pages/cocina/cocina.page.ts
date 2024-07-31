@@ -29,6 +29,7 @@ export class CocinaPage implements OnInit {
   private sound: Howl;
   caja: boolean = false;
   loaded: boolean = false;
+  cargaactiva: boolean = true;
 
   constructor(
     private OrdenesService: OrdenesService,
@@ -52,7 +53,6 @@ export class CocinaPage implements OnInit {
   // Limpia el elemento 'notificaciones' del localStorage
   private clearNotifications(): void {
     localStorage.removeItem('notificaciones');
-
   }
 
   ngOnInit() {
@@ -66,9 +66,22 @@ export class CocinaPage implements OnInit {
     }
 
     this.intervalId = setInterval(() => {
-      this.obtenerCajaActiva()
-      this.ObtenerOrdenes(false);
+      if(this.cargaactiva){
+        this.obtenerCajaActiva()
+        this.ObtenerOrdenes(false);
+      }
     }, 1000);
+
+    window.addEventListener('desactivar', () => {
+      this.cargaactiva = false;
+      console.log("se desctivo la carga")
+    })
+
+    window.addEventListener('activar', () => {
+      this.cargaactiva = true;
+      console.log("se activo la carga")
+
+    })
 
   }
 
@@ -165,54 +178,32 @@ export class CocinaPage implements OnInit {
   }
 
   tiemposTranscurridos: { [id: string]: number } = {}; // Objeto para guardar tiempos transcurridos en segundos por id
-  tiemposPausados: { [id: string]: number } = {}; // Objeto para guardar tiempos pausados en segundos por id
 
-  updateTimer(orden: any, running: boolean = true): string {
+  updateTimer(orden: any): string {
     return this.transcurrido(orden);
   }
-
   transcurrido(orden: any): string {
-    let hoy = new Date().getTime();
-    let fechaorden: Date = new Date(orden.fecha);
-    let inicio = fechaorden.getTime();
-    let diffInSeconds = Math.floor((hoy - inicio) / 1000) + (orden.tiempo || 0);
+    if (orden.isPausado) return "Pausado";
 
-    // Si la orden está pausada, actualizamos el tiempo pausado
-    if (orden.estado === 3 && orden.pausado) {
-      let pausa: Date = new Date(orden.pausado);
-      let tiempoPausa = Math.floor((hoy - pausa.getTime()) / 1000);
-
-      if (!this.tiemposPausados[orden.id]) {
-        this.tiemposPausados[orden.id] = 0;
-      }
-
-      this.tiemposPausados[orden.id] += tiempoPausa;
-      return "Pausado";
-    }
-
-    // Restar el tiempo pausado del tiempo total transcurrido
-    if (this.tiemposPausados[orden.id]) {
-      diffInSeconds -= this.tiemposPausados[orden.id];
-    }
-
-    // Guardar el tiempo transcurrido en segundos en el objeto tiemposTranscurridos
+    const ordendate = new Date(orden.fecha);
+    const inicio = ordendate.getTime();
+    const hoy = Date.now();
+    const diffInSeconds = (hoy - inicio - this.convertirHorasAMilisegundos(orden.tiempoPausado)) / 1000;
     this.tiemposTranscurridos[orden.id] = diffInSeconds;
 
-    var hours = Math.floor(diffInSeconds / 3600);
-    diffInSeconds %= 3600;
-    var minutes = Math.floor(diffInSeconds / 60);
-    var seconds = Math.floor(diffInSeconds % 60);
+    const hours = Math.floor(diffInSeconds / 3600);
+    const minutes = Math.floor((diffInSeconds % 3600) / 60);
+    const seconds = Math.floor(diffInSeconds % 60);
 
-    var hoursStr = String(hours).padStart(2, '0');
-    var minutesStr = String(minutes).padStart(2, '0');
-    var secondsStr = String(seconds).padStart(2, '0');
-
-    var tiempoFormateado = `${hoursStr}:${minutesStr}:${secondsStr}`;
-
+    // Formatear horas, minutos y segundos a dos dígitos
+    const tiempoFormateado = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     return tiempoFormateado;
+}
+
+
+  convertirHorasAMilisegundos(horas: number): number {
+    return horas * 60 * 60 * 1000; // 1 hora = 60 minutos = 60 segundos = 1000 milisegundos
   }
-
-
 
   Getestimandos(orden: any): any {
     let tiempototal = 0;

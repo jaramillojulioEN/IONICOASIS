@@ -13,57 +13,11 @@
           <ion-card-content>
             <ion-card>
               <ion-card-content>
-                <ion-card-title class="ion-text-center">{{updateTimer(orden, orden.estado !== 3? true : false)}}</ion-card-title>
+                <ion-card-title class="ion-text-center">{{updateTimer(orden)}}</ion-card-title>
                 <div class="notification-circle" *ngIf="notificaciones[orden.id]">+{{notificaciones[orden.id]}}</div>
               </ion-card-content>
             </ion-card>
             <app-detalleorden [mesa]="orden.mesas" [tiempo]="tiemposTranscurridos[orden.id]" [ordenC]="orden"></app-detalleorden>
-            <!-- <ion-grid class="custom-label"> -->
-            <!-- <ion-row> -->
-            <!-- <ion-col size="12">
-                  <ion-row>
-                    <ion-col size="11">
-                      <h2>ID Orden: #ORD{{ orden.id }}</h2>
-                    </ion-col>
-                  </ion-row>
-                </ion-col>
-                <ion-col lg-size="4" sm-size="12">
-                  <p>
-                    <ion-icon name="calendar-outline"></ion-icon>
-                    Fecha: {{ orden.fecha | date: 'short' }}
-                  </p>
-                  <p>
-                    <ion-icon name="restaurant-outline"></ion-icon>
-                    Mesa: {{ orden.mesas.descripcion }}
-                  </p>
-                  <p>
-                    <ion-icon name="time-outline"></ion-icon>
-                    Tiempo estimado de preparación: {{Getestimandos(orden)[0]}} minutos
-                  </p>
-                </ion-col>
-                <ion-col lg-size="4" sm-size="12">
-                  <p>
-                    <ion-icon name="person-outline"></ion-icon>
-                    Mesero: {{ orden.usuarios.nombre }}
-                  </p>
-                  <p>
-                    <ion-icon name="checkmark-circle-outline"></ion-icon>
-                    Estado: {{ getEstado(orden.estado) }}
-                  </p>
-                  <p>
-                    <ion-icon name="cash-outline"></ion-icon>
-                    Total: {{ orden.total | currency }}
-                  </p>
-                  <p *ngIf="orden.estado!==1">
-                    <ion-icon name="time-outline"></ion-icon>
-                    <span *ngIf="orden.estado!==3">Tiempo transcurrido: {{ getElapsedTime(orden.id) | date:'mm:ss'
-                      }}</span>
-                    <span *ngIf="orden.estado===3">Se Preparó en: {{ formatTime(orden.tiempo) }} (pausado hasta nuevo
-                      pedido)</span>
-                  </p>
-                </ion-col> -->
-            <!-- </ion-row>
-            </ion-grid> -->
           </ion-card-content>
         </ion-card>
       </ion-col>
