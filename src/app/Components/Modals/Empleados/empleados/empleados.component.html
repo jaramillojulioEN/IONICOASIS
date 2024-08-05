@@ -36,11 +36,13 @@
             </ion-select>
           </ion-col>
           <ion-col size="6">
-            <ion-select [disabled]="true" fill="outline" label="Sucursal" labelPlacement="floating" [(ngModel)]="Usuario.idsucursal">
+            <ion-select [disabled]="true" fill="outline" label="Sucursal" labelPlacement="floating"
+              [(ngModel)]="Usuario.idsucursal">
               <ion-select-option [value]="user.sucursales.id">{{user.sucursales.sucursal}}</ion-select-option>
             </ion-select>
           </ion-col>
         </ion-row>
+
       </ion-grid>
     </ion-card-content>
   </ion-card>
@@ -75,12 +77,26 @@
               [(ngModel)]="Empleados.salario"></ion-input>
           </ion-col>
         </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-select [disabled]="false" fill="outline" label="Dias de Pago" labelPlacement="floating"
+              [(ngModel)]="Empleados.diapago">
+              <ion-select-option *ngFor="let dia of dias" [value]="dia">{{dia}}</ion-select-option>
+            </ion-select>
+          </ion-col>
+          <ion-col size="6">
+            <ion-label>Fecha de contrato</ion-label>
+            <ion-datetime-button datetime="datetime"></ion-datetime-button>
+            <ion-modal [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime [(ngModel)]="Empleados.fechacontrato" id="datetime"></ion-datetime>
+              </ng-template>
+            </ion-modal>
+          </ion-col>
+        </ion-row>
         <!-- Fecha de Pago -->
         <ion-row>
-          <ion-col size="12">
-            <label for="Dia de pago"></label>
-              <ion-datetime fill="outline" label="Fecha de Pago" labelPlacement="floating" [(ngModel)]="Empleados.diapago" presentation="date-time" [preferWheel]="true"></ion-datetime>
-          </ion-col>
+          
           <ion-col size="12">
             <ion-button class="crear" (click)="Guardar()" style="width: 100%; height: 100%;">
               Guardar

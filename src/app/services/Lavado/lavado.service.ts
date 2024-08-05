@@ -37,6 +37,8 @@ export class LavadoService {
     }
   }
 
+ 
+
   async CrearLavado(data: object, load: boolean = true): Promise<Observable<any>> {
     return new Observable(observer => {
       const loaderPromise = load ? this.loaderFunctions.StartLoader() : Promise.resolve();

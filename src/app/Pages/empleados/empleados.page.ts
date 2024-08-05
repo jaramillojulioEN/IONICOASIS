@@ -7,6 +7,7 @@ import { PopoverController } from '@ionic/angular';
 import { PropiedadesComponent } from 'src/app/Components/Secciones/Empleado/propiedades/propiedades.component'
 import { ConsumoComponent } from 'src/app/Components/Modals/consumo/consumo.component'
 import { EmpleadosComponent } from 'src/app/Components/Modals/Empleados/empleados/empleados.component'
+import { LoaderFunctions } from 'src/functions/utils';
 @Component({
   selector: 'app-empleados',
   templateUrl: './empleados.page.html',
@@ -20,8 +21,9 @@ export class EmpleadosPage implements OnInit {
     private ModalController: ModalController,
     private ac: AlertServiceService,
     private popoverController: PopoverController,
+    private fn  : LoaderFunctions
   ) {
-    
+
   }
 
   ngOnInit() {
@@ -35,12 +37,10 @@ export class EmpleadosPage implements OnInit {
     })
   }
 
-  async AbrirModalConsumo(id: number, titulo: string, data: any = null) {
+  async AbrirModalConsumo(data : any) {
     const modal = await this.ModalController.create({
       component: ConsumoComponent,
       componentProps: {
-        id: id,
-        titulo: titulo,
         data: data
       },
     });
@@ -51,7 +51,7 @@ export class EmpleadosPage implements OnInit {
     const modal = await this.ModalController.create({
       component: EmpleadosComponent,
       componentProps: {
-        data: data
+        data: data,
       },
     });
     return await modal.present();
@@ -75,11 +75,77 @@ export class EmpleadosPage implements OnInit {
   }
 
   async EliminarEmpleados(empleado: any) {
-    this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar al empleado: " + empleado.nombrecompleto, () => this.ConfirmarELiminar(empleado.id));
+    this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar al empleado: " + empleado.nombrecompleto, () => this.ConfirmarELiminar(empleado));
   }
 
-  async ConfirmarELiminar(id: number): Promise<void> {
-    (await this.EmpleadosService.EliminarEmpleado(id)).subscribe(
+
+
+  diasrestantespago(diapago: string): string {
+    const diasDeLaSemana: { [key: string]: number } = {
+      "lunes": 1,
+      "martes": 2,
+      "miércoles": 3,
+      "jueves": 4,
+      "viernes": 5,
+      "sábado": 6,
+      "domingo": 7
+    };
+    
+    const diapagonumero = diasDeLaSemana[diapago.toLowerCase()];
+    const diahoynumero = this.obtenerNumeroDiaDeHoy();
+
+    let diasRestantes = diapagonumero - diahoynumero;
+
+    if (diasRestantes < 0) {
+        diasRestantes += 7;
+    }
+
+    return `${diasRestantes} días.`;
+  }
+
+  proximaFechaDePago(diapago: string): string {
+    const diasDeLaSemana: { [key: string]: number } = {
+      "lunes": 1,
+      "martes": 2,
+      "miércoles": 3,
+      "jueves": 4,
+      "viernes": 5,
+      "sábado": 6,
+      "domingo": 7
+    };
+    
+    const diapagonumero = diasDeLaSemana[diapago.toLowerCase()];
+    const diahoynumero = this.obtenerNumeroDiaDeHoy();
+
+    let diasRestantes = diapagonumero - diahoynumero;
+
+    if (diasRestantes <= 0) {
+        diasRestantes += 7;
+    }
+
+    const fechaActual = new Date();
+    fechaActual.setDate(fechaActual.getDate() + diasRestantes);
+
+    const dia = fechaActual.getDate().toString().padStart(2, '0');
+    const mes = (fechaActual.getMonth() + 1).toString().padStart(2, '0'); // Los meses en JavaScript son de 0 a 11
+    const año = fechaActual.getFullYear();
+
+    return `${dia}/${mes}/${año}`;
+  }
+
+
+
+  obtenerNumeroDiaDeHoy(): number {
+    const fechaActual = new Date(this.fn.obtenerFechaHoraActual());
+    let numeroDia = fechaActual.getDay();
+    if (numeroDia === 0) {
+      numeroDia = 7;
+    }
+    return numeroDia;
+  }
+
+  async ConfirmarELiminar(emp: any): Promise<void> {
+    (await this.EmpleadosService.EliminarEmpleado(emp)).subscribe(
       async (response: any) => {
         if (response) {
           this.ObtenerEmpleados(false);
@@ -128,7 +194,7 @@ export class EmpleadosPage implements OnInit {
     this.ac.configureAndPresentActionSheet([
       { button: this.ac.btnEliminar, handler: () => this.EliminarEmpleados(data) },
       { button: this.ac.btnActualizar, handler: () => { this.AbrirModalEmpleados(data); } },
-      { button: this.ac.btnAgregarconsumo, handler: () => { this.AbrirModalConsumo(0, 'Nuevo Consumo'); } },
+      { button: this.ac.btnAgregarconsumo, handler: () => { this.AbrirModalConsumo(data); } },
       { button: this.ac.btnProps, handler: () => { this.verPropiedades(data, event); } },
       { button: this.ac.btnConsumo, handler: () => { this.verConsumo(data); } },
       { button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }

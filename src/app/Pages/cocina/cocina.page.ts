@@ -182,6 +182,7 @@ export class CocinaPage implements OnInit {
   updateTimer(orden: any): string {
     return this.transcurrido(orden);
   }
+  
   transcurrido(orden: any): string {
     if (orden.isPausado) return "Pausado";
 

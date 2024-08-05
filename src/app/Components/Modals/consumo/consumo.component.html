@@ -1,22 +1,64 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>{{titulo}}</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-main-header [isModal]="true" titulo="Agregar Consumo"></app-main-header>
+
 
 <ion-content>
   <div class="ion-padding">
-    <ion-list>
-      <ion-item>
-      </ion-item>
-
-      <ion-item>
-      </ion-item>
-
-      <ion-item>
-        <!-- <ion-input labelPlacement="floating" disabled="true" label="Sucursal" name="sucursal" placeholder="Capacidad" [(ngModel)]="sucursal" type="text" clearInput></ion-input> -->
-      </ion-item>
-      <ion-button expand="full" (click)="confirmar()">Guardar</ion-button>
-    </ion-list>
+    <ion-card class="custom-card">
+      <ion-card-header>
+        <ion-card-title>
+          Consumo
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12">
+              <ion-segment [(ngModel)]="segmento">
+                <ion-segment-button (click)="limpiar()" value="prestamo">
+                  <ion-label>Pestamos</ion-label>
+                </ion-segment-button>
+                <ion-segment-button (click)="limpiar()" value="platillo">
+                  <ion-label>Platillos</ion-label>
+                </ion-segment-button>
+                <ion-segment-button (click)="limpiar()" value="bebida">
+                  <ion-label>Bebidas</ion-label>
+                </ion-segment-button>
+              </ion-segment>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="segmento === 'prestamo'">
+            <ion-col size="12">
+              <ion-input fill="outline" label="Concepto" labelPlacement="floating"
+                [(ngModel)]="consumo.concepto"></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="segmento === 'platillo'">
+            <div class="custom-select" role="button" (click)="Select(true, $event)">
+              <div class="selected-item">
+                <span>{{nombreplatillo}}</span>
+              </div>
+            </div>
+          </ion-row>
+          <ion-row *ngIf="segmento === 'bebida'">
+            <div class="custom-select" role="button" (click)="Select(false, $event)">
+              <div class="selected-item">
+                <span>{{nombrebebida}}</span>
+              </div>
+            </div>
+          </ion-row>
+          <ion-row >
+            <ion-col size="12">
+              <ion-input fill="outline" label="Cantidad" labelPlacement="floating"
+                [(ngModel)]="consumo.cantidad"></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <ion-button style="width: 100%;" class="btn crear" (click)="confirmar()">Guardar</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
   </div>
 </ion-content>

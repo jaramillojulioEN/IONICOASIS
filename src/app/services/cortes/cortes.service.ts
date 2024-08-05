@@ -68,6 +68,51 @@ export class CortesService {
     });
   }
 
+  async CrearDetalle(data: any): Promise<Observable<any>> {
+    let observer= new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.post<any>(`${this.server}api/Servicios/AddDetalle`, data).subscribe(
+          async createdResponse => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(createdResponse);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+    console.log(`${this.server}api/Servicios/AddDetalle`)
+    return observer
+  }
+  
+  async EliminarDetalle(data: any): Promise<Observable<any>> {
+    console.log(data)
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: data
+    };
+
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.delete<any>(`${this.server}api/Servicios/EliminarDetalle`, options).subscribe(
+          async deletedResponse => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(deletedResponse);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
 
   async CortesActivos(estado: number, loader: boolean = true): Promise<Observable<any>> {
     try {

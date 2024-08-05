@@ -1,5 +1,5 @@
 <ion-header *ngIf="rol.id !== 4">
-  <ion-toolbar >
+  <ion-toolbar>
     <ion-title>Detalles de la Orden</ion-title>
     <ion-buttons slot="start" color="light">
       <ion-button (click)="dissmiss()" fill="clear">
@@ -15,97 +15,98 @@
   </ion-toolbar>
 </ion-header>
 
-  
-  <div *ngIf="orden.estado === 4">
-    <ion-card class="custom-card">
-      <ion-card-content>
-        <p>Esta mesa tiene una orden cerrada pendiente de pago.</p>
-        <p>Acuda a caja por la cuenta.</p>
-      </ion-card-content>
-    </ion-card>
-  </div>
 
-  <ion-card *ngIf="orden.estado !== 4" style="overflow-y: auto;">
-    <ion-card-header>
-      <ion-card-title>Orden #ORD{{orden.id}}</ion-card-title>
-      <ion-card-subtitle>Fecha y Hora: {{orden.fecha}}</ion-card-subtitle>
-      <ion-card-subtitle>Tiempo de preparación (estimado): {{estimados[0]}} minutos</ion-card-subtitle>
-      <ion-card-subtitle>Entrega (estimado): {{estimados[1]}}</ion-card-subtitle>
-      <ion-card-subtitle>Estado: {{getEstado(orden.estado)}}</ion-card-subtitle>
-    </ion-card-header>
+<div *ngIf="orden.estado === 4">
+  <ion-card class="custom-card">
     <ion-card-content>
-      <ion-button slot="end" color="primary" (click)="alterstate(3)" *ngIf="orden.estado === 2 && rol.id!==2">
-        Terminar Orden
-        <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
-      </ion-button>
-      <div class="order-details">
-        <div class="order-info">
-          <h3 class="section-header">Detalle de la mesa</h3>
-          <p><strong>{{mesa.descripcion}}</strong></p>
-        </div>
-        <div class="order-section">
-          <ion-button (click)="AgregarAOrden(orden)" *ngIf="rol.id!==4" slot="end" color="primary">
-            Añadir detalles a la orden
-            <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
-          </ion-button>
-          <ion-button (click)="enviarcocina(2)" *ngIf="rol.id!==4 && orden.estado === -1" slot="end" color="warning">
-            Enviar a cocina
-            <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
-          </ion-button>
-          <ion-button (click)="CerrarOrden(6)" *ngIf="rol.id!==4 && orden.estado === 1" slot="end" color="danger">
-            Cancelar Orden
-            <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
-          </ion-button>
-          <ion-button (click)="CerrarOrden()" *ngIf="rol.id!==4 && orden.estado === 3" slot="end" color="primary">
-            Cerrar Orden
-            <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
-          </ion-button>
-          <div *ngIf="orden.ordenesplatillos.length !== 0">
-            <h3 class="section-header">Detalles de los Platillos</h3>
-            <div class="order-item" *ngFor="let platillo of orden.ordenesplatillos">
-              <div class="{{platillo.estado === 2 ? 'tachado' : 'letra'}} info" style="padding: 10px;"
-                [ngStyle]="{'background-color': (platillo.estado === 1) ? '#2c507c' : '#fff','color': (platillo.estado === 1) ? '#fff' : '#000'}">
-                <p><strong>{{platillo.platillos.nombre}}</strong></p>
-                <p>Cantidad: {{platillo.cantidad}}</p>
-                <p>Observaciones: {{platillo.observaciones}}</p>
-                <div class="button-container">
-                  <ion-button fill="clear" (click)="Opciones(platillo, true)">
-                    <ion-icon [color]="platillo.estado === 0 ? 'dark' : 'light'"
-                      name="ellipsis-vertical-outline"></ion-icon>
-                  </ion-button>
-                </div>
+      <p>Esta mesa tiene una orden cerrada pendiente de pago.</p>
+      <p>Acuda a caja por la cuenta.</p>
+    </ion-card-content>
+  </ion-card>
+</div>
+
+<ion-card *ngIf="orden.estado !== 4" style="overflow-y: auto;">
+  <ion-card-header>
+    <ion-card-title>Orden #ORD{{orden.id}}</ion-card-title>
+    <ion-card-subtitle>Fecha y Hora: {{orden.fecha}}</ion-card-subtitle>
+    <ion-card-subtitle>Tiempo de preparación (estimado): {{estimados[0]}} minutos</ion-card-subtitle>
+    <ion-card-subtitle>Entrega (estimado): {{estimados[1]}}</ion-card-subtitle>
+    <ion-card-subtitle>Estado: {{getEstado(orden.estado)}}</ion-card-subtitle>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-button slot="end" color="primary" (click)="alterstate(3)" *ngIf="orden.estado === 2 && rol.id!==2">
+      Terminar Orden
+      <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+    </ion-button>
+    <div class="order-details">
+      <div class="order-info">
+        <h3 class="section-header">Detalle de la mesa</h3>
+        <p><strong>{{mesa.descripcion}}</strong></p>
+      </div>
+      <div class="order-section">
+        <ion-button (click)="AgregarAOrden(orden)" *ngIf="rol.id!==4" slot="end" color="primary">
+          Añadir detalles a la orden
+          <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+        </ion-button>
+        <ion-button (click)="enviarcocina(2)" *ngIf="rol.id!==4 && orden.estado === -1" slot="end" color="warning">
+          Enviar a cocina
+          <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+        </ion-button>
+        <ion-button (click)="CerrarOrden(6)" *ngIf="rol.id!==4 && orden.estado === 1" slot="end" color="danger">
+          Cancelar Orden
+          <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+        </ion-button>
+        <ion-button (click)="CerrarOrden()" *ngIf="rol.id!==4 && orden.estado === 3" slot="end" color="primary">
+          Cerrar Orden
+          <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+        </ion-button>
+        <div *ngIf="orden.ordenesplatillos.length !== 0">
+          <h3 class="section-header">Detalles de los Platillos</h3>
+          <div class="order-item" *ngFor="let platillo of orden.ordenesplatillos">
+            <div class="{{platillo.estado === 2 ? 'tachado' : 'letra'}} info" style="padding: 10px; font-size: 150px;"
+              [ngStyle]="{'background-color': (platillo.estado === 1) ? '#2c507c' : '#fff','color': (platillo.estado === 1) ? '#fff' : '#000'}">
+              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 40 : null)}"><strong>{{ platillo.platillos.nombre
+                  }}</strong></p>
+              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 40 : null)}">Cantidad: {{ platillo.cantidad }}</p>
+              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 40 : null)}">Observaciones: {{ platillo.observaciones }}
+              </p>
+              <div class="button-container">
+                <ion-button fill="clear" (click)="Opciones(platillo, true)">
+                  <ion-icon [color]="platillo.estado === 0 ? 'dark' : 'light'"
+                    name="ellipsis-vertical-outline"></ion-icon>
+                </ion-button>
               </div>
             </div>
-            <ion-label>Total Platillos: {{orden.ordenesplatillos.length}}</ion-label>
           </div>
-          <div *ngIf="orden.ordenesbebidas.length !== 0">
-            <h3 class="section-header">Detalles de las bebidas</h3>
-            <div class="order-item" *ngFor="let bebida of orden.ordenesbebidas">
-              <div class="info">
-                <p><strong>{{bebida.bebidas.nombre}}</strong></p>
-                <p>Cantidad: {{bebida.cantidad}}</p>
-                <div class="button-container">
-                  <ion-button fill="clear" (click)="Opciones(bebida, false)">
-                    <ion-icon
-                      name="ellipsis-vertical-outline"></ion-icon>
-                  </ion-button>
-                </div>
+          <ion-label>Total Platillos: {{orden.ordenesplatillos.length}}</ion-label>
+        </div>
+        <div *ngIf="orden.ordenesbebidas.length !== 0">
+          <h3 class="section-header">Detalles de las bebidas</h3>
+          <div class="order-item" style="font-size: 150px;" *ngFor="let bebida of orden.ordenesbebidas">
+            <div class="info">
+              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 50 : null)}"><strong>{{ bebida.bebidas.nombre }}</strong></p>
+              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 50 : null)}">Cantidad: {{ bebida.cantidad }}</p>              
+              <div class="button-container">
+                <ion-button fill="clear" (click)="Opciones(bebida, false)">
+                  <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                </ion-button>
               </div>
-              
-              <!-- <ion-button slot="end" color="danger" *ngIf="rol.id === 2 && orden.estado === 1"
+            </div>
+
+            <!-- <ion-button slot="end" color="danger" *ngIf="rol.id === 2 && orden.estado === 1"
                 (click)="EliminarBebida(bebida)">
                 Eliminar bebida
                 <ion-icon slot="end" name="trash-outline"></ion-icon>
               </ion-button> -->
-              
-            </div>
-            <ion-label>Total Bebidas: {{orden.ordenesbebidas.length}}</ion-label>
+
           </div>
-        </div>
-        <div class="order-section">
-          <h3 class="section-header">Identificación del Mesero</h3>
-          <p>Mesero: {{orden.usuarios.nombre}}</p>
+          <ion-label>Total Bebidas: {{orden.ordenesbebidas.length}}</ion-label>
         </div>
       </div>
-    </ion-card-content>
-  </ion-card>
+      <div class="order-section">
+        <h3 class="section-header">Identificación del Mesero</h3>
+        <p>Mesero: {{orden.usuarios.nombre}}</p>
+      </div>
+    </div>
+  </ion-card-content>
+</ion-card>

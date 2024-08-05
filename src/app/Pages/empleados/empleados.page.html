@@ -20,21 +20,22 @@
           <tr>
             <th>ID</th>
             <th>Nombre Completo</th>
-            <th>Cargo</th>
-            <th>Teléfono</th>
-            <th>Día de Pago</th>
-            <th colspan="2">Salario</th>
+            <th>Días de Pago</th>
+            <th>Dias restantes para pago</th>
+            <th>Proxima fecha de pago</th>
+            <th>Salario base</th>
+            <th colspan="2">Salario restante</th>
           </tr>
         </thead>
-        <tbody *ngFor="let empleado of empleados">
+        <tbody *ngFor="let empleado of empleados" >
           <tr>
             <td>{{ empleado.id }}</td>
-            <td>{{ empleado.nombrecompleto }}</td>
-            <td>{{ empleado.cargo }}</td>
-            <td role="button" style="cursor: pointer;" (click)="verPropiedades(empleado, $event)">{{ empleado.telefono
-              }}</td>
+            <td role="button" style="cursor: pointer;" (click)="verPropiedades(empleado, $event)">{{ empleado.nombrecompleto }}</td>
             <td>{{ empleado.diapago ? empleado.diapago : '-' }}</td>
+            <td>{{diasrestantespago(empleado.diapago)}}</td>
+            <td>{{proximaFechaDePago(empleado.diapago)}}</td>
             <td class="ion-text-end">${{ empleado.salario ? empleado.salario : '-' }}</td>
+            <td class="ion-text-end">${{ empleado.salariores ? empleado.salariores : '-' }}</td>
             <td class="actions-cell">
               <ion-button fill="clear" (click)="Opciones(empleado, $event)">
                 <ion-icon name="ellipsis-vertical-outline"></ion-icon>
@@ -57,34 +58,17 @@
           </tr>
           <ng-container *ngIf="detallesVisibles[empleado.id]">
             <tr *ngFor="let consumo of empleado.consumoEmpleado">
-              <td colspan="3"></td>
-              <td>{{ consumo.fecha }}</td>
-              <td *ngIf="consumo.bebidas != null">{{ consumo.bebidas.nombre }} ({{ consumo.cantidad }} * ${{
-                consumo.bebidas.precioempleados }})</td>
-              <td *ngIf="consumo.platillos != null">{{ consumo.platillos.nombre }} ({{ consumo.cantidad }} * ${{
-                consumo.platillos.precioempleado }})</td>
-              <td *ngIf="consumo.concepto != null">{{ consumo.concepto }}</td>
-              <td *ngIf="consumo.bebidas != null" class="ion-text-end">- ${{ consumo.cantidad *
-                consumo.bebidas.precioempleados }}</td>
-              <td *ngIf="consumo.platillos != null" class="ion-text-end">- ${{ consumo.cantidad *
-                consumo.platillos.precioempleado }}</td>
-              <td *ngIf="consumo.concepto != null" class="ion-text-end">- ${{ consumo.cantidad }}</td>
-              <td>
-                <ion-button fill="clear" (click)="RefactorizarConsumo(consumo, false)">
-                  <ion-icon name="create-outline"></ion-icon>
-                </ion-button>
-                <ion-button fill="clear" (click)="RefactorizarConsumo(consumo, true)">
-                  <ion-icon name="trash-outline"></ion-icon>
-                </ion-button>
-              </td>
-            </tr>
-            <tr>
               <td colspan="4"></td>
-              <td>Total:</td>
-              <td class="ion-text-end">${{ total(empleado) }}</td>
-              <td></td>
+              <td *ngIf="consumo.bebidas != null">{{ consumo.bebidas.nombre }}</td>
+              <td *ngIf="consumo.platillos != null">{{ consumo.platillos.nombre }}</td>
+              <td *ngIf="consumo.concepto != null && consumo.platillos == null && consumo.bebidas == null">{{ consumo.concepto }}</td>
+              <td>{{ consumo.cantidad }}</td>
+              <td *ngIf="consumo.bebidas != null">- ${{ consumo.cantidad * consumo.bebidas.precioempleados }}</td>
+              <td *ngIf="consumo.platillos != null">- ${{ consumo.cantidad * consumo.platillos.precioempleado }}</td>
+              <td *ngIf="consumo.concepto != null && consumo.platillos == null  && consumo.bebidas == null">- ${{ consumo.cantidad}}</td>
             </tr>
           </ng-container>
+          
         </tbody>
       </table>
     </div>

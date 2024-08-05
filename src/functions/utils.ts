@@ -10,27 +10,47 @@ export class LoaderFunctions {
     id: string = "defaultLoader";
 
     constructor(private modalController: ModalController,
-        private ld: LoadingController
+        private ld: LoadingController,
     ) { }
+
+    async CargandoLogin(Mensaje: string) {
+        const modal = await this.modalController.create({
+            component: LoaderComponent,
+            componentProps: {
+                Mensaje: Mensaje,
+            },
+        });
+        return await modal.present();
+    }
+    async cerrarCargandoLogin(user: any = null) {
+        this.modalController.dismiss()
+    }
+
+    async Welcome(user: any = null) {
+        this.CargandoLogin("Bienvenido " + user.nombre)
+        setTimeout(() => {
+            this.modalController.dismiss()
+        }, 2000);
+    }
 
     async StartLoader(mensaje: string = "Cargando...") {
 
         const loading = await this.ld.create({
-          message: mensaje,
-          translucent: true,
-          backdropDismiss: false,
-          spinner: 'bubbles',
-          id: this.id
+            message: mensaje,
+            translucent: true,
+            backdropDismiss: false,
+            spinner: 'bubbles',
+            id: this.id
         });
         await loading.present();
-      }
-    
-      async StopLoader(id: string = "defaultLoader") {
-        const loading = await this.ld.getTop(); 
+    }
+
+    async StopLoader(id: string = "defaultLoader") {
+        const loading = await this.ld.getTop();
         if (loading && loading.id === id) {
-          await this.ld.dismiss();
+            await this.ld.dismiss();
         }
-      }
+    }
 
 
 

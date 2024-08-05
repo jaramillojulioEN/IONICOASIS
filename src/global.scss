@@ -176,43 +176,6 @@ ion-toolbar ion-title {
 }
 
 
-
-
-ion-segment {
-  --indicator-color: #2c507c;
-  --indicator-height: 3px;
-  --border-radius: 30px;
-  margin: 16px;
-  overflow: hidden;
-
-  ion-segment-button {
-    --color-checked: #ffffff;
-    --background-checked: #2c507c;
-    --background: #e0e0e0;
-    --border-radius: 30px;
-    --padding: 8px 16px;
-    --margin: 4px;
-    font-weight: bold;
-
-    ion-label {
-      color: #000000;
-      font-size: 16px;
-    }
-
-    &:hover {
-      --background: #d0d0d0;
-    }
-
-    &.segment-button-checked {
-      ion-label {
-        color: #ffffff;
-      }
-
-      border-radius: 30px;
-    }
-  }
-}
-
 .custom-action-delete-sheet-button {
   background-color: rgba(255, 154, 154, 0.2);
   color: red;

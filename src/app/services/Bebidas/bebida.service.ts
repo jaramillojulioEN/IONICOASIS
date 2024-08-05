@@ -28,6 +28,7 @@ export class BebidaService {
           },
           async error => {
             await this.loaderFunctions.StopLoader();
+            
             observer.error(error);
           }
         );

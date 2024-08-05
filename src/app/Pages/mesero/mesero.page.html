@@ -3,11 +3,23 @@
   <ion-grid>
     <ion-row>
       <ion-col size-lg="4" size-sm="12" *ngFor="let mesa of mesas">
-        <div class="image-container" style="cursor: pointer;" (click) = "VerOrden(mesa)">
-          <img [src]="images[mesa.ordenes.length !== 0 ? 0:1]" alt="Imagen de fondo">
+        <div class="image-container" style="cursor: pointer;" (click)="VerOrden(mesa)">
+
+          <img [src]="colorin(mesa.ordenes)" alt="Imagen de fondo">
+          <!-- verde -->
+          <!-- <img *ngIf="mesa.ordenes[0].estado === 1" [src]="images[0]" alt="Imagen de fondo"> -->
+          <!-- negro -->
+          <!-- <img *ngIf="mesa.ordenes.length === 0 " [src]="images[1]" alt="Imagen de fondo"> -->
+          <!-- rojo -->
+          <!-- <img *ngIf="mesa.ordenes[0].estado === 2" [src]="images[2]" alt="Imagen de fondo"> -->
+          <!-- azul -->
+          <!-- <img *ngIf="mesa.ordenes[0].estado === 4" [src]="images[3]" alt="Imagen de fondo"> -->
+
           <div class="text-overlay">
             <p class="ion-text-center">{{mesa.descripcion}}</p>
-            <p color="success" *ngIf="mesa.ordenes.length !== 0">Ocuapda</p>
+            <p color="success" *ngIf="mesa.ordenes.length !== 0">{{getEstado(mesa.ordenes[0].estado)}}</p>
+            <p color="success" *ngIf="mesa.ordenes.length === 0">Libre</p>
+
           </div>
         </div>
       </ion-col>

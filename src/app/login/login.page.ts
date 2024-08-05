@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserServiceService } from '../services/Users/user-service.service'
+import { LoaderFunctions } from 'src/functions/utils';
 
 @Component({
   selector: 'app-login',
@@ -9,7 +10,9 @@ import { UserServiceService } from '../services/Users/user-service.service'
 export class LoginPage implements OnInit {
   message: string[] = [];
 
-  constructor(private UserService: UserServiceService) { }
+  constructor(private UserService: UserServiceService,
+    protected dn : LoaderFunctions
+  ) { }
   user: any = []
   ngOnInit() {
     if (this.UserService.isAuth()) {
@@ -31,6 +34,7 @@ export class LoginPage implements OnInit {
               console.log('Inicio de sesión exitoso:', response.usuario);
               localStorage.setItem('usuario', JSON.stringify(response.usuario));
               this.user = response.usuario;
+              this.dn.Welcome(this.user)
               this.UserService.RedirigirRol(this.user.idrol);
             } else {
               this.message[2] = response.message;

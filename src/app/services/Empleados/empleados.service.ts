@@ -36,11 +36,27 @@ export class EmpleadosService {
       });
     });
   }
+
+  async CrearConsumo(consumo: any): Promise<Observable<any>> {
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.post<any>(`${this.server}api/Empleados/CrearConsumo`, consumo).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
   
-  async EliminarEmpleado(id: number): Promise<Observable<any>> {
-    const data = {
-      id: id
-    };
+  async EliminarEmpleado(data: any): Promise<Observable<any>> {
+
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'

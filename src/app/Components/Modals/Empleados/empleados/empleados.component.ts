@@ -3,6 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { CategoriaServiceService } from 'src/app/services/Categorias/categoria-service.service';
 import { EmpleadosService } from 'src/app/services/Empleados/empleados.service';
 import { UserServiceService } from 'src/app/services/Users/user-service.service';
+import { LoaderFunctions } from 'src/functions/utils';
 
 @Component({
   selector: 'app-empleados',
@@ -20,9 +21,12 @@ export class EmpleadosComponent implements OnInit {
     private CategoriasService: CategoriaServiceService,
     protected us: UserServiceService,
     protected empleadoservice: EmpleadosService,
-    protected md: ModalController
+    protected md: ModalController,
+    protected fn : LoaderFunctions
   ) { }
 
+  dias: string[] = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"]
+  dia : string = "Lunes"
   ngOnInit() {
     console.log(this.data)
     this.user = this.us.getUser()
@@ -47,6 +51,7 @@ export class EmpleadosComponent implements OnInit {
         cargo: "",
         salario: "",
         diapago: "",
+        fechacontrato: this.fn.obtenerFechaHoraActual(),
       }
     } else {
       console.log(this.data.usuarios)
@@ -58,21 +63,21 @@ export class EmpleadosComponent implements OnInit {
 
   }
 
-  convertirFecha(fechaStr: string): string {
-    const fecha = new Date(fechaStr);
+  // convertirFecha(fechaStr: string): string {
+  //   const fecha = new Date(fechaStr);
 
-    const year = fecha.getFullYear();
-    const month = ("0" + (fecha.getMonth() + 1)).slice(-2);
-    const day = ("0" + fecha.getDate()).slice(-2);
-    const hours = ("0" + fecha.getHours()).slice(-2);
-    const minutes = ("0" + fecha.getMinutes()).slice(-2);
-    const seconds = ("0" + fecha.getSeconds()).slice(-2);
-    const milliseconds = ("00" + fecha.getMilliseconds()).slice(-3);
+  //   const year = fecha.getFullYear();
+  //   const month = ("0" + (fecha.getMonth() + 1)).slice(-2);
+  //   const day = ("0" + fecha.getDate()).slice(-2);
+  //   const hours = ("0" + fecha.getHours()).slice(-2);
+  //   const minutes = ("0" + fecha.getMinutes()).slice(-2);
+  //   const seconds = ("0" + fecha.getSeconds()).slice(-2);
+  //   const milliseconds = ("00" + fecha.getMilliseconds()).slice(-3);
 
-    const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
+  //   const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
 
-    return formattedDate;
-  }
+  //   return formattedDate;
+  // }
 
   async ObtenerRoles(): Promise<void> {
     try {
@@ -96,7 +101,6 @@ export class EmpleadosComponent implements OnInit {
   async Guardar() {
     this.Usuario.contraseña = this.contrasena
     if (this.Usuario.id == 0) {
-      this.Empleados.diapago = this.convertirFecha(this.Empleados.diapago)
       this.Empleados.nombrecompleto = this.Usuario.nombre
       this.Usuario.empleados = [this.Empleados]
       console.log(this.Usuario);

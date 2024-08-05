@@ -1,0 +1,23 @@
+
+
+.custom-select {
+    position: relative;
+    width: 100%;
+    /* ajusta el ancho según sea necesario */
+  }
+  
+  .selected-item {
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .selected-item:hover {
+    background-color: #e0e0e0;
+  }
+  

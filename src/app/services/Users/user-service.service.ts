@@ -13,16 +13,16 @@ export class UserServiceService {
 
   login(user: string, password: string, load: boolean = false): Observable<any> {
     return new Observable(observer => {
-      const loaderPromise = load ? this.loader.StartLoader("Iniciando sesión...") : Promise.resolve();
+      const loaderPromise = load ? this.loader.CargandoLogin("Iniciando sesión...") : Promise.resolve();
       loaderPromise.then(() => {
         this.http.get<any>(`${this.getServer()}/api/Users/login/${user}/${password}`).subscribe(
           async response => {
-            if (load) await this.loader.StopLoader();
+            if (load) await this.loader.cerrarCargandoLogin();
             observer.next(response);
             observer.complete();
           },
           async error => {
-            if (load) await this.loader.StopLoader();
+            if (load) await this.loader.cerrarCargandoLogin();
             observer.error(error);
           }
         );
