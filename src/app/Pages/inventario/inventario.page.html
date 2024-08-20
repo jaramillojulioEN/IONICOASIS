@@ -1,6 +1,8 @@
 <app-main-header titulo="Inventario"></app-main-header>
 <ion-content [fullscreen]="true" id="main-content" class="ion-padding">
-
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <ion-segment [(ngModel)]="segmento">
     <ion-segment-button (click)="ObtenerProducutos()" value="productos">
       <ion-label>Productos</ion-label>
@@ -19,8 +21,8 @@
           <th>Vendidos</th>
           <th>Categoria</th>
           <th>Disponibles</th>
-          <th>Fecha adicción</th>
-          <th colspan="2">Acciones</th>
+          <th>Fecha adición</th>
+          <th *ngIf="rol.id === 1" colspan="2">Acciones</th>
         </tr>
       </thead>
       <tbody *ngIf="productos && productos.length !== 0">
@@ -29,9 +31,9 @@
           <td>{{producto.cantidad}}</td>
           <td>{{producto.vendidos}}</td>
           <td>{{producto.categorias.categoria}}</td>
-          <td>{{producto.cantidad - producto.vendidos}}</td>
+          <td>{{producto.cantidad}}</td>
           <td>{{producto.fecha}}</td>
-          <td class="actions-cell">
+          <td class="actions-cell" *ngIf="rol.id === 1">
             <ion-button fill="clear" (click)="Opciones(producto)">
               <ion-icon name="ellipsis-vertical-outline"></ion-icon>
             </ion-button>
@@ -58,7 +60,7 @@
           <th>Categoria</th>
           <th>Disponibles</th>
           <th>Fecha adicción</th>
-          <th colspan="2">Acciones</th>
+          <th *ngIf="rol.id === 1" colspan="2">Acciones</th>
         </tr>
       </thead>
       <tbody *ngIf="BebidaArry && BebidaArry.length !== 0">
@@ -67,9 +69,9 @@
           <td>{{ bebida.cantidad }}</td>
           <td>{{ bebida.vedidos }}</td>
           <td>{{ bebida.categorias.categoria }}</td>
-          <td>{{ bebida.cantidad - bebida.vedidos }}</td>
+          <td>{{ bebida.cantidad }}</td>
           <td>{{ bebida.fecha }}</td>
-          <td class="actions-cell">
+          <td *ngIf="rol.id === 1"  class="actions-cell">
             <ion-button fill="clear" (click)="Opciones(bebida)">
               <ion-icon name="ellipsis-vertical-outline"></ion-icon>
             </ion-button>

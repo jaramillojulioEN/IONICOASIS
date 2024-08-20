@@ -44,32 +44,113 @@ export class TicketComponent implements OnInit {
     this.sst = true
   }
 
+  imprimir(divId: string) {
+    const contenido = document.getElementById(divId);
+    const style = `.header-tt,
+          .footer {
+            text-align: center;
+            margin-bottom: 20px;
+          }
 
-  async printTicket() {
-    const printContents = document.getElementById('print-section')!.innerHTML;
-    const base64PrintContents = btoa(printContents);
-    var data = {
-      bs64recipt: base64PrintContents
-    };
-    (await this.lav.ImprimirRecibo(data, false)).subscribe(
-      async (response: any) => {
-        if (response && response.message) {
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+          .body-tt {
+            font-family: 'Courier New', Courier, monospace;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #000;
+            margin-top: 20px;
+          }
+
+          .content {
+            border-top: 1px dashed #000;
+            border-bottom: 1px dashed #000;
+            padding: 10px 0;
+            margin-bottom: 20px;
+          }
+
+          .item {
+            display: flex;
+            justify-content: space-between;
+          }
+
+          .total {
+            font-weight: bold;
+            margin-top: 10px;
+          }
+
+          .total-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+          }`
+    console.log(contenido)
+    if (!contenido) {
+      console.error(`No se encontró el elemento con id "${divId}".`);
+      return;
+    }
+
+    const contenidoHTML = contenido.innerHTML;
+    let printWindow: any;
+
+    try {
+      printWindow = window.open('', 'noneframe'); // Sin parámetros adicionales
+      if (!printWindow) {
+        console.log('No se pudo abrir la ventana de impresión. Es posible que el navegador esté bloqueando ventanas emergentes.');
+        return;
       }
-    );
 
-    console.log(base64PrintContents);
+      printWindow.document.open();
+      printWindow.document.write('<html><head><title>Imprimir</title>');
+
+      // Agregar estilos específicos si es necesario
+      printWindow.document.write(`<style>${style}</style>`);
+
+      printWindow.document.write('</head><body>');
+      printWindow.document.write(contenidoHTML);
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
+
+      // Esperar a que el contenido esté completamente cargado antes de imprimir
+      printWindow.onload = function () {
+        printWindow.focus();
+        setTimeout(() => {
+          printWindow.print();
+          printWindow.close();
+        }, 50); // Pequeño retraso de 500ms para asegurarse de que el contenido esté renderizado
+      };
+    } catch (error) {
+      console.error('Error al intentar abrir la ventana de impresión:', error);
+    }
   }
+
+
+
+  // async printTicket() {
+  //   const printContents = document.getElementById('print-section')!.innerHTML;
+  //   const base64PrintContents = btoa(printContents);
+  //   var data = {
+  //     bs64recipt: base64PrintContents
+  //   };
+  //   (await this.lav.ImprimirRecibo(data, false)).subscribe(
+  //     async (response: any) => {
+  //       if (response && response.message) {
+  //       } else {
+  //         console.error('Error: Respuesta inválida');
+  //       }
+  //     },
+  //     (error: any) => {
+  //       console.error('Error en la solicitud:', error);
+  //     }
+  //   );
+
+  //   console.log(base64PrintContents);
+  // }
 
   async cobrarl(print :boolean = true): Promise<void> {
 
     if(this.imprimirTicket && print){
-      this.printTicket()
+      this.imprimir("print-section")
     }
 
 
@@ -117,7 +198,7 @@ export class TicketComponent implements OnInit {
   async cobrar(): Promise<void> {
 
     if (this.imprimirTicket) {
-      this.printTicket()
+      this.imprimir("print-section")
     }
 
 

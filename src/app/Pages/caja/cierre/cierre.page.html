@@ -1,7 +1,9 @@
 <app-main-header titulo="Cierres e inicios"></app-main-header>
 
 <ion-content [fullscreen]="true" id="main-content">
-
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
     <ion-segment [(ngModel)]="segmento" *ngIf="roles.id === 1">
         <ion-segment-button (click)="obtenerCortesActivos(true)" value="estado">
             <ion-label>Estado de la caja</ion-label>
@@ -34,8 +36,8 @@
                                             <ion-label slot="end">{{ getpart(corte.fechainicio, 1) }}</ion-label>
                                         </ion-item>
                                         <ion-item>
-                                            <ion-button class="crear" *ngIf="roles.id === 1" (click)="CerarCaja(corte)"
-                                                expand="full">Cerrar
+                                            <ion-button class="crear" *ngIf="roles.id === 1 || roles.id === 5"
+                                                (click)="CerarCaja(corte)" expand="full">Cerrar
                                                 la caja</ion-button>
                                             <ion-button class="crear" (click)="vergraficopasado(corte)"
                                                 expand="full">Ver gráfico</ion-button>

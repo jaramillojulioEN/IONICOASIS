@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LoaderFunctions } from '../../../functions/utils';
 import { UserServiceService } from '../Users/user-service.service';
+import { AlertServiceService } from '../Alerts/alert-service.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -10,16 +11,19 @@ export class OrdenesService {
 
   server: string;
 
-  constructor(private UserServiceService: UserServiceService, private http: HttpClient, private loaderFunctions: LoaderFunctions) {
+  constructor(private ac: AlertServiceService, private UserServiceService: UserServiceService, private http: HttpClient, private loaderFunctions: LoaderFunctions) {
     this.server = this.UserServiceService.getServer()
   }
 
-  async ActualizarOrden(orden: any): Promise<Observable<any>> {
-    orden.tiempo = Math.trunc(orden.tiempo || 0)
+  async ActualizarOrden(model: any): Promise<Observable<any>> {
+    model.tiempo = Math.trunc(model.tiempo || 0);
+
     return new Observable(observer => {
       window.dispatchEvent(new Event('desactivar'));
       this.loaderFunctions.StartLoader().then(() => {
-        this.http.put<any>(`${this.server}api/Ordenes/AlctualizarOrden`, orden).subscribe(
+        this.http.put<any>(`${this.server}api/Ordenes/AlctualizarOrden`, model, {
+          headers: { 'Content-Type': 'application/json' }
+        }).subscribe(
           async updatedResponse => {
             await this.loaderFunctions.StopLoader();
             window.dispatchEvent(new Event('activar'));
@@ -64,19 +68,24 @@ export class OrdenesService {
           request = this.http.post<any>(`${this.server}api/Detalles/CrearDetalleBebida`, data);
         } else {
           request = new Observable<any>();
+          this.ac.presentCustomAlert("Error", "Producto no encontrado")
+          this.loaderFunctions.StopLoader()
+          return;
+        }
+        if (request != new Observable<any>()) {
+          request.subscribe(
+            async response => {
+              await this.loaderFunctions.StopLoader();
+              observer.next(response);
+              observer.complete();
+            },
+            async error => {
+              await this.loaderFunctions.StopLoader();
+              observer.error(error);
+            }
+          );
         }
 
-        request.subscribe(
-          async response => {
-            await this.loaderFunctions.StopLoader();
-            observer.next(response);
-            observer.complete();
-          },
-          async error => {
-            await this.loaderFunctions.StopLoader();
-            observer.error(error);
-          }
-        );
       });
     });
   }
@@ -191,6 +200,7 @@ export class OrdenesService {
 
   async BuscarOrden(loader: boolean = false, id: number): Promise<Observable<any>> {
     try {
+      console.log(id)
       return this.http.get<any>(`${this.server}api/Ordenes/BuscarOrden/${id}`);
     } finally {
     }

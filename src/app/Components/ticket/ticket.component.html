@@ -112,6 +112,7 @@
       </ion-card-content>
     </ion-card>
   </div>
+  <iframe src="" name="noneframe" style="display: none;" frameborder="0"></iframe>
 
   <div class="detai" *ngIf="sst">
 
@@ -119,6 +120,8 @@
       <ion-row>
         <ion-col sm-size="12" lg-size="4" class="ion-margin-top ion-padding">
           <div class="item-container">
+                      <iframe src="" name="noneframe" style="display: none;" frameborder="0"></iframe>
+
             <ion-label>Cambio: ${{cambio}}</ion-label>
           </div>
           <ion-button color="primary" class="crear" (click)="volver()" expand="full">Volver al detalle</ion-button>
@@ -139,20 +142,20 @@
           <div id="print-section" class="body-tt ion-margin-top">
             <div class="header-tt">
               <p>{{usuario.sucursales.sucursal}}</p>
-              <img src="https://i.imgur.com/fvrkb3f.png" width="150" alt="">
+              <img src="https://i.imgur.com/eOH1QhH.jpeg" width="150" alt="">
               <p>{{usuario.sucursales.direccion}}</p>
-              <p>Tel: (123) 456-7890</p>
+              <p>Tel: 7242677775</p>
               <p *ngIf="orden.length != 0">Fecha: {{orden.fecha}}</p>
             </div>
             <div class="content" *ngIf="orden.length != 0">
               <div class="item" *ngFor="let detallep of orden.ordenesplatillos">
-                <span>{{detallep.platillos.nombre}}</span>
-                <span>${{detallep.platillos.precio}}</span>
+                <span>{{detallep.cantidad}}X {{detallep.platillos.nombre}}</span>
+                <span>${{detallep.platillos.precio * detallep.cantidad}}</span>
               </div>
               <div *ngIf="orden.ordenesbebidas.length>0">
                 <div class="item" *ngFor="let detalleb of orden.ordenesbebidas">
-                  <span>{{detalleb.bebidas.nombre}}</span>
-                  <span>${{detalleb.bebidas.precioventa}}</span>
+                  <span>{{detalleb.cantidad}}X {{detalleb.bebidas.nombre}}</span>
+                  <span>${{detalleb.bebidas.precioventa * detalleb.cantidad}}</span>
                 </div>
               </div>
               <!-- <div class="item" *ngIf="lavagregado">

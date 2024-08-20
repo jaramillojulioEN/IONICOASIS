@@ -5,6 +5,9 @@
       <ion-button (click)="dissmiss()" fill="clear">
         <h1><ion-icon color="light" name="arrow-back-outline"></ion-icon></h1>
       </ion-button>
+      <ion-button fill="clear" (click)="handleRefresh()">
+        <ion-icon name="refresh-outline" color="light"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <!-- *ngIf="rol.id !== 2"
     <div slot="end" *ngIf="rol.id !== 2">
@@ -26,8 +29,10 @@
 </div>
 
 <ion-card *ngIf="orden.estado !== 4" style="overflow-y: auto;">
-  <ion-card-header>
+  <ion-card-header *ngIf="rol.id!==4">
     <ion-card-title>Orden #ORD{{orden.id}}</ion-card-title>
+
+
     <ion-card-subtitle>Fecha y Hora: {{orden.fecha}}</ion-card-subtitle>
     <ion-card-subtitle>Tiempo de preparación (estimado): {{estimados[0]}} minutos</ion-card-subtitle>
     <ion-card-subtitle>Entrega (estimado): {{estimados[1]}}</ion-card-subtitle>
@@ -71,7 +76,7 @@
               <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 40 : null)}">Observaciones: {{ platillo.observaciones }}
               </p>
               <div class="button-container">
-                <ion-button fill="clear" (click)="Opciones(platillo, true)">
+                <ion-button style="margin-top: -290px;" fill="clear" (click)="Opciones(platillo, true)">
                   <ion-icon [color]="platillo.estado === 0 ? 'dark' : 'light'"
                     name="ellipsis-vertical-outline"></ion-icon>
                 </ion-button>
@@ -84,8 +89,9 @@
           <h3 class="section-header">Detalles de las bebidas</h3>
           <div class="order-item" style="font-size: 150px;" *ngFor="let bebida of orden.ordenesbebidas">
             <div class="info">
-              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 50 : null)}"><strong>{{ bebida.bebidas.nombre }}</strong></p>
-              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 50 : null)}">Cantidad: {{ bebida.cantidad }}</p>              
+              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 50 : null)}"><strong>{{ bebida.bebidas.nombre }}</strong>
+              </p>
+              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 50 : null)}">Cantidad: {{ bebida.cantidad }}</p>
               <div class="button-container">
                 <ion-button fill="clear" (click)="Opciones(bebida, false)">
                   <ion-icon name="ellipsis-vertical-outline"></ion-icon>

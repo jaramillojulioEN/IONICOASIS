@@ -1,6 +1,9 @@
 
 <app-main-header titulo="Bebidas"></app-main-header>
 <ion-content class="main" id="main-content">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <div class="container">
     <div class="ion-grid" *ngIf="loaded">
       <ion-row>

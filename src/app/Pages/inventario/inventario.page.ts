@@ -4,6 +4,7 @@ import { AlertServiceService } from 'src/app/services/Alerts/alert-service.servi
 import { BebidaService } from 'src/app/services/Bebidas/bebida.service';
 import { ProductoServiceService } from 'src/app/services/Prodcutos/producto-service.service';
 import {ExistenciasComponent} from 'src/app/Components/Modals/existencias/existencias.component'
+import { UserServiceService } from 'src/app/services/Users/user-service.service';
 @Component({
   selector: 'app-inventario',
   templateUrl: './inventario.page.html',
@@ -13,19 +14,19 @@ export class InventarioPage implements OnInit {
   productos: any = [];
   BebidaArry: any = [];
   loaded: boolean = false;
-
+  rol : any = []
   constructor(
     private ProductoService : ProductoServiceService,
     private BebidaService : BebidaService,
     private ac : AlertServiceService,
-    private ModalController : ModalController
+    private ModalController : ModalController,
+    private us : UserServiceService
   ) { }
   segmento : string = "productos";
   ngOnInit() {
-
+    this.rol = this.us.getRol();
     this.ObtenerProducutos();
     this.ObtenerBebidas();
-
     window.addEventListener('successb', () => {
       this.ObtenerBebidas(false);
     })
@@ -33,6 +34,14 @@ export class InventarioPage implements OnInit {
       this.ObtenerProducutos(false);
     })
   }
+
+  
+  async handleRefresh(event: any) {
+    await this.ObtenerProducutos();
+    await this.ObtenerBebidas();
+    event.target.complete();
+  }
+
 
   Opciones(data: any) {
     this.ac.configureAndPresentActionSheet([

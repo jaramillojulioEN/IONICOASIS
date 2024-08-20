@@ -1,6 +1,16 @@
 <app-main-header titulo="Administrar Ordenes"></app-main-header>
 <ion-content [fullscreen]="true" id="main-content">
-    <div class="table-container ion-padding">
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+    <div class="div" *ngIf="!caja">
+        <ion-card class="custom-card">
+            <ion-card-content>
+                <h5>Caja cerrada</h5>
+            </ion-card-content>
+        </ion-card>
+    </div>
+    <div class="table-container ion-padding" *ngIf="caja">
         <table class="tabla" *ngIf="loaded">
             <thead>
                 <tr>

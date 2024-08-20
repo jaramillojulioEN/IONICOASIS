@@ -68,6 +68,15 @@ export class LavadoPage implements OnInit {
   }
 
   ngOnInit() {
+    this.start();
+  }
+
+  async handleRefresh(event: any) {
+    await this.start();
+    event.target.complete();
+  }
+
+  start(){
     this.obtenerCajaActiva()
     this.rol = this.UserServiceService.getRol()
     this.segmento = this.rol.id === 1 ? "hoy" : "pago"
@@ -84,7 +93,6 @@ export class LavadoPage implements OnInit {
     }, 5000);
     this.fechaActual = this.funcs.obtenerFechaHoraActual()
   }
-
   async Guardar(): Promise<void> {
     this.lavado.entidad.idsucursal = this.UserServiceService.getUser().idsucursal
     this.lavado.entidad.lavadodet = this.servicios

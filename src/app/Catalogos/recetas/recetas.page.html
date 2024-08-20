@@ -1,49 +1,66 @@
 <app-main-header titulo="Recetas"></app-main-header>
 <ion-content id="main-content">
   <div class="ion-padding">
-    <ion-grid *ngIf="rol.id === 1 && loaded">
+    <ion-grid *ngIf="loaded">
       <ion-row>
-        <ion-col size="10"></ion-col>
-        <ion-col size="2">
-          <div class="header-container" style="width: 100%;">
-            <ion-button style="width: 100%;" (click)="AbrirModalRecetas()">
-              <ion-icon name="add-circle-outline"></ion-icon>
-              <div class="button-text crear">Crear</div>
-            </ion-button>
-          </div>
+        <ion-col lg-size="6" sm-size="2"></ion-col>
+        <ion-col lg-size="3" sm-size="5">
+          <ion-select (ionChange)="filtrar()" fill="outline" [(ngModel)]="idcatego" name="idcatego">
+            <ion-select-option [value]="0">{{ filtrado ? 'Eliminar filtros' : 'Filtrar' }}</ion-select-option>
+            <ion-select-option *ngFor="let categoria of categorias" [value]="categoria.id">
+              {{ categoria.categoria }}
+            </ion-select-option>
+          </ion-select>
+        </ion-col>
+        <ion-col lg-size="3" sm-size="5" *ngIf="rol.id === 1">
+          <ion-button style="width: 100%; height: 100%;" (click)="AbrirModalRecetas()">
+            <ion-icon name="add-circle-outline"></ion-icon>
+            <div class="button-text crear">Crear</div>
+          </ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
+
     <ion-grid>
-      <ion-row>
-        <div *ngIf="loaded" class="cards-container">
-          <ion-col size-lg="4" size-sm="12" *ngFor="let receta of recetas">
-            <ion-card (click)="Opciones(receta)" style="cursor: pointer;">
-              <ion-card-header>
-                <ion-card-title>{{ receta.listaingredientes.descripcion }}</ion-card-title>
-                <ion-card-subtitle>Tiempo de preparación: {{ receta.tiempopreparacion }} minutos</ion-card-subtitle>
-
-              </ion-card-header>
-              <ion-card-content>
-                <div class="image-container">
-                  <img [src]="receta.listaimagenes.imagenes[0]?.cadenab64 || 'assets/img/no-image.png'"
-                    alt="Imagen de la receta" class="recipe-image">
-                </div>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-          <div *ngIf="!recetas || recetas.length === 0" class="no-recipes">
-            <p>Aún no has registrado recetas</p>
-          </div>
+      <ion-row *ngIf="loaded">
+        <ion-col size="12" size-md="6" size-lg="4" *ngFor="let receta of recetas">
+          <ion-card (click)="Opciones(receta)" style="cursor: pointer;">
+            <ion-card-header>
+              <ion-card-title>{{ receta.listaingredientes.descripcion }}</ion-card-title>
+              <ion-card-subtitle>Tiempo de preparación: {{ receta.tiempopreparacion }} minutos</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="image-container">
+                <img [src]="receta.listaimagenes.imagenes[0]?.cadenab64 || 'assets/img/no-image.png'"
+                  alt="Imagen de la receta" class="recipe-image">
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <div *ngIf="!recetas || recetas.length === 0" class="no-recipes">
+          <p>Aún no has registrado recetas</p>
         </div>
-
       </ion-row>
       <ion-row *ngIf="!loaded">
-        <ion-col size="4"> <app-skeleton *ngIf="!loaded" [columns]="5" type="cards"></app-skeleton>
+        <ion-col size="12" size-md="6" size-lg="4">
+          <app-skeleton [columns]="5" type="cards"></app-skeleton>
         </ion-col>
-        <ion-col size="4"> <app-skeleton *ngIf="!loaded" [columns]="5" type="cards"></app-skeleton>
-        </ion-col>
-        <ion-col size="4"> <app-skeleton *ngIf="!loaded" [columns]="5" type="cards"></app-skeleton>
+      </ion-row>
+    </ion-grid>
+
+    <!-- Controles de Paginación -->
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" class="pagination-controls">
+          <ion-button (click)="cambiarPagina(-1)" [disabled]="paginaActual === 1">
+            <ion-icon name="arrow-back"></ion-icon>
+            Anterior
+          </ion-button>
+          <span>{{ paginaActual }} de {{ totalPaginas }}</span>
+          <ion-button (click)="cambiarPagina(1)" [disabled]="paginaActual === totalPaginas">
+            Siguiente
+            <ion-icon name="arrow-forward"></ion-icon>
+          </ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -51,23 +68,15 @@
 </ion-content>
 
 <style>
-  .cards-container {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    /* Ajusta el espacio entre las cards según sea necesario */
-  }
-
   .no-recipes {
     width: 100%;
     text-align: center;
+    margin-top: 20px;
   }
 
   .image-container {
     width: 100%;
-    padding-top: 56.25%;
-    /* 16:9 Aspect Ratio */
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
     position: relative;
     overflow: hidden;
   }
@@ -78,7 +87,18 @@
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    /* Hace que la imagen mantenga su aspecto y llene el contenedor */
+    object-fit: cover; /* Makes the image maintain its aspect ratio and cover the container */
+  }
+
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .pagination-controls span {
+    font-size: 16px;
   }
 </style>

@@ -1,5 +1,8 @@
 <app-main-header titulo="Lavado de Vehiculos"></app-main-header>
 <ion-content [fullscreen]="true" id="main-content">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <ion-segment [(ngModel)]="segmento" *ngIf="rol.id!==1">
     <ion-segment-button value="pago" *ngIf="caja" (click)="obtenerLavados(1)">
       <ion-label>Lavado</ion-label>

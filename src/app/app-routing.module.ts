@@ -123,7 +123,7 @@ const routes: Routes = [
     path: 'inventario',
     loadChildren: () => import('./Pages/inventario/inventario.module').then( m => m.InventarioPageModule),
     canActivate: [RoleGuard],
-    data: { expectedRoles: ["Administrador"] }
+    data: { expectedRoles: ["Administrador", "Cajero"] }
   },
   {
     path: 'pasado',

@@ -27,20 +27,26 @@ export class BebidasPage implements OnInit {
     })
   }
 
-  async AbrirModalbebida(id:number, titulo:string, data : any = null) {
+  async handleRefresh(event: any) {
+    await this.ObtenerBebidas();
+    event.target.complete();
+  }
+
+
+  async AbrirModalbebida(id: number, titulo: string, data: any = null) {
     const modal = await this.ModalController.create({
       component: BebidaComponent,
       componentProps: {
         id: id,
-        titulo : titulo,
-        data : data
+        titulo: titulo,
+        data: data
       },
     });
     return await modal.present();
   }
 
   async ObtenerBebidas(load: boolean = true): Promise<void> {
-    this.loaded= false;
+    this.loaded = false;
     try {
       const response: any = await (await this.BebidaService.Bebidas(load)).toPromise();
       if (response && response.bebidas) {
@@ -51,10 +57,10 @@ export class BebidasPage implements OnInit {
     } catch (error) {
       console.error('Error en la solicitud:', error);
     } finally {
-      this.loaded= true;
+      this.loaded = true;
     }
   }
-  
+
 
   async Eliminarbebida(bebida: any) {
     this.ac.presentCustomAlert("Eliminar", "Estás seguro de eliminar la bebida: " + bebida.nombre, () => this.ConfirmarELiminar(bebida.id));
@@ -68,7 +74,7 @@ export class BebidasPage implements OnInit {
     ]);
   }
 
-  async ConfirmarELiminar (id : number) :Promise<void> {
+  async ConfirmarELiminar(id: number): Promise<void> {
     (await this.BebidaService.EliminarBebida(id)).subscribe(
       async (response: any) => {
         if (response) {

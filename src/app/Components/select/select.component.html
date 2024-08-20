@@ -1,12 +1,18 @@
-<div class="ion-padding">
-  <ion-searchbar show-cancel-button="focus" [(ngModel)]="criterio" placeholder="Buscar"></ion-searchbar>
+<div class="ion-padding" style="padding-bottom: 110px;">
+  <!-- <ion-searchbar show-cancel-button="focus" [(ngModel)]="criterio" placeholder="Buscar"></ion-searchbar> -->
   <ion-list lines="none" *ngIf="isPlatillo">
-    <ion-item *ngFor="let pl of PlatilloArry" (click)="Dissmiss(pl)">{{pl.nombre}}</ion-item>
+    <ng-container *ngFor="let categoria of agruparPorCategoria(PlatilloArry)">
+      <ion-item-divider color="light">{{ categoria.nombre }}</ion-item-divider>
+      <ion-item *ngFor="let pl of categoria.platillos" (click)="Dissmiss(pl)">
+        {{ pl.nombre }}
+      </ion-item>
+    </ng-container>
     <ion-item *ngIf="PlatilloArry.length === 0 && loaded">No hay platillos</ion-item>
     <ion-item *ngIf="!loaded">
       <ion-skeleton-text [animated]="true"></ion-skeleton-text>
     </ion-item>
   </ion-list>
+
   <ion-list lines="none" *ngIf="!isPlatillo">
     <ion-list-header>
       Bebidas

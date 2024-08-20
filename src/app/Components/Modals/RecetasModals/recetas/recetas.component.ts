@@ -118,17 +118,14 @@ export class RecetasComponent implements OnInit {
     if (estadoValidacion) {
       try {
         const data = {
-          id: this.datareceta.id,
+          id: !this.nuevo ? this.datareceta.id : 0,
           pasoshtml: this.pasoshtml,
           idlistaimagenes: this.idlistaimagenes,
           idlistaingredientes: this.idlistaingredientes,
           tiempopreparacion: this.dura,
           idcategoria: this.idcategoria,
-          listaingredientes : {
-            id : this.idlistaingredientes,
-            descripcion : this.nombrereceta
-          }
         };
+        console.log(data);
         const respuesta = await (await this.RecetasService.CrearReceta(data)).toPromise();
         if (respuesta) {
           this.modalController.dismiss()
@@ -165,7 +162,7 @@ export class RecetasComponent implements OnInit {
 
   validar(): { estado: boolean, mensaje: string } {
     let mensaje = "";
-    let estado = true; // Supongo que el estado inicial es verdadero, ya que no se debe bloquear el proceso si no hay errores
+    let estado = true;
 
     if (this.nombrereceta.trim() === "") {
       mensaje = "Debe proporcionar un nombre para la receta";
@@ -340,10 +337,6 @@ export class RecetasComponent implements OnInit {
       return false;
 
     }
-    if (this.cantidadi === 0) {
-      this.presentAlert("Error", "Debe agregar la cantidad")
-      return false;
-    }
     return true
   }
 
@@ -409,6 +402,7 @@ export class RecetasComponent implements OnInit {
   }
 
   crearListaIngredientes(descripcion: string): Promise<any> {
+    console.log("entró");
     return new Promise((resolve, reject) => {
       this.RecetasService.crearListaIngredientes(descripcion).subscribe(
         (data: any) => {

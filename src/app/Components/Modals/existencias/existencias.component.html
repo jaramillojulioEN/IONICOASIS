@@ -10,6 +10,12 @@
           </ion-input>
         </ion-item>
 
+        <ion-item lines="none">
+          <ion-input labelPlacement="floating" label="Vendidos" name="Vendidos" placeholder="Vendidos"
+            [(ngModel)]="vendidos" type="number" clearInput>
+          </ion-input>
+        </ion-item>
+
 
 
         <ion-button expand="full" (click)="confirmar()">Guardar</ion-button>

@@ -116,9 +116,9 @@
         </ion-button>
         <ion-list>
           <ion-item lines="none" *ngFor="let prd of prodsArray; let index = index">
-            <ion-label *ngIf="prd.productos">{{ prd.productos.nombre }} {{ prd.cantidad }}</ion-label>
-            <ion-label *ngIf="prd.bebidas">{{ prd.bebidas.nombre }} {{ prd.cantidad }}</ion-label>
-            <ion-label *ngIf="prd.ingredientenobd">{{ prd.ingredientenobd }} {{ prd.cantidad }}</ion-label>
+            <ion-label *ngIf="prd.productos">{{ prd.cantidad }} - {{ prd.productos.nombre }} </ion-label>
+            <ion-label *ngIf="prd.bebidas"> {{ prd.cantidad }} - {{ prd.bebidas.nombre }}</ion-label>
+            <ion-label *ngIf="prd.ingredientenobd"> {{ prd.cantidad }} - {{ prd.ingredientenobd }} </ion-label>
             <ion-button fill="clear" color="danger" (click)="eliminaringrediente(prd.id, prd.idlistaingredientes)">
               <ion-icon name="trash-outline"></ion-icon> Eliminar
             </ion-button>

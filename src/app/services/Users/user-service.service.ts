@@ -32,8 +32,9 @@ export class UserServiceService {
   
 
   getServer(): string {   
-    let server = "https://muddywatter26-001-site1.ftempurl.com/"
-    // let server = "https://localhost:44397/"
+    let server = ""
+    // server = "https://muddywatter26-001-site1.ftempurl.com/"
+    server = "https://localhost:44397/"
     let port = "44397"
     return `${server}/`
   }
@@ -76,10 +77,18 @@ export class UserServiceService {
 
   LogOut(): boolean {
     try {
-      localStorage.removeItem("usuario")
-      return true
+      // Eliminar el elemento del localStorage
+      localStorage.removeItem("usuario");
+
+      // Navegar a la página de login
+      this.router.navigate(['/']).then(() => {
+        // Recargar la aplicación para destruir todos los componentes
+        window.location.reload();
+      });
+
+      return true;
     } catch {
-      return false
+      return false;
     }
   }
 

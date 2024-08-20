@@ -8,6 +8,7 @@ import { PropiedadesComponent } from 'src/app/Components/Secciones/Empleado/prop
 import { ConsumoComponent } from 'src/app/Components/Modals/consumo/consumo.component'
 import { EmpleadosComponent } from 'src/app/Components/Modals/Empleados/empleados/empleados.component'
 import { LoaderFunctions } from 'src/functions/utils';
+import { UserServiceService } from 'src/app/services/Users/user-service.service';
 @Component({
   selector: 'app-empleados',
   templateUrl: './empleados.page.html',
@@ -15,13 +16,15 @@ import { LoaderFunctions } from 'src/functions/utils';
 })
 export class EmpleadosPage implements OnInit {
   empleados: any = []
+  rol: any;
 
   constructor(
     private EmpleadosService: EmpleadosService,
     private ModalController: ModalController,
     private ac: AlertServiceService,
+    private userservie: UserServiceService,
     private popoverController: PopoverController,
-    private fn  : LoaderFunctions
+    private fn: LoaderFunctions
   ) {
 
   }
@@ -29,7 +32,7 @@ export class EmpleadosPage implements OnInit {
   ngOnInit() {
 
 
-
+    this.rol = this.userservie.getRol();
     this.ObtenerEmpleados()
     window.addEventListener('success', () => {
       this.ModalController.dismiss()
@@ -37,7 +40,12 @@ export class EmpleadosPage implements OnInit {
     })
   }
 
-  async AbrirModalConsumo(data : any) {
+  async handleRefresh(event: any) {
+    await this.ObtenerEmpleados()
+    event.target.complete();
+  }
+
+  async AbrirModalConsumo(data: any) {
     const modal = await this.ModalController.create({
       component: ConsumoComponent,
       componentProps: {
@@ -90,14 +98,14 @@ export class EmpleadosPage implements OnInit {
       "sábado": 6,
       "domingo": 7
     };
-    
+
     const diapagonumero = diasDeLaSemana[diapago.toLowerCase()];
     const diahoynumero = this.obtenerNumeroDiaDeHoy();
 
     let diasRestantes = diapagonumero - diahoynumero;
 
     if (diasRestantes < 0) {
-        diasRestantes += 7;
+      diasRestantes += 7;
     }
 
     return `${diasRestantes} días.`;
@@ -113,14 +121,14 @@ export class EmpleadosPage implements OnInit {
       "sábado": 6,
       "domingo": 7
     };
-    
+
     const diapagonumero = diasDeLaSemana[diapago.toLowerCase()];
     const diahoynumero = this.obtenerNumeroDiaDeHoy();
 
     let diasRestantes = diapagonumero - diahoynumero;
 
     if (diasRestantes <= 0) {
-        diasRestantes += 7;
+      diasRestantes += 7;
     }
 
     const fechaActual = new Date();
@@ -191,14 +199,23 @@ export class EmpleadosPage implements OnInit {
 
 
   Opciones(data: any, event: Event) {
-    this.ac.configureAndPresentActionSheet([
-      { button: this.ac.btnEliminar, handler: () => this.EliminarEmpleados(data) },
-      { button: this.ac.btnActualizar, handler: () => { this.AbrirModalEmpleados(data); } },
-      { button: this.ac.btnAgregarconsumo, handler: () => { this.AbrirModalConsumo(data); } },
-      { button: this.ac.btnProps, handler: () => { this.verPropiedades(data, event); } },
-      { button: this.ac.btnConsumo, handler: () => { this.verConsumo(data); } },
+    const options = [];
+
+    if (this.rol.id === 1) {
+      options.push(
+        { button: this.ac.btnEliminar, handler: () => this.EliminarEmpleados(data) },
+        { button: this.ac.btnActualizar, handler: () => this.AbrirModalEmpleados(data) },
+        { button: this.ac.btnProps, handler: () => this.verPropiedades(data, event) }
+      );
+    }
+
+    options.push(
+      { button: this.ac.btnAgregarconsumo, handler: () => this.AbrirModalConsumo(data) },
+      { button: this.ac.btnConsumo, handler: () => this.verConsumo(data) },
       { button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }
-    ]);
+    );
+
+    this.ac.configureAndPresentActionSheet(options);
   }
 
   async verPropiedades(empleado: any, event: Event): Promise<void> {

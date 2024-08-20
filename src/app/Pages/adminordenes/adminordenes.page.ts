@@ -14,6 +14,7 @@ export class AdminordenesPage implements OnInit {
   loaded: boolean = false;
   ordenes: any = [];
   intervalId: any;
+  caja: boolean = true;
 
   constructor(
     private OrdenesService : OrdenesService,
@@ -29,10 +30,15 @@ export class AdminordenesPage implements OnInit {
     window.addEventListener('success', () => {
       this.ObtenerOrdenes();
     })
-    this.intervalId = setInterval(() => {
-      this.ObtenerOrdenes(false);
-    }, 3000);
+    // this.intervalId = setInterval(() => {
+    //   this.ObtenerOrdenes(false);
+    // }, 3000);
     this.ObtenerOrdenes()
+  }
+
+  async handleRefresh(event: any) {
+    await this.ObtenerOrdenes();
+    event.target.complete();
   }
 
 
@@ -58,11 +64,15 @@ export class AdminordenesPage implements OnInit {
       if (load) {
         this.loaded = false;
       }
-      const response: any = await (await this.OrdenesService.OrdenesPendientes(load, 0, 1)).toPromise();
+      const response: any = await (await this.OrdenesService.OrdenesPendientes(load, 0, 1)).toPromise();      
       if (response && response.ordenes) {
         this.ordenes = response.ordenes; 
       } else {
-        console.error('Error: Respuesta inválida');
+        if(response.message && response.message === "Caja cerrada"){
+          this.caja = false
+        }else{
+          console.error('Error: Respuesta inválida');
+        }
       }
     } catch (error) {
       console.error('Error en la solicitud:', error);

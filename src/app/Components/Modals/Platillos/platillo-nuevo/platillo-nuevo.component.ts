@@ -91,7 +91,7 @@ export class PlatilloNuevoComponent implements OnInit {
     this.loaded = false; 
   
     try {
-      const response: any = await (await this.recetaservice.Recetas(true)).toPromise();
+      const response: any = await (await this.recetaservice.Recetas(this.platillos.idcategoria)).toPromise();
   
       if (response && response.recetas) {
         this.recetas = response.recetas;

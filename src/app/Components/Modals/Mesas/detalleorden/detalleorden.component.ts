@@ -22,7 +22,7 @@ interface Timer {
 export class DetalleordenComponent implements OnInit {
   @Input() mesa: any = [];
   @Input() ordenC: any = [];
-  @Input()orden: any = [];
+  @Input() orden: any = [];
   estimados: any;
   rol: any = [];
   @Input() tiempo: number = 0;
@@ -32,7 +32,7 @@ export class DetalleordenComponent implements OnInit {
     private userService: UserServiceService,
     private modalController: ModalController,
     private OrdenesService: OrdenesService,
-    private fn : LoaderFunctions
+    private fn: LoaderFunctions
   ) { }
 
 
@@ -55,18 +55,37 @@ export class DetalleordenComponent implements OnInit {
   //   }
   // }
 
-  
-  notificaciones: { [idorden: number]: number } = {};
 
+  notificaciones: { [idorden: number]: number } = {};
+  cargaactiva: boolean = true;
   ngOnInit() {
+    if (this.mesa) {
+      this.orden = this.mesa.ordenes[0]
+      this.buscarOrden();
+    }
+
     const notificacionesString = localStorage.getItem("notificaciones");
     if (notificacionesString) {
       this.notificaciones = JSON.parse(notificacionesString)
     }
 
+
+
+
     window.addEventListener('success', () => {
       this.buscarOrden();
+      window.dispatchEvent(new Event('mesas'));
+
     })
+
+    window.addEventListener('carga', () => {
+      if (this.cargaactiva) {
+        this.cargaactiva = false
+      } else {
+        this.cargaactiva = true
+      }
+    })
+
     this.rol = this.userService.getRol();
     if (this.rol.id === 4) {
       this.orden = this.ordenC;
@@ -75,22 +94,28 @@ export class DetalleordenComponent implements OnInit {
     }
     this.Getestimandos();
 
-    if (this.rol.id !== 4) {
-      console.log("entró")
-      this.intervalId = setInterval(() => {
-        this.Getestimandos();
-        this.buscarOrden();
-      }, 1000);
-    }
+    // if (this.rol.id !== 4) {
+    //   this.intervalId = setInterval(() => {
+    //     if (this.cargaactiva) {
+    //       this.Getestimandos();
+    //       this.buscarOrden();
+    //     }
+    //   }, 5000);
+    // }
 
   }
 
+  async handleRefresh() {
+    await this.buscarOrden();
+    await this.Getestimandos();
+  }
 
-  notifs(id : number){
+
+  notifs(id: number) {
     if (this.notificaciones[id]) {
       delete this.notificaciones[id]
     }
-    localStorage.setItem("notificaciones", JSON.stringify(this.notificaciones))   
+    localStorage.setItem("notificaciones", JSON.stringify(this.notificaciones))
   }
 
   async VerReceta(receta: any): Promise<void> {
@@ -123,7 +148,7 @@ export class DetalleordenComponent implements OnInit {
 
   Opciones(data: any, platillo: boolean) {
     let butons: any[] = []
-    if (this.rol.id === 2 && this.orden.estado === 1) {
+    if (this.rol.id === 2 && this.orden.estado === -1) {
       if (platillo) {
         butons.push({ button: this.ac.btnEliminar, handler: () => this.EliminarPlatillo(data) })
       } else {
@@ -169,7 +194,7 @@ export class DetalleordenComponent implements OnInit {
 
   async alterstate(estado: number): Promise<void> {
     this.orden.estado = estado;
-    if(estado == 2){
+    if (estado == 2) {
       this.orden.fecha = this.fn.obtenerFechaHoraActual()
     }
     if (this.orden.estado == 3) {
@@ -184,6 +209,7 @@ export class DetalleordenComponent implements OnInit {
     (await this.OrdenesService.ActualizarOrden(this.orden)).subscribe(
       async (response: any) => {
         if (response && response.message) {
+          window.dispatchEvent(new Event('success'));
           await this.buscarOrden();
         } else {
           console.error('Error: Respuesta inválida');
@@ -207,6 +233,7 @@ export class DetalleordenComponent implements OnInit {
 
 
   async buscarOrden(): Promise<void> {
+    console.log("Se buscó");
     (await this.OrdenesService.BuscarOrden(false, this.orden.id)).subscribe(
       async (response: any) => {
         if (response && response.orden) {
@@ -222,6 +249,8 @@ export class DetalleordenComponent implements OnInit {
   }
 
 
+
+
   async AgregarAOrden(data: any, titulo: string = "") {
     let modal: any
     modal = await this.modalController.create({
@@ -229,7 +258,8 @@ export class DetalleordenComponent implements OnInit {
       componentProps: {
         titulo: titulo,
         idmesa: data.idmesa,
-        ordenold: data
+        ordenold: data,
+        cargaactiva: this.cargaactiva
       },
     });
     modal.present()

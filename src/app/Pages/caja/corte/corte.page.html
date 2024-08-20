@@ -1,34 +1,84 @@
 <app-main-header titulo="Corte de Caja"></app-main-header>
 
 <ion-content [fullscreen]="true" id="main-content">
- 
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-segment [(ngModel)]="segmento">
+    <ion-segment-button (click)="obtenerCortesActivos()" value="curso">
+      <ion-label>Cortes nuevos</ion-label>
+    </ion-segment-button>
+    <ion-segment-button (click)="obtenerCortesActivos(false, false)" value="pasado">
+      <ion-label>Cortes Pasados</ion-label>
+    </ion-segment-button>
+  </ion-segment>
 
-    <ion-segment [(ngModel)]="segmento">
-        <ion-segment-button (click)="obtenerCortesActivos()" value="curso">
-          <ion-label>Cortes nuevos</ion-label>
-        </ion-segment-button>
-        <ion-segment-button (click)="obtenerCortesActivos(false, false)" value="pasado">
-          <ion-label>Cortes Pasados</ion-label>
-        </ion-segment-button>
-      </ion-segment>
-    
 
-      <div class="container" *ngIf="segmento==='curso'">
-        <div class="ion-grid" *ngIf="rol.id !== 1">
-          <ion-row>
-            <ion-col size-lg="8" size-sm="8"></ion-col>
-            <ion-col size-lg="4" size-sm="4">
-              <div class="header-cotainer">
-                <ion-button class="crear" (click)="AbrirModalRetiro()">
-                  <ion-icon name="add-circle-outline"></ion-icon>
-                  <div class="button-text">Retiar de caja</div>
-                </ion-button>
-              </div>
-            </ion-col>
-          </ion-row>
-        </div>
-        <div class="table-container">
-          <table class="tabla" *ngIf="loaded">
+  <div class="container" *ngIf="segmento==='curso'">
+    <div class="ion-grid" *ngIf="rol.id !== 1">
+      <ion-row>
+        <ion-col size-lg="8" size-sm="8"></ion-col>
+        <ion-col size-lg="4" size-sm="4">
+          <div class="header-cotainer">
+            <ion-button class="crear" (click)="AbrirModalRetiro()">
+              <ion-icon name="add-circle-outline"></ion-icon>
+              <div class="button-text">Retiar de caja</div>
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </div>
+    <div class="table-container">
+      <table class="tabla" *ngIf="loaded">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>CONCEPTO</th>
+            <th>MONTO</th>
+            <th colspan="2">Fecha</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="cortescurso.length !== 0">
+          <tr class="option" *ngFor="let corte of cortescurso">
+            <td>{{ corte.id }}</td>
+            <td>{{ corte.concepto}}</td>
+            <td>{{ corte.monto }}</td>
+            <td>{{ corte.fecha }}</td>
+            <td class="actions-cell">
+              <ion-button fill="clear" (click)="Opciones(corte)">
+                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+              </ion-button>
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="cortescurso.length === 0">
+          <tr>No se han realizado retiros de caja</tr>
+        </tbody>
+      </table>
+      <app-skeleton *ngIf="!loaded" [columns]="5" type="tabla"></app-skeleton>
+    </div>
+  </div>
+
+
+  <div class="jaj" *ngIf="segmento!=='curso'">
+
+    <ion-card *ngIf="loaded">
+      <ion-card-content class="scroll-container">
+        <ion-item slot="end">
+          <ion-label *ngIf="rol.id ===1">Seleccionar Fecha</ion-label>
+          <ion-label *ngIf="rol.id !==1">Hoy</ion-label>
+
+          <ion-button *ngIf="rol.id ===1" (click)="openFilter($event)" class="crear">
+            <ion-icon slot="start" name="filter"></ion-icon>
+            <ion-label>Fecha</ion-label>
+          </ion-button>
+          <ion-button style="margin-left: 8px;" color="danger" *ngIf="filtered" (click)="deletefilter()" class="crear">
+            <ion-icon slot="start" name="trash"></ion-icon>
+            <ion-label>Eliminar filtros</ion-label>
+          </ion-button>
+        </ion-item>
+        <div class="table-wrapper">
+          <table class="tabla">
             <thead>
               <tr>
                 <th>ID</th>
@@ -37,93 +87,44 @@
                 <th colspan="2">Fecha</th>
               </tr>
             </thead>
-            <tbody *ngIf="cortescurso.length !== 0">
-              <tr class="option" *ngFor="let corte of cortescurso">
-                <td>{{ corte.id }}</td>
-                <td>{{ corte.concepto}}</td>
-                <td>{{ corte.monto }}</td>
-                <td>{{ corte.fecha }}</td>
+            <tbody *ngIf="retiroshistorialfiltrado.length > 0">
+              <tr class="option" *ngFor="let retiro of retiroshistorialfiltrado">
+                <td>{{ retiro.id }}</td>
+                <td>{{ retiro.concepto}}</td>
+                <td>{{ retiro.monto }}</td>
+                <td>{{ retiro.fecha }}</td>
                 <td class="actions-cell">
-                  <ion-button fill="clear" (click)="Opciones(corte)">
+                  <ion-button fill="clear" (click)="Opciones(retiro)">
                     <ion-icon name="ellipsis-vertical-outline"></ion-icon>
                   </ion-button>
                 </td>
               </tr>
             </tbody>
-            <tbody *ngIf="cortescurso.length === 0">
-                <tr>No se han realizado retiros de caja</tr>
+            <tbody *ngIf="retiroshistorialfiltrado.length === 0">
+              <td colspan="5">No se han realizado retiros hoy</td>
             </tbody>
           </table>
-          <app-skeleton *ngIf="!loaded" [columns]="5" type="tabla"></app-skeleton>
         </div>
-      </div>
+        <div class="pagination-container" *ngIf="retiroshistorialfiltrado.length > 0">
+          <ion-button (click)="paginaAnterior()" [disabled]="currentPage === 1" fill="clear" color="primary">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+          </ion-button>
 
+          <ion-label>{{ currentPage }} de {{ totalPages }}</ion-label>
 
-      <div class="jaj" *ngIf="segmento!=='curso'">
+          <ion-button (click)="paginaSiguiente()" [disabled]="currentPage === totalPages" fill="clear" color="primary">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+    <ion-card *ngIf="!loaded">
+      <ion-content>
+        <app-skeleton [columns]="5" type="tabla"></app-skeleton>
+      </ion-content>
+    </ion-card>
 
-        <ion-card *ngIf="loaded">
-          <ion-card-content class="scroll-container">
-            <ion-item slot="end">
-              <ion-label *ngIf="rol.id ===1">Seleccionar Fecha</ion-label>
-              <ion-label *ngIf="rol.id !==1">Hoy</ion-label>
-    
-              <ion-button *ngIf="rol.id ===1" (click)="openFilter($event)" class="crear">
-                <ion-icon slot="start" name="filter"></ion-icon>
-                <ion-label>Fecha</ion-label>
-              </ion-button>
-              <ion-button style="margin-left: 8px;" color="danger" *ngIf="filtered" (click)="deletefilter()" class="crear">
-                <ion-icon slot="start" name="trash"></ion-icon>
-                <ion-label>Eliminar filtros</ion-label>
-              </ion-button>
-            </ion-item>
-            <div class="table-wrapper">
-              <table class="tabla">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>CONCEPTO</th>
-                    <th>MONTO</th>
-                    <th colspan="2">Fecha</th>
-                  </tr>
-                </thead>
-                <tbody *ngIf="retiroshistorialfiltrado.length > 0">
-                  <tr class="option" *ngFor="let retiro of retiroshistorialfiltrado">
-                    <td>{{ retiro.id }}</td>
-                    <td>{{ retiro.concepto}}</td>
-                    <td>{{ retiro.monto }}</td>
-                    <td>{{ retiro.fecha }}</td>
-                    <td class="actions-cell">
-                      <ion-button fill="clear" (click)="Opciones(retiro)">
-                        <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-                      </ion-button>
-                    </td>
-                  </tr>
-                </tbody>
-                <tbody *ngIf="retiroshistorialfiltrado.length === 0">
-                  <td colspan="5">No se han realizado retiros hoy</td>
-                </tbody>
-              </table>
-            </div>
-            <div class="pagination-container" *ngIf="retiroshistorialfiltrado.length > 0">
-              <ion-button (click)="paginaAnterior()" [disabled]="currentPage === 1" fill="clear" color="primary">
-                <ion-icon name="chevron-back-outline"></ion-icon>
-              </ion-button>
-    
-              <ion-label>{{ currentPage }} de {{ totalPages }}</ion-label>
-    
-              <ion-button (click)="paginaSiguiente()" [disabled]="currentPage === totalPages" fill="clear" color="primary">
-                <ion-icon name="chevron-forward-outline"></ion-icon>
-              </ion-button>
-            </div>
-          </ion-card-content>
-        </ion-card>
-        <ion-card *ngIf="!loaded">
-          <ion-content>
-            <app-skeleton [columns]="5" type="tabla"></app-skeleton>
-          </ion-content>
-        </ion-card>
-
-      </div>
+  </div>
 
 
 </ion-content>

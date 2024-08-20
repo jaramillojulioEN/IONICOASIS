@@ -16,9 +16,10 @@ export class DetalleadminComponent  implements OnInit {
   ) { }
   @Input() ordenes : any = []
   ngOnInit() {
-    this.intervalId = setInterval(() => {
-      this.buscarOrden();
-    }, 3000);
+    this.buscarOrden();
+    // this.intervalId = setInterval(() => {
+    //   this.buscarOrden();
+    // }, 3000);
   }
 
   Opciones(data : any, bebida : boolean){
@@ -33,6 +34,8 @@ export class DetalleadminComponent  implements OnInit {
   Eliminar(data : any, bebida : boolean){
     this.ac.presentCustomAlert("Eliminar", "Estas seguro de querer eliminar este platillo de la orden?", ()=>this.confirm(data, bebida))
   }
+
+  
 
   async confirm(data : any, bebida : boolean) : Promise<void>{
     if(!bebida){
@@ -70,6 +73,7 @@ export class DetalleadminComponent  implements OnInit {
 
 
   async buscarOrden(): Promise<void> {
+    console.log("Se buscó");
     (await this.ordenservice.BuscarOrden(false, this.ordenes.id)).subscribe(
       async (response: any) => {
         if (response && response.orden) {

@@ -30,7 +30,9 @@ export class CocinaPage implements OnInit {
   caja: boolean = false;
   loaded: boolean = false;
   cargaactiva: boolean = true;
-
+  intervalId2: any;
+  mensaje: any;
+  error: any = "Caja cerrada"
   constructor(
     private OrdenesService: OrdenesService,
     private ModalController: ModalController,
@@ -62,13 +64,24 @@ export class CocinaPage implements OnInit {
     }
     if (!this.loaded) {
       this.ObtenerOrdenes(true)
-      this.obtenerCajaActiva()
     }
 
-    this.intervalId = setInterval(() => {
-      if(this.cargaactiva){
-        this.obtenerCajaActiva()
-        this.ObtenerOrdenes(false);
+    window.addEventListener('success', () => {
+      this.ObtenerOrdenes();
+    })
+    window.addEventListener('mesas', () => {
+      this.ObtenerOrdenes();
+    })
+    // this.intervalId = setInterval(() => {
+    //   console.log("Se cargó despuesde 8")
+    //   if (this.cargaactiva) {
+    //     this.ObtenerOrdenes(false);
+    //   }
+    // }, 8000);
+
+    this.intervalId2 = setInterval(() => {
+      if (this.cargaactiva) {
+        this.updateTimers();
       }
     }, 1000);
 
@@ -96,29 +109,7 @@ export class CocinaPage implements OnInit {
     ]);
   }
 
-  async obtenerCajaActiva(load: boolean = false): Promise<void> {
-    try {
-      (await this.cortesService.CortesActivos(1, load)).subscribe(
-        async (response: any) => {
-          if (response && response.Cortes) {
-            if (response.Cortes.length > 0) {
-              this.caja = true;
-            }
-            else {
-              this.caja = false
-            }
-          } else {
-            console.error('Error: Respuesta inválida');
-          }
-        },
-        (error: any) => {
-          console.error('Error en la solicitud:', error);
-        }
-      );
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-    }
-  }
+
 
   async VerOrden(data: any) {
 
@@ -150,9 +141,9 @@ export class CocinaPage implements OnInit {
         this.loaded = false;
       }
       const response: any = await (await this.OrdenesService.OrdenesPendientes(load)).toPromise();
+      this.mensaje = response.message;
       if (response && response.ordenes) {
         this.ordenes = response.ordenes;
-
         if (this.ordeninicial.length !== this.ordenes.length) {
           this.ordeninicial = response.ordenes;
           console.log("Orden inicial respaldada");
@@ -168,7 +159,6 @@ export class CocinaPage implements OnInit {
           this.ordeninicial = this.ordenes;
         }
       } else {
-        console.error('Error: Respuesta inválida');
       }
     } catch (error) {
       console.error('Error en la solicitud:', error);
@@ -182,7 +172,7 @@ export class CocinaPage implements OnInit {
   updateTimer(orden: any): string {
     return this.transcurrido(orden);
   }
-  
+
   transcurrido(orden: any): string {
     if (orden.isPausado) return "Pausado";
 
@@ -199,7 +189,16 @@ export class CocinaPage implements OnInit {
     // Formatear horas, minutos y segundos a dos dígitos
     const tiempoFormateado = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     return tiempoFormateado;
-}
+  }
+
+  updateTimers() {
+    if (this.ordenes != null) {
+      for (let orden of this.ordenes) {
+        this.updateTimer(orden);
+      }
+    }
+
+  }
 
 
   convertirHorasAMilisegundos(horas: number): number {

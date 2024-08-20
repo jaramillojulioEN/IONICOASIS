@@ -53,7 +53,7 @@ export class SideMenuComponent implements OnInit {
 
   async logOut() {
 
-    this.ac.presentCustomAlert("Estas cerrando session", "¿Estas segurod de cerrar sesión? \nDebéras ingresar nuevamente tus credenciales para accder", ()=>this.ConfirmLogOut())
+    this.ac.presentCustomAlert("Estas cerrando session", "¿Estás seguro de cerrar sesión? \nDebéras ingresar nuevamente tus credenciales para accder", ()=>this.ConfirmLogOut())
 
   }
 
@@ -103,6 +103,7 @@ export class SideMenuComponent implements OnInit {
     }
     else if (this.rol.id == 5) {
       this.appPages = [
+        { title: 'Inventario', url: '/inventario', icon: 'cash', open: false },
         { title: 'Cobrar', url: '/caja', icon: 'card', open: false },
         { title: 'Lavado', url: '/lavado', icon: 'car-sport', open: false },
         { title: 'Cierres e Inicios', url: '/cierre', icon: 'flash', open: false },

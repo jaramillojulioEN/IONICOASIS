@@ -45,7 +45,7 @@
           <ion-text>Bebidas</ion-text>
         </ion-segment-button>
       </ion-segment>
-
+      <br><br>
       <div *ngIf="tipo == 'default' ">
         <ion-item lines="none">
           <div class="custom-select" role="button" (click)="Select(true, $event)">
@@ -80,13 +80,14 @@
           <ion-input type="number" label="Cantidad" labelPlacement="floating" [(ngModel)]="DetalleBebida.cantidad"
             name="cantidad" required></ion-input>
         </ion-item>
-        <ion-button expand="full" type="submit" (click)="crearDetalle(!isprep ? DetalleBebida : detallePlatillo)">Agregar a la orden</ion-button>
+        <ion-button expand="full" type="submit"
+          (click)="crearDetalle(!isprep ? DetalleBebida : detallePlatillo)">Agregar a la orden</ion-button>
       </div>
     </ion-card-content>
   </ion-card>
 
   <!-- Sección Detalles de la Orden -->
-  <ion-card class="custom-card">
+  <ion-card class="custom-card" *ngIf="OrdenDetalles.ordenesplatillos|| OrdenDetalles.ordenesbebidas">
     <ion-card-content class="ion-padding">
       <div class="order-details">
         <div *ngIf="OrdenDetalles.ordenesplatillos && OrdenDetalles.ordenesplatillos.length !== 0">
@@ -99,8 +100,7 @@
               <p>Observaciones: {{platillo.observaciones}}</p>
               <div class="button-container">
                 <ion-button fill="clear" (click)="Opciones(platillo, true)">
-                  <ion-icon
-                    name="ellipsis-vertical-outline"></ion-icon>
+                  <ion-icon name="ellipsis-vertical-outline"></ion-icon>
                 </ion-button>
               </div>
             </div>
@@ -118,8 +118,13 @@
                 </ion-button>
               </div>
             </div>
-
           </div>
+        </div>
+        <div style="width: 100%;" *ngIf="OrdenDetalles.estado === -1">
+          <ion-button style="width: 100%;" (click)="enviarcocina(2)" slot="end" color="warning">
+            Enviar a cocina
+            <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+          </ion-button>
         </div>
       </div>
 

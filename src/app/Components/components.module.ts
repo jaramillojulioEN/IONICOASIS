@@ -33,10 +33,12 @@ import { SkeletonComponent } from './skeleton/skeleton.component'
 import { EditLavComponent } from './Modals/edit-lav/edit-lav.component'
 import {DetalleadminComponent} from 'src/app/Components/Modals/detalleadmin/detalleadmin.component'
 import {EstadoComponent} from  'src/app/Components/Modals/estado/estado.component'
+import {ReloaderComponent } from '../Components/reloader/reloader.component'
 @NgModule({
   declarations:
     [
       CardComponent,
+      ReloaderComponent,
       EmpleadosComponent,
       TicketcajaComponent,
       InicioComponent,
@@ -70,6 +72,7 @@ import {EstadoComponent} from  'src/app/Components/Modals/estado/estado.componen
     ],
   exports: [
     CardComponent,
+    ReloaderComponent,
     DetalleComponentReceta,
     MainHeaderComponent,
     ConsumoComponent,

@@ -27,6 +27,19 @@ export class SelectComponent implements OnInit {
     this.ObtenerBebidasPrp();
   }
 
+  agruparPorCategoria(platillos: any[]) {
+    return platillos.reduce((acc, platillo) => {
+      let categoria = acc.find((c: { nombre: any; }) => c.nombre === platillo.categorias.categoria);
+      if (!categoria) {
+        categoria = { nombre: platillo.categorias.categoria, platillos: [] };
+        acc.push(categoria);
+      }
+      categoria.platillos.push(platillo);
+      return acc;
+    }, []);
+  }
+  
+
   async ObtenerPlatillos(load: boolean = false): Promise<void> {
     try {
       this.loaded = false;
@@ -52,6 +65,8 @@ export class SelectComponent implements OnInit {
 
       if (response && response.platillos) {
         this.bebsPrp = response.platillos;
+        console.log(this.bebsPrp)
+
       } else {
         console.error('Error: Respuesta inválida');
       }

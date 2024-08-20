@@ -24,6 +24,7 @@ export class OrdnComponent implements OnInit {
 
   OrdenDetalles: any = []
   @Input() idmesa: number = 0
+  @Input() cargaactiva: boolean = true
   @Input() ordenold: any = []
 
 
@@ -62,7 +63,7 @@ export class OrdnComponent implements OnInit {
     fecha: this.funcs.obtenerFechaHoraActual()
   };
   ngOnInit() {
-
+    console.log(this.ordenold)
     this.user = this.UserServiceService.getUser()
     this.NewOrden.idmesero = this.user.id
     this.NewOrden.idsucursal = this.user.sucursales.id
@@ -86,17 +87,50 @@ export class OrdnComponent implements OnInit {
 
   async crearDetalle(detalle: any): Promise<void> {
     if (this.isprep) {
+      if (this.DetalleBebida.cantidad == 0) {
+        this.ac.presentCustomAlert("Error", "Debes agregar una cantidad")
+      }
       detalle.cantidad = this.DetalleBebida.cantidad
     }
-    if (this.ordenold.id) {
-      detalle.idorden = this.ordenold.id;
-      console.log(detalle);
-      await this.procesarDetalle(detalle); // Procesar el detalle directamente
+    console.log(detalle);
+    if (detalle.cantidad !== 0) {
+      if (this.ordenold.id) {
+        detalle.idorden = this.ordenold.id;
+        console.log(detalle);
+        await this.procesarDetalle(detalle); // Procesar el detalle directamente
+      } else {
+        await this.CrearOrden(); // Esperar a que se cree la orden
+        detalle.idorden = this.ordenold.id; // Asignar el ID de la orden creada
+        await this.procesarDetalle(detalle); // Procesar el detalle después de crear la orden
+      }
     } else {
-      await this.CrearOrden(); // Esperar a que se cree la orden
-      detalle.idorden = this.ordenold.id; // Asignar el ID de la orden creada
-      await this.procesarDetalle(detalle); // Procesar el detalle después de crear la orden
+      this.ac.presentCustomAlert("Error", "Debes agregar una cantidad")
     }
+
+  }
+
+  enviarcocina(estado: number) {
+    // if(this.detallePlatillo.cantidad == 0){
+
+    // }
+    this.ac.presentCustomAlert("Enviar a cocina", "Estas seguro de querer enviar a cocina", () => this.alterstate(estado))
+  }
+
+  async alterstate(estado: number): Promise<void> {
+    this.OrdenDetalles.estado = estado;
+    (await this.OrdenesService.ActualizarOrden(this.OrdenDetalles)).subscribe(
+      async (response: any) => {
+        if (response && response.message) {
+          window.dispatchEvent(new Event('success'));
+          await this.buscarOrden(this.OrdenDetalles.id);
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
   }
 
   private async procesarDetalle(detalle: any): Promise<void> {
@@ -209,6 +243,8 @@ export class OrdnComponent implements OnInit {
 
 
   async Select(isPlatillo: boolean, event: Event) {
+    window.dispatchEvent(new Event('carga'));
+    console.log("desactivo carga")
     const modal = await this.pop.create({
       component: SelectComponent,
       backdropDismiss: true,
@@ -238,10 +274,13 @@ export class OrdnComponent implements OnInit {
           }
         }
       }
+      window.dispatchEvent(new Event('carga'));
+      console.log("activo carga")
 
     });
     return await modal.present();
   }
+
 
   async dissmiss() {
     let id = "tomaordenmodal"
@@ -249,5 +288,6 @@ export class OrdnComponent implements OnInit {
     loading?.dismiss()
 
   }
+
 
 }

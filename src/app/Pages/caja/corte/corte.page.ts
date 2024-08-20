@@ -34,6 +34,12 @@ export class CortePage implements OnInit {
     })
   }
 
+  async handleRefresh(event: any) {
+    await this.obtenerCortesActivos();
+    await this.obtenerCortesActivos(false, false)
+    event.target.complete();
+  }
+
   //filtrado fecha y paginador
 
   registrosPorPagina: number = 5;

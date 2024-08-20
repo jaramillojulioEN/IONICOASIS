@@ -19,7 +19,8 @@ export class MeseroPage implements OnInit {
     "https://i.imgur.com/qveoNYY.png"
   ]
   mesas: any = [];
-  caja: boolean = false;
+  error: any = "Caja cerrada"
+  mensaje: any;
 
   constructor(
     private MesasService: MesasService,
@@ -77,40 +78,20 @@ export class MeseroPage implements OnInit {
 
   ngOnInit() {
     this.ObtenerMesas()
-    this.obtenerCajaActiva()
-    this.intervalId = setInterval(() => {
-      this.ObtenerMesas(false);
-      this.obtenerCajaActiva()
-    }, 5000);
-
-
     window.addEventListener('success', () => {
       this.ObtenerMesas(false)
     })
+
+    window.addEventListener('mesas', () => {
+      this.ObtenerMesas(true)
+    })
   }
 
-  async obtenerCajaActiva(load: boolean = false): Promise<void> {
-    try {
-      (await this.cortesService.CortesActivos(1, load)).subscribe(
-        async (response: any) => {
-          if (response && response.Cortes) {
-            if (response.Cortes.length > 0) {
-              this.caja = true;
-            } else {
-              this.caja = false;
-            }
-          } else {
-            console.error('Error: Respuesta inválida');
-          }
-        },
-        (error: any) => {
-          console.error('Error en la solicitud:', error);
-        }
-      );
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-    }
+  async handleRefresh(event: any) {
+    this.ObtenerMesas(true);
+    event.target.complete();
   }
+
 
   async VerOrden(data: any, titulo: string = "") {
     var modal: any = null;
@@ -139,14 +120,13 @@ export class MeseroPage implements OnInit {
   async ObtenerMesas(load: boolean = true): Promise<void> {
     (await this.MesasService.Mesas(load)).subscribe(
       async (response: any) => {
+        this.mensaje = response.message;
         if (response && response.mesas) {
           this.mesas = response.mesas;
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
+        } 
       },
       (error: any) => {
-        console.error('Error en la solicitud:', error);
+        console.error('Error en la solicitud error:', error);
       }
     );
   }

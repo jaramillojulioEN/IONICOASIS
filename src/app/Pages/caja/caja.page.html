@@ -1,7 +1,10 @@
 <app-main-header titulo="Caja"></app-main-header>
 <ion-content [fullscreen]="true" id="main-content">
-  <ion-segment [(ngModel)]="segmento" *ngIf="rol.id !==1">
-    <ion-segment-button *ngIf="caja" value="pago">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-segment [(ngModel)]="segmento"  *ngIf="rol.id!==1">
+    <ion-segment-button value="pago">
       <ion-label>Pendientes</ion-label>
     </ion-segment-button>
     <ion-segment-button value="hoy" (click)="historial()">
@@ -10,11 +13,20 @@
   </ion-segment>
 
   <ion-content *ngIf="segmento === 'pago'" class="ion-padding">
-    <div class="no-orders" *ngIf="ordenes.length === 0">
+    <div class="no-orders" *ngIf="ordenes.length === 0 && mensaje != error">
       <h3 class="ion-text-center">No hay ordenes pendientes de cobro</h3>
     </div>
 
-    <div class="ordenes" *ngIf="ordenes.length != 0">
+    <div class="no-orders" *ngIf="mensaje == error ">
+      <ion-card class="custom-card">
+        <ion-card-content>
+          <h3 class="ion-text-center">{{mensaje}}</h3>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+
+    <div class="ordenes" *ngIf="ordenes.length != 0 && mensaje != error">
       <ion-card *ngFor="let orden of ordenes">
         <ion-card-header>
           <ion-card-subtitle>ID de Orden: {{ orden.id }}</ion-card-subtitle>
@@ -39,11 +51,11 @@
         <ion-item slot="end">
           <ion-label *ngIf="rol.id !== 1">Ordenes de hoy</ion-label>
           <ion-label></ion-label>
-          <ion-button *ngIf="rol.id === 1" (click)="openFilter($event)" class="crear">
+          <ion-button (click)="openFilter($event)" class="crear">
             <ion-icon slot="start" name="filter"></ion-icon>
             <ion-label>Fecha</ion-label>
           </ion-button>
-          <ion-button  (click)="getordenes(4, true)" class="crear">
+          <ion-button (click)="getordenes(4, true)" class="crear">
             <ion-label>Recargar</ion-label>
           </ion-button>
           <ion-button style="margin-left: 8px;" color="danger" *ngIf="filtered" (click)="deletefilter()" class="crear">
@@ -57,21 +69,30 @@
               <tr>
                 <th>NO</th>
                 <th>Mesa</th>
+                <th>Atendió</th>
+                <th>Tiempo preparando</th>
                 <th>Fecha</th>
-                <th>Total</th>
+                <th colspan="2">Total</th>
               </tr>
             </thead>
             <tbody *ngIf="cobradasfilter.length !==0">
               <tr *ngFor="let cf of cobradasfilter">
                 <td>#{{cf.id}}</td>
                 <td>{{cf.mesas.descripcion}}</td>
+                <td>{{cf.usuarios.nombre}}</td>
+                <td>{{ transformarTiempo(cf.tiempo) }}</td>
                 <td>{{cf.fecha}}</td>
                 <td>${{cf.total}}</td>
+                <td class="actions-cell">
+                  <ion-button fill="clear" (click)="Opciones(cf)">
+                    <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                  </ion-button>
+                </td>
               </tr>
             </tbody>
             <tbody *ngIf="cobradasfilter.length ===0">
               <tr>
-                <td colspan="5">No se han realizado ordenes</td>
+                <td colspan="6">No se han realizado ordenes</td>
               </tr>
             </tbody>
           </table>

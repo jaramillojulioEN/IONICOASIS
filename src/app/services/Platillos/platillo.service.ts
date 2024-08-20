@@ -82,9 +82,9 @@ export class PlatilloService {
   }
 
 
-  async Platillos(loader: boolean = true, idsubcatego: number): Promise<Observable<any>> {
+  async Platillos(loader: boolean = true, idsubcatego: number, idcatego : number = 0): Promise<Observable<any>> {
     try {
-      return this.http.get<any>(`${this.server}api/Platillos/TodosPlatillos/${idsubcatego}`);
+      return this.http.get<any>(`${this.server}api/Platillos/TodosPlatillos/${idsubcatego}/${idcatego}`);
     } finally {
     }
   }

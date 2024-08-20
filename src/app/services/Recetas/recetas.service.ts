@@ -113,7 +113,7 @@ export class RecetasService {
     });
   }
   
-  async CrearReceta(data: object): Promise<Observable<any>> {
+  async CrearReceta(data: any): Promise<Observable<any>> {
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
         this.http.post<any>(`${this.server}api/Recetas/CrearReceta`, data).subscribe(
@@ -207,9 +207,9 @@ export class RecetasService {
   }
 
 
-  async Recetas(load: Boolean = true): Promise<Observable<any>> {
+  async Recetas(catego = 0, inicio = 0, fin = 0): Promise<Observable<any>> {
     try {
-      return this.http.get<any>(`${this.server}api/Recetas/TodasRecetas`);
+      return this.http.get<any>(`${this.server}api/Recetas/TodasRecetas/${catego}/${inicio}/${fin}`);
     } finally {
     }
   }

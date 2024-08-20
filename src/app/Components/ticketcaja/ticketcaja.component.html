@@ -14,6 +14,8 @@
           </ion-card-content>
         </ion-card>
         <ion-item lines="none">
+          <iframe src="" name="noneframe" style="display: none;" frameborder="0"></iframe>
+          <!-- <button (click)="imprimir('print-section')">imprimirTicket</button> -->
           <ion-label slot="start">Imprimir ticket</ion-label>
           <ion-checkbox slot="end" [(ngModel)]="imprimirTicket" slot="end"></ion-checkbox>
         </ion-item>
@@ -21,12 +23,12 @@
         <ion-button color="primary" class="crear" expand="full" (click)="cerracaja(caja)">Cerrar Caja</ion-button>
       </ion-col>
       <ion-col sm-size="12" lg-size="8">
-
         <!--ticket -->
         <div id="print-section" class="body-tt ion-margin-top">
+
           <div class="header-tt">
             <p>{{usuario.sucursales.sucursal}}</p>
-            <img src="https://i.imgur.com/fvrkb3f.png" width="150" alt="">
+            <img src="https://i.imgur.com/eOH1QhH.jpeg" width="150" alt="">
             <p>{{usuario.sucursales.direccion}}</p>
             <p>Fecha: {{fecha}}</p>
           </div>

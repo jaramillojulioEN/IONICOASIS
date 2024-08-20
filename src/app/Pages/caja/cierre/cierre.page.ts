@@ -45,16 +45,18 @@ export class CierrePage implements OnInit {
     this.obtenerCortesPasados(true)
 
     this.roles = this.us.getRol();
-    this.intervalId = setInterval(() => {
-      this.obtenerCortesPasados(false)
-      this.obtenerCortesActivos(false);
-    }, 10000);
 
     window.addEventListener('success', () => {
       this.obtenerCortesActivos(true);
       this.obtenerCortesPasados(true);
     })
 
+  }
+
+  async handleRefresh(event: any) {
+    await this.obtenerCortesActivos(true);
+    await this.obtenerCortesPasados(true)
+    event.target.complete();
   }
 
   async obtenerCortesPasados(load: boolean = true): Promise<void> {

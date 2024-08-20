@@ -13,6 +13,7 @@ export class ExistenciasComponent implements OnInit {
 
   @Input() data: any = []
   cantidad: number = 0;
+  vendidos: number = 0;
   constructor(
     private bs: BebidaService,
     private pr: ProductoServiceService,
@@ -22,6 +23,8 @@ export class ExistenciasComponent implements OnInit {
 
   ngOnInit() {
     this.cantidad = this.data.cantidad
+    console.log(this.data)
+    this.vendidos = this.data.vendidos  ? this.data.vendidos : this.data.vedidos 
   }
 
   async confirmar() {
@@ -35,7 +38,7 @@ export class ExistenciasComponent implements OnInit {
     bebida = this.data.precioventa ? true : false
     console.log(bebida)
     if (bebida) {
-      this.data.vedidos = 0;
+      this.data.vedidos = this.vendidos;
       (await this.bs.ActulizarBebida(this.data)).subscribe(
         (response: any) => {
           console.log(response);
@@ -47,7 +50,7 @@ export class ExistenciasComponent implements OnInit {
         }
       );
     } else {
-      this.data.vendidos = 0;
+      this.data.vendidos = this.vendidos;
       (await this.pr.ActulizarProducto(this.data)).subscribe(
         (response: any) => {
           console.log(response);
