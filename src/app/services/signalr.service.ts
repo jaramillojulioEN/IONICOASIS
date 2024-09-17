@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { UserServiceService } from './Users/user-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,12 +8,16 @@ export class SignalrService {
   private hubConnection: any;
   private proxy: any;
 
-  constructor() { }
+  constructor(
+
+    private us : UserServiceService
+  ) { }
 
   public startConnection(): void {
     if (!this.hubConnection) {
       // Usa $.hubConnection para crear la conexión
-      this.hubConnection = ($ as any).hubConnection('https://localhost:44397/signalR');  // URL de tu servidor ASP.NET SignalR
+      // this.hubConnection = ($ as any).hubConnection('https://localhost:44397/signalR');  URL de tu servidor ASP.NET SignalR
+      this.hubConnection = ($ as any).hubConnection(`${this.us.getServer()}/signalR`);
       this.proxy = this.hubConnection.createHubProxy('MyHub1');  // Cambia 'nombreDelHub' por el nombre de tu hub
 
       this.hubConnection.start()
