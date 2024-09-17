@@ -191,21 +191,48 @@ export class OrdenesService {
     }
   }
 
-  async OrdenesPendientes(loader: boolean = true, estado: number = 0, rol: number = 0): Promise<Observable<any>> {
+  async OrdenesPendientes(loader: boolean = true, estado: number = 0, rol: number = 0, inicio: number = 0, fin: number = 0, ids : number = 0, fecha = "1900-01-01T00:00:00.0000"): Promise<Observable<any>> {
     try {
-      return this.http.get<any>(`${this.server}api/Ordenes/TodasOrdenes/${estado}/${rol}`);
+      var user = this.UserServiceService.getUser();
+      let idsuc = ids == 0  ? user.sucursales.id : ids
+      let resquest = `${this.server}api/Ordenes/TodasOrdenes/${estado}/${rol}/${inicio}/${fin}/${idsuc}?fecha=${fecha}`
+      console.log(resquest)
+      return this.http.get<any>(resquest);
     } finally {
     }
   }
+
 
   async BuscarOrden(loader: boolean = false, id: number): Promise<Observable<any>> {
-    try {
-      console.log(id)
-      return this.http.get<any>(`${this.server}api/Ordenes/BuscarOrden/${id}`);
-    } finally {
-    }
+    return new Observable(observer => {
+      if (loader) {
+        this.loaderFunctions.StartLoader().then(() => {
+          this.http.get<any>(`${this.server}api/Ordenes/BuscarOrden/${id}`).subscribe(
+            async ordenResponse => {
+              await this.loaderFunctions.StopLoader();
+              observer.next(ordenResponse);
+              observer.complete();
+            },
+            async error => {
+              await this.loaderFunctions.StopLoader();
+              observer.error(error);
+            }
+          );
+        });
+      } else {
+        this.http.get<any>(`${this.server}api/Ordenes/BuscarOrden/${id}`).subscribe(
+          ordenResponse => {
+            observer.next(ordenResponse);
+            observer.complete();
+          },
+          error => {
+            observer.error(error);
+          }
+        );
+      }
+    });
   }
-
+  
 
 
 

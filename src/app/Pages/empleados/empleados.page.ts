@@ -9,6 +9,9 @@ import { ConsumoComponent } from 'src/app/Components/Modals/consumo/consumo.comp
 import { EmpleadosComponent } from 'src/app/Components/Modals/Empleados/empleados/empleados.component'
 import { LoaderFunctions } from 'src/functions/utils';
 import { UserServiceService } from 'src/app/services/Users/user-service.service';
+import { Calls } from 'src/functions/call';
+import { InasistenciasComponent } from 'src/app/Components/Modals/inasistencias/inasistencias.component';
+import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-empleados',
   templateUrl: './empleados.page.html',
@@ -17,27 +20,34 @@ import { UserServiceService } from 'src/app/services/Users/user-service.service'
 export class EmpleadosPage implements OnInit {
   empleados: any = []
   rol: any;
+  sucursales: any = [];
 
   constructor(
     private EmpleadosService: EmpleadosService,
     private ModalController: ModalController,
     private ac: AlertServiceService,
     private userservie: UserServiceService,
-    private popoverController: PopoverController,
+    private call: Calls,
     private fn: LoaderFunctions
   ) {
 
   }
-
-  ngOnInit() {
-
-
+  idu : any =0 
+  async ngOnInit() {
     this.rol = this.userservie.getRol();
+
+    this.sucursales = await this.call.getsucus()
+
     this.ObtenerEmpleados()
     window.addEventListener('success', () => {
       this.ModalController.dismiss()
       this.ObtenerEmpleados()
     })
+  }
+
+
+  change(){
+    this.ObtenerEmpleados(true, this.idu)
   }
 
   async handleRefresh(event: any) {
@@ -65,8 +75,8 @@ export class EmpleadosPage implements OnInit {
     return await modal.present();
   }
 
-  async ObtenerEmpleados(load: boolean = true): Promise<void> {
-    (await this.EmpleadosService.Empleados(load)).subscribe(
+  async ObtenerEmpleados(load: boolean = true, ids: any = 0): Promise<void> {
+    (await this.EmpleadosService.Empleados(load, ids)).subscribe(
       async (response: any) => {
         if (response && response.empleados) {
           this.empleados = response.empleados;
@@ -110,6 +120,8 @@ export class EmpleadosPage implements OnInit {
 
     return `${diasRestantes} días.`;
   }
+
+
 
   proximaFechaDePago(diapago: string): string {
     const diasDeLaSemana: { [key: string]: number } = {
@@ -156,9 +168,10 @@ export class EmpleadosPage implements OnInit {
     (await this.EmpleadosService.EliminarEmpleado(emp)).subscribe(
       async (response: any) => {
         if (response) {
-          this.ObtenerEmpleados(false);
+          this.ObtenerEmpleados(true);
           this.ac.presentCustomAlert("Exito", response.message)
         } else {
+          this.ac.presentCustomAlert("Error", response.message)
           console.error('Error: Respuesta inválida');
         }
       },
@@ -192,9 +205,17 @@ export class EmpleadosPage implements OnInit {
     );
   }
   detallesVisibles: { [key: number]: boolean } = {};
-  verConsumo(empleado: any) {
-    const empleadoId = empleado.id;
-    this.detallesVisibles[empleadoId] = !this.detallesVisibles[empleadoId];
+  async verConsumo(empleado: any) {
+    // const empleadoId = empleado.id;
+    // this.detallesVisibles[empleadoId] = !this.detallesVisibles[empleadoId];
+    const modal = await this.ModalController.create({
+      component: InasistenciasComponent,
+      componentProps: {
+        data: empleado,
+      },
+    });
+    return await modal.present();
+
   }
 
 
@@ -210,13 +231,17 @@ export class EmpleadosPage implements OnInit {
     }
 
     options.push(
-      { button: this.ac.btnAgregarconsumo, handler: () => this.AbrirModalConsumo(data) },
       { button: this.ac.btnConsumo, handler: () => this.verConsumo(data) },
+
+      { button: this.ac.btnAgregarconsumo, handler: () => this.AbrirModalConsumo(data) },
       { button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }
     );
 
     this.ac.configureAndPresentActionSheet(options);
   }
+
+
+  
 
   async verPropiedades(empleado: any, event: Event): Promise<void> {
     const popover = await this.ModalController.create({

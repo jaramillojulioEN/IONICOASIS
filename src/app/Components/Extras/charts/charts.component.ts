@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import Chart from 'chart.js/auto'
+import { CortesService } from 'src/app/services/cortes/cortes.service';
 
 @Component({
   selector: 'app-charts',
@@ -7,12 +8,15 @@ import Chart from 'chart.js/auto'
   styleUrls: ['./charts.component.scss'],
 })
 export class ChartsComponent implements OnInit {
+  info: any = [];
 
-  constructor() { }
+  constructor(private corteservice : CortesService) { }
   @Input() colores: string[] = []
   @Input() data: number[] = []
+  @Input() caja: any = []
   @Input() labels: string[] = []
   ngOnInit() {
+    this.ObtenerInfo();
     var chartExist = Chart.getChart("ctx");
     console.log(chartExist)
 
@@ -43,6 +47,26 @@ export class ChartsComponent implements OnInit {
       options: options
     });
     console.log(Chart.getChart("ctx"))
+  }
+
+  segmento ="ordenes"
+
+  loaded = false;
+  async ObtenerInfo(load: boolean = true): Promise<void> {
+    this.loaded = false;
+    try {
+      const response: any = await (await this.corteservice.Info(load, this.caja.id)).toPromise();
+      if (response && response.Info) {
+        this.info = response.Info;
+        console.log(this.info)
+      } else {
+        console.error('Error: Respuesta inválida');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loaded = true;
+    }
   }
 
 

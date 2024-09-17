@@ -3,6 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { MesasComponent } from 'src/app/Components/Modals/Mesas/mesas/mesas.component'
 import { MesasService } from 'src/app//services/Mesas/mesas.service'
 import { AlertServiceService } from '../../services/Alerts/alert-service.service'
+import { Calls } from 'src/functions/call';
 
 @Component({
   selector: 'app-mesas',
@@ -18,9 +19,14 @@ export class MesasPage implements OnInit {
     private MesasService: MesasService,
     private ModalController: ModalController,
     private ac: AlertServiceService,
+    private call : Calls
   ) { }
 
-  ngOnInit() {
+  sucursales: any = [];
+
+  async ngOnInit() {
+    this.sucursales = await this.call.getsucus()
+    console.log(this.sucursales)
     this.ObtenerMesas()
     window.addEventListener('success', () => {
       this.ModalController.dismiss()
@@ -28,6 +34,10 @@ export class MesasPage implements OnInit {
     })
   }
 
+  idu : any = 0
+  change(){
+    this.ObtenerMesas(true, this.idu)
+  }
   async AbrirModalMesas(id: number, titulo: string, data: any = null) {
     const modal = await this.ModalController.create({
       component: MesasComponent,
@@ -40,10 +50,10 @@ export class MesasPage implements OnInit {
     return await modal.present();
   }
 
-  async ObtenerMesas(load: boolean = true): Promise<void> {
+  async ObtenerMesas(load: boolean = true, idsu : number = 0): Promise<void> {
     this.loaded = false; 
     try {
-      const response: any = await (await this.MesasService.Mesas(load)).toPromise();
+      const response: any = await (await this.MesasService.Mesas(load, idsu)).toPromise();
   
       if (response && response.mesas) {
         this.mesas = response.mesas;

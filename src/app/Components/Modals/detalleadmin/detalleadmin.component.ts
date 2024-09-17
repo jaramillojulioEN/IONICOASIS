@@ -17,9 +17,7 @@ export class DetalleadminComponent  implements OnInit {
   @Input() ordenes : any = []
   ngOnInit() {
     this.buscarOrden();
-    // this.intervalId = setInterval(() => {
-    //   this.buscarOrden();
-    // }, 3000);
+
   }
 
   Opciones(data : any, bebida : boolean){
@@ -67,10 +65,6 @@ export class DetalleadminComponent  implements OnInit {
     }
 
   }
-
-  
-
-
 
   async buscarOrden(): Promise<void> {
     console.log("Se buscó");

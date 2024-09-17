@@ -1,4 +1,3 @@
-
 <app-main-header titulo="{{titulo}} Mesas" [isModal]="true"></app-main-header>
 
 <ion-content>
@@ -23,9 +22,13 @@
           </ion-item>
 
           <ion-item lines="none">
-            <ion-input labelPlacement="floating" [disabled]="true" label="Sucursal" name="sucursal"
+            <ion-select [(ngModel)]="mesadata.idsucursal" label="Sucursal">
+              <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">{{ sucursal.sucursal
+                }}</ion-select-option>
+            </ion-select>
+            <!-- <ion-input labelPlacement="floating" [disabled]="true" label="Sucursal" name="sucursal"
               placeholder="Sucursal" [(ngModel)]="sucursal" type="text" clearInput>
-            </ion-input>
+            </ion-input> -->
           </ion-item>
 
           <ion-button expand="full" (click)="confirmar()">Guardar</ion-button>

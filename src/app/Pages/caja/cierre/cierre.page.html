@@ -5,13 +5,22 @@
         <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
     <ion-segment [(ngModel)]="segmento" *ngIf="roles.id === 1">
-        <ion-segment-button (click)="obtenerCortesActivos(true)" value="estado">
+        <ion-segment-button (click)="obtenerCortesActivos(true, idu)" value="estado">
             <ion-label>Estado de la caja</ion-label>
         </ion-segment-button>
-        <ion-segment-button (click)="obtenerCortesPasados(true)" value="cerradas">
+        <ion-segment-button (click)="obtenerCortesPasados(true, idu)" value="cerradas">
             <ion-label>Estados pasados</ion-label>
         </ion-segment-button>
     </ion-segment>
+
+    <ion-row class="ion-padding" >
+        <ion-col size="12">
+            <ion-select fill="outline" [(ngModel)]="idu" (ionChange)="change()" label="Sucursal">
+                <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">{{ sucursal.sucursal
+                    }}</ion-select-option>
+            </ion-select>
+        </ion-col>
+    </ion-row>
 
     <div class="estado ion-padding" *ngIf="segmento === 'estado'">
         <ion-card class="custom-card" *ngIf="CorteActivo.length > 0">
@@ -78,7 +87,7 @@
             <ion-card-content>
                 <ion-text>La caja fue cerrada, contacta con el administrador para activar la caja o volver a activar la
                     pasada</ion-text>
-                <ion-button *ngIf="roles.id === 1" class="crear" (click)="Iniciar()" expand="full">Abrir
+                <ion-button  class="crear" (click)="Iniciar()" expand="full">Abrir
                     la caja</ion-button>
             </ion-card-content>
         </ion-card>

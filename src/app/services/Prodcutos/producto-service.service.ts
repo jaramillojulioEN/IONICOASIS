@@ -70,6 +70,7 @@ export class ProductoServiceService {
   }
   
   async ActulizarProducto(data: object): Promise<Observable<any>> {
+    console.log(data);
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
         this.http.put<any>(`${this.server}api/Productos/AlctualizarProducto`, data).subscribe(

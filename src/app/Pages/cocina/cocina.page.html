@@ -1,5 +1,9 @@
 <app-main-header titulo="Ordenes Pendientes"></app-main-header>
+
 <ion-content [fullscreen]="true" id="main-content">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <ion-card *ngIf="ordenes.length === 0 && loaded" class="custom-card">
     <ion-card-content>
       <h5 class="ion-text-center ion-padding">No se ha realizado ninguna orden todavia</h5>
@@ -17,7 +21,7 @@
                 <div class="notification-circle" *ngIf="notificaciones[orden.id]">+{{notificaciones[orden.id]}}</div>
               </ion-card-content>
             </ion-card>
-            <app-detalleorden [mesa]="orden.mesas" [tiempo]="tiemposTranscurridos[orden.id]" [ordenC]="orden"></app-detalleorden>
+            <app-detalleorden [tiempo]="tiemposTranscurridos[orden.id]" [ordenC]="orden"></app-detalleorden>
           </ion-card-content>
         </ion-card>
       </ion-col>

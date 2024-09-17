@@ -11,28 +11,69 @@
       <ion-label>Bebidas</ion-label>
     </ion-segment-button>
   </ion-segment>
-
+  <br>
   <div class="table-container" *ngIf="segmento === 'productos'">
     <table class="tabla" *ngIf="loaded">
       <thead>
         <tr>
           <th>Producto</th>
-          <th>Cantidad</th>
-          <th>Vendidos</th>
+          <!-- <th>Cantidad</th> -->
+          <!-- <th>Vendidos</th> -->
           <th>Categoria</th>
-          <th>Disponibles</th>
-          <th>Fecha adición</th>
+          <!-- <th>Disponibles</th> -->
+          <th>Fecha de modificación</th>
+          <th *ngFor="let suc of sucursales">Existencias {{suc.sucursal}}</th>
           <th *ngIf="rol.id === 1" colspan="2">Acciones</th>
         </tr>
       </thead>
       <tbody *ngIf="productos && productos.length !== 0">
         <tr *ngFor="let producto of productos;" class="option">
           <td>{{producto.nombre}}</td>
-          <td>{{producto.cantidad}}</td>
-          <td>{{producto.vendidos}}</td>
+          <!-- <td>{{producto.cantidad}}</td> -->
+          <!-- <td>{{producto.vendidos}}</td> -->
           <td>{{producto.categorias.categoria}}</td>
-          <td>{{producto.cantidad}}</td>
+          <!-- <td>{{producto.cantidad}}</td> -->
           <td>{{producto.fecha}}</td>
+          <!-- <td><ion-button class="crear ion-margin-top" style="margin-top: 8px;" (click)="vercantidades(producto.productosexitencias)">
+              Disponibles
+            </ion-button></td> -->
+          <td>
+            <table>
+              <thead>
+                <tr>
+                  <th>Cantidad</th>
+                  <th>Vendidos</th>
+                  <th>Disponibles</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let d of producto.productosexitencias; let i = index">
+                <tr *ngIf="i === 0">
+                  <td>{{ d.cantidad }}</td>
+                  <td>{{ d.vendidos }}</td>
+                  <td>{{ d.disponibles }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+
+          <td>
+            <table>
+              <thead>
+                <tr>
+                  <th>Cantidad</th>
+                  <th>Vendidos</th>
+                  <th>Disponibles</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let d of producto.productosexitencias; let i = index">
+                <tr *ngIf="i === 1">
+                  <td>{{ d.cantidad }}</td>
+                  <td>{{ d.vendidos }}</td>
+                  <td>{{ d.disponibles }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
           <td class="actions-cell" *ngIf="rol.id === 1">
             <ion-button fill="clear" (click)="Opciones(producto)">
               <ion-icon name="ellipsis-vertical-outline"></ion-icon>
@@ -55,23 +96,68 @@
       <thead>
         <tr>
           <th>Bebida</th>
-          <th>Cantidad</th>
-          <th>Vendidos</th>
+          <!-- <th>Cantidad</th> -->
+          <!-- <th>Vendidos</th> -->
           <th>Categoria</th>
-          <th>Disponibles</th>
-          <th>Fecha adicción</th>
+          <!-- <th>Disponibles</th> -->
+          <th>Fecha modificación</th>
+
+          <th *ngFor="let suc of sucursales">Existencias {{suc.sucursal}}</th>
+
           <th *ngIf="rol.id === 1" colspan="2">Acciones</th>
         </tr>
       </thead>
       <tbody *ngIf="BebidaArry && BebidaArry.length !== 0">
         <tr class="option" *ngFor="let bebida of BebidaArry">
           <td>{{ bebida.nombre }}</td>
-          <td>{{ bebida.cantidad }}</td>
-          <td>{{ bebida.vedidos }}</td>
+          <!-- <td>{{ bebida.cantidad }}</td> -->
+          <!-- <td>{{ bebida.vedidos }}</td> -->
           <td>{{ bebida.categorias.categoria }}</td>
-          <td>{{ bebida.cantidad }}</td>
+          <!-- <td>{{ bebida.cantidad }}</td> -->
           <td>{{ bebida.fecha }}</td>
-          <td *ngIf="rol.id === 1"  class="actions-cell">
+          <!-- <td><ion-button class="crear ion-margin-top" style="margin-top: 8px;"
+              (click)="vercantidades(bebida.bebidasexitencias)">
+              Disponibles
+            </ion-button></td> -->
+          <td>
+            <table>
+              <thead>
+                <tr>
+                  <th>Sucursal</th>
+                  <th>Cantidad</th>
+                  <th>Vendidos</th>
+                  <th>Disponibles</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let d of bebida.bebidasexitencias; let i = index">
+                <tr *ngIf="i==0">
+                  <td>{{ d.sucursales.sucursal }}</td>
+                  <td>{{ d.cantidad }}</td>
+                  <td>{{ d.vendidos }}</td>
+                  <td>{{ d.disponibles }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td>
+            <table>
+              <thead>
+                <tr>
+                  <th>Cantidad</th>
+                  <th>Vendidos</th>
+                  <th>Disponibles</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let d of bebida.bebidasexitencias; let i = index">
+                <tr *ngIf="i==1">
+                  <td>{{ d.cantidad }}</td>
+                  <td>{{ d.vendidos }}</td>
+                  <td>{{ d.disponibles }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td *ngIf="rol.id === 1" class="actions-cell">
             <ion-button fill="clear" (click)="Opciones(bebida)">
               <ion-icon name="ellipsis-vertical-outline"></ion-icon>
             </ion-button>

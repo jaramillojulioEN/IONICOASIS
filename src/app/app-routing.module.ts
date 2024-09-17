@@ -136,7 +136,11 @@ const routes: Routes = [
     loadChildren: () => import('./Pages/adminordenes/adminordenes.module').then( m => m.AdminordenesPageModule),
     canActivate: [RoleGuard],
     data: { expectedRoles: ["Administrador"] }
+  },  {
+    path: 'signalr',
+    loadChildren: () => import('./signalr/signalr.module').then( m => m.SignalrPageModule)
   },
+
 
 
 

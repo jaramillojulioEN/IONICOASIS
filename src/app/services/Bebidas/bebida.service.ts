@@ -83,9 +83,13 @@ export class BebidaService {
   }
 
 
-  async Bebidas(loader: boolean = true): Promise<Observable<any>> {
+  async Bebidas(loader: boolean = true, criterio : string = ""): Promise<Observable<any>> {
     try {
-      return this.http.get<any>(`${this.server}api/Bebidas/TodosBebidas`);
+
+      if(criterio === ""){
+        criterio = "empty"
+      }
+      return this.http.get<any>(`${this.server}api/Bebidas/TodosBebidas/${criterio}`);
     } finally {
     }
   }

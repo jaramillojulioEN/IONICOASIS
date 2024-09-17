@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 import { UserServiceService } from 'src/app/services/Users/user-service.service';
@@ -20,6 +20,8 @@ export class InicioComponent implements OnInit {
     private funciones :  LoaderFunctions
   ) { }
 
+  @Input() ids : number = 0
+
   model = {
     totalcaja: 0,
     idsucursal: 0,
@@ -33,7 +35,7 @@ export class InicioComponent implements OnInit {
   ngOnInit() {
 
     let user = this.user.getUser()
-    let idsucursal = user.idsucursal
+    let idsucursal = this.ids == 0 ? user.idsucursal : this.ids
     this.model.idsucursal = idsucursal
     this.model.fechainicio = this.funciones.obtenerFechaHoraActual()
   }

@@ -81,10 +81,22 @@ export class PlatilloService {
     });
   }
 
-
-  async Platillos(loader: boolean = true, idsubcatego: number, idcatego : number = 0): Promise<Observable<any>> {
+  async existencias(data: any): Promise<Observable<any>> {
     try {
-      return this.http.get<any>(`${this.server}api/Platillos/TodosPlatillos/${idsubcatego}/${idcatego}`);
+      var platillo = data.idreceta ? true : false;
+      console.log(platillo);
+      var user = this.user.getUser()
+      return this.http.get<any>(`${this.server}api/Platillos/Existencia/${platillo ? data.idreceta : data.id}/${user.idsucursal}/${platillo}`);
+    } finally {
+    }
+  }
+
+  async Platillos(loader: boolean = true, idsubcatego: number, idcatego: number = 0, criterio: string = ""): Promise<Observable<any>> {
+    try {
+      if (criterio === "") {
+        criterio = "empty"
+      }
+      return this.http.get<any>(`${this.server}api/Platillos/TodosPlatillos/${idsubcatego}/${idcatego}/${criterio}`);
     } finally {
     }
   }

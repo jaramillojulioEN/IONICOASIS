@@ -54,6 +54,10 @@ ion-toolbar {
   height: 110px;
 }
 
+.negrita {
+  font-weight: bold;
+}
+
 ion-content{
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none;    /* Firefox */
@@ -149,6 +153,17 @@ ion-toolbar ion-title {
   border-collapse: collapse;
   border-radius: 8px;
 }
+
+.tabla caption {
+  font-weight: bold;        /* Hace que el texto sea negrita */
+  font-size: 1.2em;         /* Tamaño de letra ligeramente mayor */
+  text-align: left;         /* Alinea el texto a la izquierda */
+  padding: 10px;            /* Añade un poco de espacio alrededor */
+  background-color: #2c507c;
+  color: white;
+  border-bottom: 2px solid #ddd; /* Añade una línea inferior */
+}
+
 
 .tabla th,
 .tabla td {

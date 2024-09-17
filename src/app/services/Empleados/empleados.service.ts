@@ -12,7 +12,7 @@ export class EmpleadosService {
   server: string;
 
   constructor(
-    private user : UserServiceService,
+    private user: UserServiceService,
     private http: HttpClient, private loaderFunctions: LoaderFunctions) {
     this.server = this.user.getServer()
   }
@@ -23,6 +23,42 @@ export class EmpleadosService {
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
         this.http.post<any>(`${this.server}api/Empleados/CrearEmpleado`, data).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+
+  async Registrartick(tkt: any): Promise<Observable<any>> {
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.post<any>(`${this.server}api/Empleados/AlterarTickets`, tkt).subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+
+  async RegistrarInasistencia(inasistencia: any): Promise<Observable<any>> {
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.post<any>(`${this.server}api/Empleados/Inasistencias`, inasistencia).subscribe(
           async response => {
             await this.loaderFunctions.StopLoader();
             observer.next(response);
@@ -54,7 +90,7 @@ export class EmpleadosService {
       });
     });
   }
-  
+
   async EliminarEmpleado(data: any): Promise<Observable<any>> {
 
     const options = {
@@ -63,7 +99,7 @@ export class EmpleadosService {
       }),
       body: data
     };
-  
+
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
         this.http.delete<any>(`${this.server}api/Empleados/EliminarEmpleado`, options).subscribe(
@@ -80,7 +116,7 @@ export class EmpleadosService {
       });
     });
   }
-  
+
   async RefactorizarConsumo(consumo: any, isdelete: boolean): Promise<Observable<any>> {
     const options = {
       headers: new HttpHeaders({
@@ -88,13 +124,13 @@ export class EmpleadosService {
       }),
       body: consumo
     };
-  
+
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
-        const request = isdelete 
+        const request = isdelete
           ? this.http.delete<any>(`${this.server}api/Empleados/EliminarConsumo`, options)
           : this.http.put<any>(`${this.server}api/Empleados/EditarConsumo`, options);
-  
+
         request.subscribe(
           async response => {
             await this.loaderFunctions.StopLoader();
@@ -109,7 +145,7 @@ export class EmpleadosService {
       });
     });
   }
-  
+
   async ActulizarEmpleado(data: any): Promise<Observable<any>> {
     console.log(data);
     return new Observable(observer => {
@@ -128,11 +164,49 @@ export class EmpleadosService {
       });
     });
   }
-  
-  
-  async Empleados(loader : boolean = true): Promise<Observable<any>> {
+
+
+  async Empleados(loader: boolean = true, ids: any = 0): Promise<Observable<any>> {
     try {
-      return this.http.get<any>(`${this.server}api/Empleados/TodosEmpleados`);
+      var user = this.user.getUser();
+
+      let idsuc = ids == 0  ? user.sucursales.id : ids
+      return this.http.get<any>(`${this.server}api/Empleados/TodosEmpleados/${idsuc}`);
+    } finally {
+    }
+  }
+
+  async Inassitencias(loader: boolean = true, ide: any = 0): Promise<Observable<any>> {
+    try {
+      return this.http.get<any>(`${this.server}api/Empleados/ObtenerInassitencias/${ide}`);
+    } finally {
+    }
+  }
+
+  async Consumos(loader: boolean = true, ide: any = 0): Promise<Observable<any>> {
+    try {
+      return this.http.get<any>(`${this.server}api/Empleados/ObtenerConsumo/${ide}`);
+    } finally {
+    }
+  }
+
+  async SalariosMes(loader: boolean = true, ide: any = 0): Promise<Observable<any>> {
+    try {
+      return this.http.get<any>(`${this.server}api/Empleados/SalarioMes/${ide}`);
+    } finally {
+    }
+  }
+
+  async Paga(loader: boolean = true, ide: any = 0): Promise<Observable<any>> {
+    try {
+      return this.http.get<any>(`${this.server}api/Empleados/ObtenerPaga/${ide}`);
+    } finally {
+    }
+  }
+
+  async tkts(loader: boolean = true, ide: any = 0): Promise<Observable<any>> {
+    try {
+      return this.http.get<any>(`${this.server}api/Empleados/Obtenertickets/${ide}`);
     } finally {
     }
   }

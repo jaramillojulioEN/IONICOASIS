@@ -2,13 +2,17 @@
 <ion-content [fullscreen]="true" id="main-content">
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
-</ion-refresher>
+  </ion-refresher>
   <div class="container">
-    <div class="ion-grid">
+    <div class="ion-grid" *ngIf="this.rol.id === 1">
       <ion-row>
-        <ion-col size-lg="11" size-sm="8"></ion-col>
+        <ion-col size-lg="11" size-sm="8"><ion-select [(ngModel)]="idu" (ionChange)="change()" label="Sucursal">
+            <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">{{ sucursal.sucursal
+              }}</ion-select-option>
+          </ion-select></ion-col>
         <ion-col size-lg="1" size-sm="4">
           <div class="header-cotainer">
+
             <ion-button (click)="AbrirModalEmpleados()" class="crear">
               <ion-icon name="add-circle-outline"></ion-icon>
               <div class="button-text">Crear</div>
@@ -17,7 +21,7 @@
         </ion-col>
       </ion-row>
     </div>
-    <div class="table-container">
+    <div class="table-container" *ngIf="empleados">
       <table class="tabla">
         <thead>
           <tr>
@@ -26,26 +30,26 @@
             <th>Días de Pago</th>
             <th>Dias restantes para pago</th>
             <th>Proxima fecha de pago</th>
-            <th>Salario base</th>
-            <th colspan="2">Salario restante</th>
+            <th *ngIf="this.rol.id === 1">Salario base</th>
+            <th></th>
           </tr>
         </thead>
-        <tbody *ngFor="let empleado of empleados" >
+        <tbody *ngFor="let empleado of empleados">
           <tr>
             <td>{{ empleado.id }}</td>
-            <td role="button" style="cursor: pointer;" (click)="verPropiedades(empleado, $event)">{{ empleado.nombrecompleto }}</td>
+            <td role="button" style="cursor: pointer;" (click)="verPropiedades(empleado, $event)">{{
+              empleado.nombrecompleto }}</td>
             <td>{{ empleado.diapago ? empleado.diapago : '-' }}</td>
             <td>{{diasrestantespago(empleado.diapago)}}</td>
             <td>{{proximaFechaDePago(empleado.diapago)}}</td>
-            <td class="ion-text-end">${{ empleado.salario ? empleado.salario : '-' }}</td>
-            <td class="ion-text-end">${{ empleado.salariores ? empleado.salariores : '-' }}</td>
+            <td  *ngIf="this.rol.id === 1" class="ion-text-end">${{ empleado.salario ? empleado.salario : '-' }}</td>
             <td class="actions-cell">
               <ion-button fill="clear" (click)="Opciones(empleado, $event)">
                 <ion-icon name="ellipsis-vertical-outline"></ion-icon>
               </ion-button>
             </td>
             <!-- <td> -->
-              <!-- <ion-button fill="clear" (click)="verConsumo(empleado)">
+            <!-- <ion-button fill="clear" (click)="verConsumo(empleado)">
                 <ion-icon name="eye-outline"></ion-icon>
               </ion-button>
               <ion-button fill="clear" (click)="AbrirModalEmpleados(empleado.id, 'Actualizar', empleado)">
@@ -64,14 +68,16 @@
               <td colspan="4"></td>
               <td *ngIf="consumo.bebidas != null">{{ consumo.bebidas.nombre }}</td>
               <td *ngIf="consumo.platillos != null">{{ consumo.platillos.nombre }}</td>
-              <td *ngIf="consumo.concepto != null && consumo.platillos == null && consumo.bebidas == null">{{ consumo.concepto }}</td>
+              <td *ngIf="consumo.concepto != null && consumo.platillos == null && consumo.bebidas == null">{{
+                consumo.concepto }}</td>
               <td>{{ consumo.cantidad }}</td>
               <td *ngIf="consumo.bebidas != null">- ${{ consumo.cantidad * consumo.bebidas.precioempleados }}</td>
               <td *ngIf="consumo.platillos != null">- ${{ consumo.cantidad * consumo.platillos.precioempleado }}</td>
-              <td *ngIf="consumo.concepto != null && consumo.platillos == null  && consumo.bebidas == null">- ${{ consumo.cantidad}}</td>
+              <td *ngIf="consumo.concepto != null && consumo.platillos == null  && consumo.bebidas == null">- ${{
+                consumo.cantidad}}</td>
             </tr>
           </ng-container>
-          
+
         </tbody>
       </table>
     </div>

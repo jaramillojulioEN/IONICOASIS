@@ -22,12 +22,13 @@ export class EmpleadosComponent implements OnInit {
     protected us: UserServiceService,
     protected empleadoservice: EmpleadosService,
     protected md: ModalController,
-    protected fn : LoaderFunctions
+    protected fn: LoaderFunctions
   ) { }
 
-  dias: string[] = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"]
-  dia : string = "Lunes"
+  dias: string[] = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+  dia: string = "Lunes"
   ngOnInit() {
+    this.getsucus()
     console.log(this.data)
     this.user = this.us.getUser()
     this.ObtenerRoles();
@@ -63,6 +64,25 @@ export class EmpleadosComponent implements OnInit {
 
   }
 
+  sucursales: any = [];
+
+  getsucus(): void {
+    this.us.Sucursales().subscribe(
+      (response: any) => {
+        if (response && response.sucursales) {
+          this.sucursales = response.sucursales;
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      },
+      () => {
+        console.log("just loaded")
+      }
+    );
+  }
   // convertirFecha(fechaStr: string): string {
   //   const fecha = new Date(fechaStr);
 
@@ -97,6 +117,8 @@ export class EmpleadosComponent implements OnInit {
 
     }
   }
+
+
 
   async Guardar() {
     this.Usuario.contraseña = this.contrasena

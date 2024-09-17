@@ -12,7 +12,14 @@
       <ion-label>Cortes Pasados</ion-label>
     </ion-segment-button>
   </ion-segment>
-
+  <ion-row class="ion-padding">
+    <ion-col size="12">
+      <ion-select fill="outline" [(ngModel)]="idu" (ionChange)="change()" label="Sucursal">
+        <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">{{ sucursal.sucursal
+          }}</ion-select-option>
+      </ion-select>
+    </ion-col>
+  </ion-row>
 
   <div class="container" *ngIf="segmento==='curso'">
     <div class="ion-grid" *ngIf="rol.id !== 1">

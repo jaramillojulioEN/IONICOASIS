@@ -22,6 +22,31 @@ export class LavadoService {
 
     }
   }
+  async Eliminar(data: any): Promise<Observable<any>> {
+
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: data
+    };
+
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.delete<any>(`${this.server}api/Servicios/EliminarLavado`, options).subscribe(
+          async deletedResponse => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(deletedResponse);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
 
   async Servicios(loader: boolean = true): Promise<Observable<any>> {
     try {
@@ -30,9 +55,11 @@ export class LavadoService {
     }
   }
 
-  async lavados(estado: number, loader: boolean = true): Promise<Observable<any>> {
+  async lavados(estado: number, loader: boolean = true, ids = 0): Promise<Observable<any>> {
     try {
-      return this.http.get<any>(`${this.server}api/Servicios/Lavados/${estado}`);
+      var user = this.UserServiceService.getUser();
+      let idsuc = ids == 0  ? user.sucursales.id : ids
+      return this.http.get<any>(`${this.server}api/Servicios/Lavados/${estado}/${idsuc}`);
     } finally {
     }
   }
@@ -45,6 +72,27 @@ export class LavadoService {
       console.log(data)
       loaderPromise.then(() => {
         this.http.post<any>(`${this.server}api/Servicios/AccionesServicio`, data).subscribe(
+          async response => {
+            if (load) await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            if (load) await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+
+
+  async CobrarLIsta(data: any, load: boolean = true): Promise<Observable<any>> {
+    return new Observable(observer => {
+      const loaderPromise = load ? this.loaderFunctions.StartLoader() : Promise.resolve();
+      console.log(data)
+      loaderPromise.then(() => {
+        this.http.post<any>(`${this.server}api/Servicios/Multiple`, data).subscribe(
           async response => {
             if (load) await this.loaderFunctions.StopLoader();
             observer.next(response);

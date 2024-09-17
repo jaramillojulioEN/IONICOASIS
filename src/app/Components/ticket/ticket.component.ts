@@ -4,6 +4,7 @@ import { AlertServiceService } from 'src/app/services/Alerts/alert-service.servi
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { ModalController } from '@ionic/angular';
 import { LavadoService } from 'src/app/services/Lavado/lavado.service';
+import { Calls } from 'src/functions/call';
 @Component({
   selector: 'app-ticket',
   templateUrl: './ticket.component.html',
@@ -18,6 +19,8 @@ export class TicketComponent implements OnInit {
     private ac: AlertServiceService,
     private UserServiceService: UserServiceService,
     private md: ModalController,
+    protected call: Calls,
+    private OrdenesService: OrdenesService
   ) { }
   imprimirTicket: boolean = true;
   usuario: any = this.UserServiceService.getUser()
@@ -26,15 +29,18 @@ export class TicketComponent implements OnInit {
   serecibe: number = 0;
   cambio: number = 0;
   lavadoenorden: boolean = false
+
+
   ccambio(): void {
-    let total = this.lavado.length != 0 ? this.lavado.total : this.orden.total
-    total += this.lavagregado ? this.lavagregado.total : 0
+    let total = this.lavado.length != 0 ? this.obtenerTotal() : this.ordentotal(this.orden)
     if (total > this.serecibe) {
       this.ac.presentCustomAlert("Error", "Efectivo recibido insuficiente para pagar, faltan: " + (total - this.serecibe))
     } else {
       this.cambio = this.serecibe - total
     }
   }
+
+
   async ticket(): Promise<void> {
     console.log(this.lavagregado)
     if (this.serecibe == 0 || this.serecibe == null) {
@@ -147,34 +153,65 @@ export class TicketComponent implements OnInit {
   //   console.log(base64PrintContents);
   // }
 
-  async cobrarl(print :boolean = true): Promise<void> {
+  lavadosSeleccionados: any[] = []; // Array para almacenar los lavados seleccionados
 
-    if(this.imprimirTicket && print){
+  // Método para manejar la selección de lavados
+  agregarLavados(event: any) {
+    // Actualiza lavadosSeleccionados con los valores seleccionados
+    this.lavadosSeleccionados = event.detail.value;
+    console.log(this.lavadosSeleccionados)
+
+
+  }
+
+  ordentotal(orden: any) {
+    var total = orden.total;
+
+    if(this.lavadosSeleccionados.length > 0){
+      this.lavadosSeleccionados.forEach(element => {
+        total += element.total;
+      });
+    }
+
+    return total;
+  }
+
+  async cobrarl(print: boolean = true): Promise<void> {
+
+    if (this.imprimirTicket && print) {
       this.imprimir("print-section")
     }
 
-
-    this.lavado.estado = 2;
-    if (this.lavagregado) {
-      this.lavagregado.estado = 2
+    if(this.lavado.length >0){
+      this.lavado.forEach((lav: any) => {
+        lav.estado = 2
+      });
     }
+    
+
+
+    if (this.lavadosSeleccionados.length > 0) {
+      this.lavado = this.lavadosSeleccionados;
+    }
+
 
     let body: any = {
       tipoEntidad: "lavado",
-      entidad: !this.lavagregado ? this.lavado : this.lavagregado
+      entidad: this.lavado
     };
-    let load = this.lavagregado ? false : true;
-    (await this.lav.CrearLavado(body, load)).subscribe(
+
+
+
+    let load = this.lavadosSeleccionados.length > 0 ? false : true;
+    (await this.lav.CobrarLIsta(this.lavado, load)).subscribe(
       async (response: any) => {
         if (response && response.message) {
           if (!this.lavagregado) {
             window.dispatchEvent(new Event('success'));
             this.ac.presentCustomAlert("Alerta", response.message)
           }
-
-          this.lavado = undefined
-          this.lavagregado = undefined
           this.obtenerLavados(1, false)
+          this.md.dismiss()
         } else {
           console.error('Error: Respuesta inválida');
         }
@@ -186,14 +223,21 @@ export class TicketComponent implements OnInit {
   }
 
 
-  Eliminar() {
-    this.ac.presentCustomAlert("Eliminar", "Estas seguro de querer eliminar este coche de esta orden?", () => this.confirmdelte())
+  Eliminar(lavagregado :any) {
+    this.ac.presentCustomAlert("Eliminar", "Estas seguro de querer eliminar este coche de esta orden?", () => this.confirmdelete(lavagregado))
   }
 
-  async confirmdelte(): Promise<void> {
-    console.log(this.lavagregado)
-    this.lavagregado = undefined
+  async confirmdelete(lavagregado: any): Promise<void> {
+    // Encuentra el índice del elemento a eliminar
+    const index = this.lavadosSeleccionados.indexOf(lavagregado);
+    if (index > -1) {
+      // Elimina el elemento en el índice encontrado
+      this.lavadosSeleccionados.splice(index, 1);
+    }
+
+    console.log(this.lavadosSeleccionados)
   }
+  
 
   async cobrar(): Promise<void> {
 
@@ -202,7 +246,10 @@ export class TicketComponent implements OnInit {
     }
 
 
-    if (this.lavagregado) {
+    if (this.lavadosSeleccionados.length > 0) {
+      this.lavadosSeleccionados.forEach(element => {
+        element.estado = 2
+      });
       this.cobrarl(false);
     }
 
@@ -237,10 +284,38 @@ export class TicketComponent implements OnInit {
 
   @Input() orden: any = []
   @Input() lavado: any = []
+
   ngOnInit() {
-    console.log(this.lavagregado)
+    console.log(this.lavado)
     this.obtenerLavados()
+    this.buscarOrden()
   }
+
+
+  obtenerTotal() {
+    var total = 0;
+    this.lavado.forEach((element: any) => {
+      total += element.total;
+    });
+    return total;
+  }
+
+
+  async buscarOrden(): Promise<void> {
+    (await this.OrdenesService.BuscarOrden(true, this.orden.id)).subscribe(
+      async (response: any) => {
+        if (response && response.orden) {
+          this.orden = response.orden
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
+  }
+
 
   async obtenerLavados(estado: number = 1, load: boolean = true): Promise<void> {
     (await this.lav.lavados(estado, load)).subscribe(

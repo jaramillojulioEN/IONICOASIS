@@ -43,11 +43,10 @@
       Terminar Orden
       <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
     </ion-button>
+    <p class="ion-text-center" [ngStyle]="{'font-size.px': (rol.id === 4 ? 20 : null)}">
+      <strong>{{orden.mesas.descripcion}}</strong></p>
+
     <div class="order-details">
-      <div class="order-info">
-        <h3 class="section-header">Detalle de la mesa</h3>
-        <p><strong>{{mesa.descripcion}}</strong></p>
-      </div>
       <div class="order-section">
         <ion-button (click)="AgregarAOrden(orden)" *ngIf="rol.id!==4" slot="end" color="primary">
           Añadir detalles a la orden
@@ -70,10 +69,12 @@
           <div class="order-item" *ngFor="let platillo of orden.ordenesplatillos">
             <div class="{{platillo.estado === 2 ? 'tachado' : 'letra'}} info" style="padding: 10px; font-size: 150px;"
               [ngStyle]="{'background-color': (platillo.estado === 1) ? '#2c507c' : '#fff','color': (platillo.estado === 1) ? '#fff' : '#000'}">
-              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 40 : null)}"><strong>{{ platillo.platillos.nombre
+              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 40 : null)}"><strong>{{ platillo.cantidad }} X {{
+                  platillo.platillos.nombre
                   }}</strong></p>
-              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 40 : null)}">Cantidad: {{ platillo.cantidad }}</p>
-              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 40 : null)}">Observaciones: {{ platillo.observaciones }}
+              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 40 : null)}"
+                *ngIf="platillo.observaciones !== '' && platillo.observaciones !== null">
+                Observaciones: {{ platillo.observaciones }}
               </p>
               <div class="button-container">
                 <ion-button style="margin-top: -290px;" fill="clear" (click)="Opciones(platillo, true)">

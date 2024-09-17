@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { Howl, Howler } from 'howler';
 import { CortesService } from 'src/app/services/cortes/cortes.service';
 import { LoaderFunctions } from 'src/functions/utils';
+import { SignalrService } from 'src/app/services/signalr.service';
 
 interface Timer {
   id: number;
@@ -20,7 +21,7 @@ interface Timer {
   styleUrls: ['./cocina.page.scss'],
 })
 export class CocinaPage implements OnInit {
-  ordenes: any = [];
+  ordenes: any[] = [];
   intervalId: any | undefined;
 
 
@@ -38,19 +39,19 @@ export class CocinaPage implements OnInit {
     private ModalController: ModalController,
     private ac: AlertServiceService,
     private cortesService: CortesService,
-    private fn: LoaderFunctions
+    private fn: LoaderFunctions,
+    private signalRService : SignalrService
   ) {
-    this.startCleaningInterval();
     this.sound = new Howl({
       src: ['assets/audio/file.mp3']
     });
   }
 
-  private startCleaningInterval(): void {
-    this.intervalId = setInterval(() => {
-      this.clearNotifications();
-    }, 20000);
-  }
+  // private startCleaningInterval(): void {
+  //   this.intervalId = setInterval(() => {
+  //     this.clearNotifications();
+  //   }, 20000);
+  // }
 
   // Limpia el elemento 'notificaciones' del localStorage
   private clearNotifications(): void {
@@ -65,6 +66,14 @@ export class CocinaPage implements OnInit {
     if (!this.loaded) {
       this.ObtenerOrdenes(true)
     }
+
+    this.signalRService.startConnection();
+
+    // Añade un listener para escuchar el evento 'Modificaciones' desde el servidor
+    this.signalRService.addListener('OrdenesModificadasCocina', (ordenes: any[]) => {
+      console.log('Órdenes modificadas recibidas del servidor: ', ordenes);
+      this.ordenes = ordenes;  // Almacena las órdenes modificadas en el array
+    });
 
     window.addEventListener('success', () => {
       this.ObtenerOrdenes();
@@ -96,6 +105,11 @@ export class CocinaPage implements OnInit {
 
     })
 
+  }
+
+  async handleRefresh(event: any) {
+    this.ngOnInit();
+    event.target.complete();
   }
 
   getEstado(estado: number): string {
@@ -167,6 +181,7 @@ export class CocinaPage implements OnInit {
     }
   }
 
+
   tiemposTranscurridos: { [id: string]: number } = {}; // Objeto para guardar tiempos transcurridos en segundos por id
 
   updateTimer(orden: any): string {
@@ -186,7 +201,6 @@ export class CocinaPage implements OnInit {
     const minutes = Math.floor((diffInSeconds % 3600) / 60);
     const seconds = Math.floor(diffInSeconds % 60);
 
-    // Formatear horas, minutos y segundos a dos dígitos
     const tiempoFormateado = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     return tiempoFormateado;
   }
@@ -205,17 +219,17 @@ export class CocinaPage implements OnInit {
     return horas * 60 * 60 * 1000; // 1 hora = 60 minutos = 60 segundos = 1000 milisegundos
   }
 
-  Getestimandos(orden: any): any {
-    let tiempototal = 0;
-    const fechaorden = new Date(orden.fecha);
-    orden.ordenesplatillos.forEach((element: any) => {
-      tiempototal += element.platillos.recetas.tiempopreparacion;
-    });
-    fechaorden.setMinutes(fechaorden.getMinutes() + tiempototal);
-    const horaEntrega =
-      fechaorden.getHours() + ':' +
-      (fechaorden.getMinutes() <= 9 ? '0' + fechaorden.getMinutes() : fechaorden.getMinutes());
-    return [tiempototal, horaEntrega];
-  }
+  // Getestimandos(orden: any): any {
+  //   let tiempototal = 0;
+  //   const fechaorden = new Date(orden.fecha);
+  //   orden.ordenesplatillos.forEach((element: any) => {
+  //     tiempototal += element.platillos.recetas.tiempopreparacion;
+  //   });
+  //   fechaorden.setMinutes(fechaorden.getMinutes() + tiempototal);
+  //   const horaEntrega =
+  //     fechaorden.getHours() + ':' +
+  //     (fechaorden.getMinutes() <= 9 ? '0' + fechaorden.getMinutes() : fechaorden.getMinutes());
+  //   return [tiempototal, horaEntrega];
+  // }
 
 }

@@ -17,9 +17,6 @@ export class PasadoPage implements OnInit {
 
   ngOnInit() {
     this.ObtenerOrdenes()
-    this.intervalId = setInterval(() => {
-      this.ObtenerOrdenes(false);
-    }, 6000);
   }
 
 

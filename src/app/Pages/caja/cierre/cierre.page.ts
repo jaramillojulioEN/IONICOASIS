@@ -7,6 +7,7 @@ import { InicioComponent } from 'src/app/Components/Modals/inicio/inicio.compone
 import { LoaderFunctions } from 'src/functions/utils';
 import { UserServiceService } from 'src/app/services/Users/user-service.service';
 import { TicketcajaComponent } from 'src/app/Components/ticketcaja/ticketcaja.component'
+import { Calls } from 'src/functions/call';
 @Component({
   selector: 'app-cierre',
   templateUrl: './cierre.page.html',
@@ -31,40 +32,50 @@ export class CierrePage implements OnInit {
 
   loaded1: boolean = false
   loaded2: boolean = false
+  sucursales: any = [];
 
   constructor(private cortesService: CortesService,
     private ac: AlertServiceService,
     private md: ModalController,
     private us: UserServiceService,
-
+    private call: Calls,
     private functiosn: LoaderFunctions
   ) { }
 
-  ngOnInit() {
-    this.obtenerCortesActivos(true);
-    this.obtenerCortesPasados(true)
+  async ngOnInit() {
+    var user = this.us.getUser();
+    this.idu = this.idu == 0 ? user.idsucursal : this.idu
+    this.sucursales = await this.call.getsucus()
+    this.obtenerCortesActivos(true, this.idu);
+    this.obtenerCortesPasados(true, this.idu)
 
     this.roles = this.us.getRol();
 
     window.addEventListener('success', () => {
-      this.obtenerCortesActivos(true);
-      this.obtenerCortesPasados(true);
+      this.obtenerCortesActivos(true, this.idu);
+      this.obtenerCortesPasados(true, this.idu);
     })
 
   }
 
+  idu: any = 0
+  change() {
+    this.obtenerCortesActivos(true, this.idu);
+    this.obtenerCortesPasados(true, this.idu);
+  }
+
   async handleRefresh(event: any) {
-    await this.obtenerCortesActivos(true);
-    await this.obtenerCortesPasados(true)
+    await this.obtenerCortesActivos(true, this.idu);
+    await this.obtenerCortesPasados(true, this.idu)
     event.target.complete();
   }
 
-  async obtenerCortesPasados(load: boolean = true): Promise<void> {
+  async obtenerCortesPasados(load: boolean = true, idu: number = 0): Promise<void> {
     if (load) {
       this.loaded1 = false
     }
     try {
-      const response: any = await (await this.cortesService.CortesActivos(2, load)).toPromise();
+      const response: any = await (await this.cortesService.CortesActivos(2, load, idu)).toPromise();
 
       if (response && response.Cortes) {
         this.CortePasado = response.Cortes;
@@ -79,12 +90,12 @@ export class CierrePage implements OnInit {
   }
 
 
-  async obtenerCortesActivos(load: boolean = true): Promise<void> {
+  async obtenerCortesActivos(load: boolean = true, ids: number = 0): Promise<void> {
     if (load) {
       this.loaded2 = false
     }
     try {
-      const response: any = await (await this.cortesService.CortesActivos(1, load)).toPromise();
+      const response: any = await (await this.cortesService.CortesActivos(1, load, ids)).toPromise();
       if (response && response.Cortes) {
         this.CorteActivo = response.Cortes;
         if (this.CorteActivo.length > 0) {
@@ -113,8 +124,8 @@ export class CierrePage implements OnInit {
     (await this.cortesService.ActulizarCaja(caja)).subscribe(
       async (response: any) => {
         if (response && response.message) {
-          this.obtenerCortesActivos(true)
-          this.obtenerCortesPasados(true)
+          this.obtenerCortesActivos(true, this.idu)
+          this.obtenerCortesPasados(true, this.idu)
           this.ac.presentCustomAlert("Alerta", response.message)
         } else {
           console.error('Error: Respuesta inválida');
@@ -127,7 +138,7 @@ export class CierrePage implements OnInit {
   }
 
   Opciones(data: any, index: number) {
-    this.obtenerCortesActivos(false)
+    this.obtenerCortesActivos(false, this.idu)
     let cajaactiva = this.CorteActivo.length > 0 ? true : false
     let button: any[] = []
     if (index == 0 && !cajaactiva) {
@@ -158,6 +169,7 @@ export class CierrePage implements OnInit {
       componentProps: {
         labels: this.labels,
         data: olddata,
+        caja: cortepasado,
         colores: this.colores
       },
     });
@@ -199,6 +211,9 @@ export class CierrePage implements OnInit {
   async Iniciar(): Promise<void> {
     const modal = await this.md.create({
       component: InicioComponent,
+      componentProps: {
+        ids: this.idu
+      }
     });
     return await modal.present();
   }

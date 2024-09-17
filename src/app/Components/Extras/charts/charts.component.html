@@ -1,1 +1,74 @@
-<div style="width: 80%; text-align: center;"><canvas id="ctx"></canvas></div>
+<app-main-header [isModal]="true" titulo="Detalles de la caja"></app-main-header>
+
+<ion-content class="ion-padding">
+
+    <ion-segment [(ngModel)]="segmento">
+        <ion-segment-button value="corte">
+            <ion-label>Cortes</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="ordenes">
+            <ion-label>Ordenes</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="lav">
+            <ion-label>Lavados</ion-label>
+        </ion-segment-button>
+    </ion-segment>
+    <br>
+    <app-skeleton *ngIf="!loaded" [columns]="3" type="tabla"></app-skeleton>
+
+    <table class="tabla" *ngIf="segmento === 'corte' && loaded">
+        <caption class="ion-text-center">Cortes</caption>
+        <thead>
+            <tr>
+                <th>Concepto</th>
+                <th>Cantidad</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody *ngIf="info.CortesCaja.length > 0">
+            <tr *ngFor="let corte of info.CortesCaja">
+                <td class="ion-text-start">{{corte.concepto}}</td>
+                <td>${{corte.monto}}</td>
+                <td>{{corte.fecha}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="tabla" *ngIf="segmento === 'lav' && loaded">
+        <caption class="ion-text-center">Lavados</caption>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Total</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody *ngIf="info.LavadosCaja.length > 0 ">
+            <tr *ngFor="let lav of info.LavadosCaja">
+                <td>LAV #{{lav.id}}</td>
+                <td>${{lav.total}}</td>
+                <td>{{lav.fecha}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="tabla" *ngIf="segmento === 'ordenes' && loaded">
+        <caption class="ion-text-center">Ordenes</caption>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Total</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody *ngIf="info.OrdenesCaja.length > 0">
+            <tr *ngFor="let orden of info.OrdenesCaja">
+                <td>ORD #{{orden.id}}</td>
+                <td>${{orden.total}}</td>
+                <td>{{orden.fecha}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="width: 80%; text-align: center;"><canvas id="ctx"></canvas></div>
+
+</ion-content>

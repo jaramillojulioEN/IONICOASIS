@@ -50,7 +50,7 @@ export class AlertServiceService {
     cssClass: ''
   }
   public btnConsumo: ActionSheetButton = {
-    text: 'Ver consumo',
+    text: 'Gestionar empleado',
     handler: () => { },
     cssClass: ''
   }

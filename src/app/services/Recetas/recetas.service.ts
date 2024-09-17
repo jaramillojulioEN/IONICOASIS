@@ -207,11 +207,29 @@ export class RecetasService {
   }
 
 
-  async Recetas(catego = 0, inicio = 0, fin = 0): Promise<Observable<any>> {
+  async Recetas(catego = 0, inicio = 0, fin = 0, id = 0): Promise<Observable<any>> {
     try {
+      if(id ===0)
       return this.http.get<any>(`${this.server}api/Recetas/TodasRecetas/${catego}/${inicio}/${fin}`);
+      else
+      return this.http.get<any>(`${this.server}api/Recetas/BuscarReceta/${id}`);
     } finally {
     }
   }
 
+  async Receta(id : number): Promise<Observable<any>> {
+    try {
+      console.log(`${this.server}api/Recetas/BuscarReceta/${id}`)
+      return this.http.get<any>(`${this.server}api/Recetas/BuscarReceta/${id}`);
+    } finally {
+    }
+  }
+
+
+  async Recetasimple(id : number): Promise<Observable<any>> {
+    try {
+      return this.http.get<any>(`${this.server}api/Recetas/simplereceta/${id}`);
+    } finally {
+    }
+  }
 }

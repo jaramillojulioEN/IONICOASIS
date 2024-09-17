@@ -5,33 +5,47 @@ import { CortesService } from 'src/app/services/cortes/cortes.service';
 import { LoaderFunctions } from 'src/functions/utils';
 import { DatepickerComponent } from 'src/app/Components/Secciones/datepicker/datepicker.component'
 import { UserServiceService } from 'src/app/services/Users/user-service.service';
+import { Calls } from 'src/functions/call';
 @Component({
   selector: 'app-corte',
   templateUrl: './corte.page.html',
   styleUrls: ['./corte.page.scss'],
 })
 export class CortePage implements OnInit {
+  sucursales: any = [];
 
   constructor(
     private cortesService: CortesService,
     private userservice: UserServiceService,
     private md: ModalController,
     private funcions: LoaderFunctions,
-    private PopoverController: PopoverController
+    private PopoverController: PopoverController,
+    private call: Calls
   ) { }
 
   segmento: string = "curso"
-  loaded : boolean = false
+  loaded: boolean = false
   cortescurso: any = []
   rol: any;
-  ngOnInit() {
+  idu: number = 0
+
+  async ngOnInit() {
     this.rol = this.userservice.getRol()
+    this.sucursales = await this.call.getsucus();
+    var user = this.userservice.getUser();
+    this.idu = this.idu == 0 ? user.idsucursal : this.idu
     this.obtenerCortesActivos();
     this.obtenerCortesActivos(false, false)
+
     window.addEventListener('success', () => {
       this.obtenerCortesActivos();
       this.obtenerCortesActivos(false, false)
     })
+  }
+
+  async change() {
+    await this.obtenerCortesActivos();
+    await this.obtenerCortesActivos(false, false)
   }
 
   async handleRefresh(event: any) {
@@ -115,24 +129,23 @@ export class CortePage implements OnInit {
     return await modal.present();
   }
 
-
   async obtenerCortesActivos(load: boolean = true, activos: boolean = true): Promise<void> {
     this.loaded = false;
-  
+
     try {
-      const response: any = await (await this.cortesService.RetirosActivos(load, activos)).toPromise();
-  
+      const response: any = await (await this.cortesService.RetirosActivos(load, activos, this.idu)).toPromise();
+
       if (response && response.Cortes) {
         if (activos) {
           this.cortescurso = response.Cortes;
         } else {
           this.retiroshistorial = response.Cortes;
           this.retiroshistorialnofiltrado = response.Cortes;
-  
+
           if (this.rol.id !== 1) {
             this.retiroshistorial = this.funcions.filterbydate(this.retiroshistorialnofiltrado, this.filterdate);
           }
-  
+
           this.cargarLavadosHistorialPagina();
           console.log(this.retiroshistorial);
         }
@@ -145,7 +158,7 @@ export class CortePage implements OnInit {
       this.loaded = true;
     }
   }
-  
+
 
   async Opciones(data: any) {
 

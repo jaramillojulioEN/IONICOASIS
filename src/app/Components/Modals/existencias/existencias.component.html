@@ -5,19 +5,30 @@
       <ion-list>
 
         <ion-item lines="none">
-          <ion-input labelPlacement="floating" label="Cantidad" name="Cantidad" placeholder="Cantidad"
-            [(ngModel)]="cantidad" type="number" clearInput>
+          <ion-select [(ngModel)]="idu" (ionChange)="change()" label="Sucursal">
+            <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">{{ sucursal.sucursal
+              }}</ion-select-option>
+            <app-skeleton *ngIf="!loaded" [columns]="1" type="option"></app-skeleton>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item lines="none">
+          <ion-input labelPlacement="floating" label="Cantidad a agregar" name="Cantidad" placeholder="Cantidad"
+            [(ngModel)]="existencias.cantidad" type="number" clearInput>
           </ion-input>
         </ion-item>
 
         <ion-item lines="none">
           <ion-input labelPlacement="floating" label="Vendidos" name="Vendidos" placeholder="Vendidos"
-            [(ngModel)]="vendidos" type="number" clearInput>
+            [(ngModel)]="existencias.vendidos" type="number" clearInput>
           </ion-input>
         </ion-item>
 
-
-
+        <ion-item lines="none">
+          <ion-input labelPlacement="floating" label="Disponibles" name="Disponibles" placeholder="Disponibles"
+            [(ngModel)]="existencias.disponibles" [value]="existencias.cantidad - existencias.vendidos" type="number" clearInput>
+          </ion-input>
+        </ion-item>
         <ion-button expand="full" (click)="confirmar()">Guardar</ion-button>
       </ion-list>
     </ion-card-content>

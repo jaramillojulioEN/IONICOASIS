@@ -33,9 +33,9 @@
           </ion-grid>
         </div>
 
-        <div class="item-container" *ngIf="lavagregado">
+        <div class="item-container" *ngIf="lavadosSeleccionados.length > 0">
           <ion-grid>
-            <ion-row>
+            <ion-row *ngFor="let lavagregado of lavadosSeleccionados">
               <ion-col size="12">
                 {{lavagregado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}
               </ion-col>
@@ -44,12 +44,17 @@
                   <ion-col size="5">
                     <h2 class="bebida-nombre">{{det.Servicios.nombre_servicio}}</h2>
                   </ion-col>
-                  <ion-col size="7">
+                  <ion-col size="5">
                     <h2 class="bebida-cantidad ion-text-end">$ {{det.Servicios.precio}}</h2>
                   </ion-col>
+                  <ion-col size="2" class="ion-text-end">
+                    <ion-button color="danger" size="small" (click)="Eliminar(lavagregado)">
+                      <ion-icon slot="icon-only" name="trash"></ion-icon>
+                    </ion-button>
+                  </ion-col>
                 </ion-row>
-                <ion-button color="danger" class="crear" (click)="Eliminar()" expand="full">Eliminar</ion-button>
               </ion-col>
+
             </ion-row>
           </ion-grid>
         </div>
@@ -58,18 +63,19 @@
         <div class="item-container" *ngIf="lavadospendientes.length >0">
           <ion-label *ngIf="!lavadoenorden">¿Agregar lavado a la orden?</ion-label>
           <ion-checkbox *ngIf="!lavadoenorden" [(ngModel)]="lavadoenorden"></ion-checkbox>
-          <ion-select *ngIf="lavadoenorden" [(ngModel)]="lavagregado" interface="action-sheet"
-            placeholder="Lavado a cobrar">
+          <ion-select *ngIf="lavadoenorden" [(ngModel)]="lavagregado" placeholder="Lavado a cobrar" [multiple]="true"
+            (ionChange)="agregarLavados($event)">
             <ion-select-option *ngFor="let pend of lavadospendientes" [value]="pend">
               {{ pend.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo }} - {{ pend.fecha }}
             </ion-select-option>
           </ion-select>
 
+
         </div>
 
         <div class="total-container">
           <ion-label class="ion-text-end total-label">
-            <h5>Total: ${{ lavagregado ? orden.total + lavagregado.total : orden.total }}</h5>
+            <h5>Total: ${{ ordentotal(orden) }}</h5>
           </ion-label>
         </div>
 
@@ -87,8 +93,9 @@
         <ion-card-title>Detalles del Lavado</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <div class="lavado-detalle">
+        <div class="lavado-detalle" *ngFor="let lavado of lavado">
           <ion-grid>
+            <h5>#{{lavado.id}} {{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</h5>
             <ion-row *ngFor="let det of lavado.lavadodet">
               <ion-col size="5">
                 <h2 class="servicio-nombre">{{ det.Servicios.nombre_servicio }}</h2>
@@ -97,13 +104,25 @@
                 <h2 class="servicio-precio ion-text-end">$ {{ det.Servicios.precio }}</h2>
               </ion-col>
             </ion-row>
+            <ion-row>
+              <ion-col size="5">
+                <h2 class="servicio-nombre">SubTotal</h2>
+              </ion-col>
+              <ion-col size="7">
+                <h2 class="servicio-precio ion-text-end">$ {{lavado.total}}</h2>
+              </ion-col>
+            </ion-row>
+
           </ion-grid>
         </div>
-        <div class="total-container">
-          <ion-label class="ion-text-end total-label">
-            <h5>Total: ${{lavado.total}}</h5>
-          </ion-label>
-        </div>
+        <ion-row class="ion-padding">
+          <ion-col size="5">
+            <h2 class="servicio-nombre">Total</h2>
+          </ion-col>
+          <ion-col size="7">
+            <h2 class="servicio-precio ion-text-end">$ {{obtenerTotal()}}</h2>
+          </ion-col>
+        </ion-row>
         <div class="item-container">
           <ion-input style="font-size: 20px;" label="Recibo" labelPlacement="floating" [(ngModel)]="serecibe"
             (ionChange)="ccambio()" name="serecibe" type="number"></ion-input>
@@ -120,7 +139,7 @@
       <ion-row>
         <ion-col sm-size="12" lg-size="4" class="ion-margin-top ion-padding">
           <div class="item-container">
-                      <iframe src="" name="noneframe" style="display: none;" frameborder="0"></iframe>
+            <iframe src="" name="noneframe" style="display: none;" frameborder="0"></iframe>
 
             <ion-label>Cambio: ${{cambio}}</ion-label>
           </div>
@@ -159,12 +178,36 @@
                 </div>
               </div>
               <!-- <div class="item" *ngIf="lavagregado">
-                <span>{{lavagregado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</span>
+                <span>{{lavagregado.lavadodedt[0].Tipos_Vehiculos.tipo_vehiculo}}</span>
                 <span>{{lavagregado.total}}</span>
               </div> -->
               <div *ngIf="lavagregado" style="font-weight: bolder;">
                 <div>---------Lavados-------</div>
-                <div class="item" *ngFor="let det of lavagregado.lavadodet">
+                <div *ngFor="let lavagregado of lavadosSeleccionados">
+                  <div class="item">
+                    <span>LV{{lavagregado.id}} {{lavagregado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</span>
+                    <span></span>
+                  </div>
+                  <div class="item" *ngFor="let det of lavagregado.lavadodet">
+                    <span>{{det.Servicios.nombre_servicio}}</span>
+                    <span>${{det.Servicios.precio}}</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="item total">
+                <span>Total: </span>
+                <span>${{ordentotal(orden)}}</span>
+              </div>
+            </div>
+            <div class="content" *ngIf="lavado.length != 0">
+              <div *ngFor="let lavado of lavado">
+                <div class="item">
+                  <span>LV{{lavado.id}} {{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</span>
+                    <span></span>
+                </div>
+                <div class="item" *ngFor="let det of lavado.lavadodet">
                   <span>{{det.Servicios.nombre_servicio}}</span>
                   <span>${{det.Servicios.precio}}</span>
                 </div>
@@ -172,17 +215,7 @@
 
               <div class="item total">
                 <span>Total: </span>
-                <span>${{lavagregado ? orden.total + lavagregado.total : orden.total}}</span>
-              </div>
-            </div>
-            <div class="content" *ngIf="lavado.length != 0">
-              <div class="item" *ngFor="let det of lavado.lavadodet">
-                <span>LAV{{det.id}} | {{det.Servicios.nombre_servicio}}</span>
-                <span>${{det.Servicios.precio}}</span>
-              </div>
-              <div class="item total">
-                <span>Total: </span>
-                <span>${{lavado.total}}</span>
+                <span>${{obtenerTotal()}}</span>
               </div>
             </div>
             <div class="content">

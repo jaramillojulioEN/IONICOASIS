@@ -5,6 +5,11 @@
       <ion-row>
         <ion-col size="12">
           <div class="header-container">
+            <ion-select [(ngModel)]="idu" (ionChange)="change()" label="Sucursal">
+              <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">{{ sucursal.sucursal
+                }}</ion-select-option>
+              <app-skeleton *ngIf="!loaded" [columns]="1" type="option"></app-skeleton>
+            </ion-select>
             <ion-button (click)="AbrirModalMesas(0, 'Nueva')" class="crear">
               <ion-icon name="add-circle-outline"></ion-icon>
               <div class="button-text">Crear</div>
@@ -24,7 +29,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr  class="option" *ngFor="let mesa of mesas">
+          <tr class="option" *ngFor="let mesa of mesas">
             <td>{{ mesa.id }}</td>
             <td>{{ mesa.descripcion }}</td>
             <td>{{ mesa.capacidad }}</td>
@@ -40,7 +45,7 @@
           </tr>
         </tbody>
       </table>
-      <app-skeleton *ngIf="!loaded" [columns] = "5" type="table"></app-skeleton>
+      <app-skeleton *ngIf="!loaded" [columns]="5" type="table"></app-skeleton>
     </div>
   </div>
 </ion-content>

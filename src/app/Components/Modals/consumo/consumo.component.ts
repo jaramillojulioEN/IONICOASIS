@@ -105,10 +105,11 @@ export class ConsumoComponent implements OnInit {
       (response: any) => {
         window.dispatchEvent(new Event('success'));
         this.md.dismiss();
-        this.ac.presentCustomAlert("Exito", response.message)
+        this.ac.presentCustomAlert("Termino", response.message)
         this.limpiar()
       },
       (error: any) => {
+        this.ac.presentCustomAlert('Error en la solicitud:', error.message);
         console.error('Error en la solicitud:', error);
       }
     );

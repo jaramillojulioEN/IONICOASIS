@@ -4,6 +4,8 @@ import { DetalleadminComponent } from 'src/app/Components/Modals/detalleadmin/de
 import { EstadoComponent } from 'src/app/Components/Modals/estado/estado.component';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service';
+import { UserServiceService } from 'src/app/services/Users/user-service.service';
+import { Calls } from 'src/functions/call';
 
 @Component({
   selector: 'app-adminordenes',
@@ -17,16 +19,23 @@ export class AdminordenesPage implements OnInit {
   caja: boolean = true;
 
   constructor(
-    private OrdenesService : OrdenesService,
-    private ac : AlertServiceService,
-    private ModalController : ModalController
+    private OrdenesService: OrdenesService,
+    private ac: AlertServiceService,
+    private ModalController: ModalController,
+    private call: Calls,
+    private us: UserServiceService
   ) { }
 
 
-  @Input() orden : any = []
+  @Input() orden: any = []
 
 
-  ngOnInit() {
+  idu: number = 0
+  sucursales: any = []
+  async ngOnInit() {
+    this.sucursales = await this.call.getsucus();
+    var user = this.us.getUser();
+    this.idu = user.idsucursal
     window.addEventListener('success', () => {
       this.ObtenerOrdenes();
     })
@@ -36,13 +45,17 @@ export class AdminordenesPage implements OnInit {
     this.ObtenerOrdenes()
   }
 
+  change() {
+    this.ObtenerOrdenes()
+  }
+
   async handleRefresh(event: any) {
     await this.ObtenerOrdenes();
     event.target.complete();
   }
 
 
-  async alterstate(orden : any): Promise<void> {
+  async alterstate(orden: any): Promise<void> {
     orden.estado = 6;
     (await this.OrdenesService.ActualizarOrden(orden)).subscribe(
       async (response: any) => {
@@ -64,13 +77,13 @@ export class AdminordenesPage implements OnInit {
       if (load) {
         this.loaded = false;
       }
-      const response: any = await (await this.OrdenesService.OrdenesPendientes(load, 0, 1)).toPromise();      
+      const response: any = await (await this.OrdenesService.OrdenesPendientes(load, 0, 1, 0, 0, this.idu)).toPromise();
       if (response && response.ordenes) {
-        this.ordenes = response.ordenes; 
+        this.ordenes = response.ordenes;
       } else {
-        if(response.message && response.message === "Caja cerrada"){
+        if (response.message && response.message === "Caja cerrada") {
           this.caja = false
-        }else{
+        } else {
           console.error('Error: Respuesta inválida');
         }
       }
@@ -81,7 +94,7 @@ export class AdminordenesPage implements OnInit {
     }
   }
 
-  Opciones(data : any){
+  Opciones(data: any) {
     this.ac.configureAndPresentActionSheet([
       { button: this.ac.btnEliminar, handler: () => this.eliminar(data) },
       { button: this.ac.btnVerOrden, handler: () => this.VerOrden(data) },
@@ -90,16 +103,16 @@ export class AdminordenesPage implements OnInit {
     ]);
   }
 
-  eliminar(data : any){
-    this.ac.presentCustomAlert("Elimiar", "Estas seguro de querer eliminar esta orden?", ()=>this.confirmar(data))
+  eliminar(data: any) {
+    this.ac.presentCustomAlert("Elimiar", "Estas seguro de querer eliminar esta orden?", () => this.confirmar(data))
   }
 
-  async confirmar(data : any) : Promise<void>{
+  async confirmar(data: any): Promise<void> {
     this.alterstate(data)
   }
 
 
-  async cambiarEstado(orden : any) : Promise<void>{
+  async cambiarEstado(orden: any): Promise<void> {
     var modal: any = null;
     modal = await this.ModalController.create({
       component: EstadoComponent,

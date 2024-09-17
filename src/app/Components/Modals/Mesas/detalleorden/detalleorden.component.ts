@@ -7,7 +7,7 @@ import { OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.compo
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 import { LoaderFunctions } from 'src/functions/utils';
-
+import { Calls } from 'src/functions/call';
 interface Timer {
   id: number;
   elapsedTime: Date;
@@ -32,7 +32,8 @@ export class DetalleordenComponent implements OnInit {
     private userService: UserServiceService,
     private modalController: ModalController,
     private OrdenesService: OrdenesService,
-    private fn: LoaderFunctions
+    private fn: LoaderFunctions,
+    private clls: Calls
   ) { }
 
 
@@ -59,23 +60,24 @@ export class DetalleordenComponent implements OnInit {
   notificaciones: { [idorden: number]: number } = {};
   cargaactiva: boolean = true;
   ngOnInit() {
-    if (this.mesa) {
+    this.rol = this.userService.getRol();
+    if (this.mesa.length !== 0) {
       this.orden = this.mesa.ordenes[0]
-      this.buscarOrden();
+    } else {
+      this.orden = this.ordenC;
     }
-
-    const notificacionesString = localStorage.getItem("notificaciones");
-    if (notificacionesString) {
-      this.notificaciones = JSON.parse(notificacionesString)
-    }
+    this.buscarOrden();
+    this.Getestimandos();
 
 
-
+    // const notificacionesString = localStorage.getItem("notificaciones");
+    // if (notificacionesString) {
+    //   this.notificaciones = JSON.parse(notificacionesString)
+    // }
 
     window.addEventListener('success', () => {
       this.buscarOrden();
       window.dispatchEvent(new Event('mesas'));
-
     })
 
     window.addEventListener('carga', () => {
@@ -86,28 +88,12 @@ export class DetalleordenComponent implements OnInit {
       }
     })
 
-    this.rol = this.userService.getRol();
-    if (this.rol.id === 4) {
-      this.orden = this.ordenC;
-    } else {
-      this.orden = this.mesa.ordenes[0];
-    }
-    this.Getestimandos();
 
-    // if (this.rol.id !== 4) {
-    //   this.intervalId = setInterval(() => {
-    //     if (this.cargaactiva) {
-    //       this.Getestimandos();
-    //       this.buscarOrden();
-    //     }
-    //   }, 5000);
-    // }
 
   }
 
   async handleRefresh() {
     await this.buscarOrden();
-    await this.Getestimandos();
   }
 
 
@@ -128,21 +114,28 @@ export class DetalleordenComponent implements OnInit {
     await modal.present();
   }
 
-  Getestimandos(): void {
+  async Getestimandos(): Promise<void> {
     let tiempototal = 0;
     const fechaorden = new Date(this.orden.fecha);
-    this.orden.ordenesplatillos.forEach((element: any) => {
-      tiempototal += element.platillos.recetas.tiempopreparacion;
-    });
+
+    const tiempos = await Promise.all(
+      this.orden.ordenesplatillos.map(async (element: any) => {
+        const receta = await this.clls.ObtenerRecetasSimple(element.platillos.idreceta);
+        return receta.tiempopreparacion;
+      })
+    );
+
+    tiempototal = tiempos.reduce((acc, curr) => acc + curr, 0);
+
     fechaorden.setMinutes(fechaorden.getMinutes() + tiempototal);
     const horaEntrega =
       fechaorden.getHours() +
       ':' +
-      (fechaorden.getMinutes() <= 9
-        ? '0' + fechaorden.getMinutes()
-        : fechaorden.getMinutes());
+      (fechaorden.getMinutes() <= 9 ? '0' + fechaorden.getMinutes() : fechaorden.getMinutes());
+
     this.estimados = [tiempototal, horaEntrega];
   }
+
 
 
 
@@ -156,7 +149,7 @@ export class DetalleordenComponent implements OnInit {
       }
     }
     if (this.rol.id !== 2) {
-      butons.push({ button: this.ac.btnVer, handler: () => { this.VerReceta(data.platillos.recetas); } })
+      butons.push({ button: this.ac.btnVer, handler: () => { this.VerReceta(data.platillos); } })
     }
     butons.push({ button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } })
     this.ac.configureAndPresentActionSheet(butons);
@@ -233,7 +226,6 @@ export class DetalleordenComponent implements OnInit {
 
 
   async buscarOrden(): Promise<void> {
-    console.log("Se buscó");
     (await this.OrdenesService.BuscarOrden(false, this.orden.id)).subscribe(
       async (response: any) => {
         if (response && response.orden) {
@@ -241,6 +233,8 @@ export class DetalleordenComponent implements OnInit {
         } else {
           console.error('Error: Respuesta inválida');
         }
+        console.log(this.orden)
+        this.Getestimandos()
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);

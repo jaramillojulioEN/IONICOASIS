@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MesasService } from 'src/app/services/Mesas/mesas.service'
 import { AlertController, ModalController } from '@ionic/angular';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service'
+import { Calls } from 'src/functions/call';
 @Component({
   selector: 'app-mesas',
   templateUrl: './mesas.component.html',
@@ -12,34 +13,37 @@ export class MesasComponent implements OnInit {
   @Input() titulo: string = "";
   @Input() data: any = null;
   usuario: any = JSON.parse(localStorage["usuario"])
-  
-  sucursal: string = this.usuario.sucursales.sucursal
+
 
   mesadata = {
     id: this.id,
     descripcion: '',
     capacidad: 0,
-    idsucursal: this.usuario.idsucursal,
+    idsucursal: 0,
     estado: 1
   };
 
   constructor(
     private MesasService: MesasService,
     private ac: AlertServiceService,
+    private call: Calls
   ) {
 
   }
+  sucursales: any = []
+  async ngOnInit() {
+    this.sucursales = await this.call.getsucus()
 
-  ngOnInit() {
     if (this.data != null) {
       console.log(this.data)
       this.mesadata.id = this.data.id
       this.mesadata.descripcion = this.data.descripcion
       this.mesadata.capacidad = this.data.capacidad
       this.mesadata.estado = this.data.estado
+      this.mesadata.idsucursal = this.data.idsucursal
     }
   }
-  
+
   async confirmar(): Promise<void> {
     const { valido, mensaje } = this.validarMesa(this.mesadata);
     if (valido) {

@@ -10,25 +10,28 @@ import { UserServiceService } from 'src/app/services/Users/user-service.service'
 import { CortesService } from 'src/app/services/cortes/cortes.service';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 import { DetalleadminComponent } from 'src/app/Components/Modals/detalleadmin/detalleadmin.component'
+import { Calls } from 'src/functions/call';
 @Component({
   selector: 'app-caja',
   templateUrl: './caja.page.html',
   styleUrls: ['./caja.page.scss'],
 })
 export class CajaPage implements OnInit {
-  segmento: string = "pago"
-  rol: any
-  fechaActual: string = "";
-  private intervalId: any;
+  segmento: string = 'pago';
+  rol: any;
+  fechaActual: string = '';
   ordenes: any = [];
   filtered: boolean = false;
-  cobradasfilter: any = [];
   fecha: any = this.fns.obtenerFechaHoraActual();
-  cobradasnofilter: any = [];
+  cobradas: any = [];
   caja: boolean = false;
   loaded: boolean = false;
   mensaje: any;
-  error: any = "Caja cerrada"
+  error: any = 'Caja cerrada';
+  inicio: number = 0;
+  fin: number = 5;
+  totalOrdenes: number = 0;
+  fechaf: any;
 
   constructor(
     private os: OrdenesService,
@@ -36,13 +39,26 @@ export class CajaPage implements OnInit {
     private mc: ModalController,
     private fns: LoaderFunctions,
     private userservice: UserServiceService,
-    private cortesService: CortesService,
+    private call: Calls,
     private ac: AlertServiceService,
     private ModalController: ModalController
   ) { }
-
-  ngOnInit() {
+  sucursales : any = []
+  ids : number = 0
+  async ngOnInit() {
     this.start()
+    this.sucursales = await this.call.getsucus()
+    var usuario = this.userservice.getUser();
+    this.ids = usuario.idsucursal
+    window.addEventListener('success', () => {
+      this.getordenes(4, true, 0, 0);
+    })
+  }
+
+  change(){
+
+    this.getordenes(5, true, this.inicio, this.fin, this.ids);
+
   }
 
   async handleRefresh(event: any) {
@@ -51,21 +67,21 @@ export class CajaPage implements OnInit {
   }
 
   async start() {
-    this.rol = this.userservice.getRol()
-    this.segmento = this.rol.id !== 1 ? "pago" : "hoy"
+    this.rol = this.userservice.getRol();
+    this.segmento = this.rol.id !== 1 ? 'pago' : 'hoy';
     this.fechaActual = this.fns.obtenerFechaHoraActual();
+    this.inicio = 0;
+    this.fin = 5
     if (this.rol.id !== 1) {
-      this.getordenes(4, true);
+      this.getordenes(4, true, 0, 0);
     } else {
-      this.getordenes(5, true);
+      this.getordenes(5, true, this.inicio, this.fin);
     }
-    window.addEventListener('success', () => {
-      this.getordenes(4, true);
-    })
   }
-
   historial(): void {
-    this.getordenes(5)
+    this.inicio = 0;
+    this.fin = 5
+    this.getordenes(5, true, this.inicio, this.fin);
   }
 
   async openFilter(event: Event): Promise<void> {
@@ -83,11 +99,10 @@ export class CajaPage implements OnInit {
     });
     popover.onDidDismiss().then((dataReturned) => {
       if (dataReturned !== undefined) {
-        this.fecha = dataReturned.data
-        if (this.fecha != undefined && this.fecha != null) {
-          this.cobradasfilter = this.fns.filterbydate(this.cobradasnofilter, this.fecha)
-          console.log(this.cobradasfilter)
-          // this.cargarCobradasPagina();
+        this.fechaf = dataReturned.data
+        if (this.fechaf != undefined && this.fechaf != null) {
+          console.log(this.fechaf)
+          this.historial()
           this.filtered = true
         }
       }
@@ -96,20 +111,7 @@ export class CajaPage implements OnInit {
 
   }
 
-  registrosPorPagina: number = 5;
-  currentPage: number = 1;
-  totalRegistros: number = 0;
-  totalPages: number = 0;
-  filterdate: string = "";
 
-  // cargarCobradasPagina() {
-  //   this.totalRegistros = this.cobradasnofilter.length
-  //   this.totalPages = Math.ceil(this.totalRegistros / this.registrosPorPagina)
-  //   const startIndex = (this.currentPage - 1) * this.registrosPorPagina;
-  //   const endIndex = startIndex + this.registrosPorPagina;
-  //   this.cobradasfilter = this.cobradasfilter.slice(startIndex, endIndex);
-  //   console.log(this.cobradasfilter)
-  // }
 
   transformarTiempo(segundos: number): string {
     const horas = Math.floor(segundos / 3600);
@@ -126,24 +128,8 @@ export class CajaPage implements OnInit {
   }
 
 
-  deletefilter() {
-    this.historial()
-    this.filtered = false
-  }
 
-  paginaAnterior() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      // this.cargarCobradasPagina();
-    }
-  }
 
-  paginaSiguiente() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      // this.cargarCobradasPagina();
-    }
-  }
 
   async cobrarOrden(orden: any) {
     const modal = await this.mc.create({
@@ -175,32 +161,60 @@ export class CajaPage implements OnInit {
     });
     return await modal.present();
   }
-  async getordenes(estado: number, load: boolean = false): Promise<void> {
+
+
+
+
+  puedeRetroceder(): boolean {
+    return this.inicio > 0;
+  }
+
+  async retrocederOrdenes(estado: number) {
+    if (this.puedeRetroceder()) {
+      this.inicio -= this.fin;
+      await this.getordenes(estado, false, this.inicio, this.inicio + this.fin);
+    }
+  }
+  async getordenes(estado: number, load: boolean = false, inicio: number, fin: number, ids = 0): Promise<void> {
+
     if (load) {
       this.loaded = false;
     }
-
     try {
-      const response: any = await (await this.os.OrdenesPendientes(load, estado)).toPromise();
+      console.log(this.fechaf)
+      const response: any = await (await this.os.OrdenesPendientes(load, estado, this.rol.id, inicio, fin, ids, this.fechaf ? this.fechaf.toString().split("T")[0] : "1900-01-01T00:00:00.0000")).toPromise();
       this.mensaje = response.message;
+      this.totalOrdenes = response.total
+      console.log(this.totalOrdenes)
       if (response && response.ordenes != null) {
         if (estado === 4) {
           this.ordenes = response.ordenes;
         } else {
-          this.cobradasfilter = response.ordenes;
-          this.cobradasnofilter = response.ordenes;
-          if (this.rol.id !== 1 && estado === 5) {
-            this.cobradasfilter = this.fns.filterbydate(this.cobradasnofilter, this.fechaActual);
-          }
-          // this.cargarCobradasPagina();
+          this.cobradas = response.ordenes;
         }
-      } else {
       }
     } catch (error) {
       console.error('Error en la solicitud:', error);
     } finally {
       this.loaded = true;
     }
+  }
+
+  delfil(){
+    this.filtered=false;
+    this.fechaf = ""
+    this.historial();
+
+  }
+
+  async cargarMasOrdenes(estado: number) {
+    this.inicio += this.fin;
+    console.log(this.inicio)
+    await this.getordenes(estado, false, this.inicio, this.inicio + this.fin);
+  }
+
+  puedeCargarMas(): boolean {
+    return this.inicio + this.fin < this.totalOrdenes;
   }
 
 }

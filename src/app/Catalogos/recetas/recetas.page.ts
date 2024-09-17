@@ -30,7 +30,6 @@ export class RecetasPage implements OnInit {
   categorias: any = [];
 
   ngOnInit() {
-    this.ObtenerNRecetas()
     this.ObtenerCategorias();
     this.rol = this.userservice.getRol();
     this.ObtenerRecetas();
@@ -100,6 +99,7 @@ export class RecetasPage implements OnInit {
       const response: any = await (await this.RecetasService.Recetas(this.idcatego, this.incio, this.fin)).toPromise();
       if (response && response.recetas) {
         this.recetas = response.recetas;
+        this.totalItems = response.total
         this.totalPaginas = Math.ceil(this.totalItems / this.itemsPorPagina);
         console.log(this.recetas);
       } else {
@@ -112,21 +112,7 @@ export class RecetasPage implements OnInit {
     }
   }
 
-  async ObtenerNRecetas(): Promise<void> {
-    try {
-      const response: any = await (await this.RecetasService.Recetas()).toPromise();
-      if (response && response.recetas) {
-        let recet : any [] = response.recetas 
-        this.totalItems = recet.length
-        console.log(recet.length)
-      } else {
-        console.error('Error: Respuesta inválida');
-      }
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-    } finally {
-    }
-  }
+ 
 
   Opciones(data: any) {
     console.log(this.rol);

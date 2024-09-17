@@ -34,15 +34,19 @@ import { EditLavComponent } from './Modals/edit-lav/edit-lav.component'
 import {DetalleadminComponent} from 'src/app/Components/Modals/detalleadmin/detalleadmin.component'
 import {EstadoComponent} from  'src/app/Components/Modals/estado/estado.component'
 import {ReloaderComponent } from '../Components/reloader/reloader.component'
+import { CantidesComponent} from '../Components/Modals/cantides/cantides.component'
+import { InasistenciasComponent } from './Modals/inasistencias/inasistencias.component';
 @NgModule({
   declarations:
     [
       CardComponent,
+      InasistenciasComponent,
       ReloaderComponent,
       EmpleadosComponent,
       TicketcajaComponent,
       InicioComponent,
       EditLavComponent,
+      CantidesComponent,
       RetirarComponent,
       DetalleComponentReceta,
       EstadoComponent,
@@ -73,10 +77,12 @@ import {ReloaderComponent } from '../Components/reloader/reloader.component'
   exports: [
     CardComponent,
     ReloaderComponent,
+    InasistenciasComponent,
     DetalleComponentReceta,
     MainHeaderComponent,
     ConsumoComponent,
     EditLavComponent,
+    CantidesComponent,
     EstadoComponent,
     SkeletonComponent,
     DetalleadminComponent,

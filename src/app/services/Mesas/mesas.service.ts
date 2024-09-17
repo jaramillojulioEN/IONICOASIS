@@ -72,11 +72,11 @@ export class MesasService {
           updatedResponse => {
             observer.next(updatedResponse);
             observer.complete();
-            this.loaderFunctions.StopLoader(); 
+            this.loaderFunctions.StopLoader();
           },
           error => {
             observer.error(error);
-            this.loaderFunctions.StopLoader(); 
+            this.loaderFunctions.StopLoader();
           }
         );
       });
@@ -87,9 +87,14 @@ export class MesasService {
     }
   }
 
-  async Mesas(loader: boolean = true): Promise<Observable<any>> {
+  async Mesas(loader: boolean = true, iduc: number = 0): Promise<Observable<any>> {
     try {
-      return this.http.get<any>(`${this.server}api/Mesas/TodasMesas/5`);//todas las mesas excepto aquellas con etado 5
+      var user = this.user.getUser();
+
+      let idsuc = iduc == 0  ? user.sucursales.id : iduc
+      let idusuario = user.id
+      console.log(`${this.server}api/Mesas/TodasMesas/5/${idsuc}`)
+      return this.http.get<any>(`${this.server}api/Mesas/TodasMesas/5/${idsuc}/${idusuario}`);
     } finally {
     }
   }

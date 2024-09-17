@@ -64,6 +64,8 @@ export class LoaderFunctions {
         return result;
     }
 
+    
+
 
     obtenerFechaHoraActual(): string {
         const ahora = new Date();

@@ -36,9 +36,9 @@
             </ion-select>
           </ion-col>
           <ion-col size="6">
-            <ion-select [disabled]="true" fill="outline" label="Sucursal" labelPlacement="floating"
+            <ion-select fill="outline" label="Sucursal" labelPlacement="floating"
               [(ngModel)]="Usuario.idsucursal">
-              <ion-select-option [value]="user.sucursales.id">{{user.sucursales.sucursal}}</ion-select-option>
+              <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">{{sucursal.sucursal}}</ion-select-option>
             </ion-select>
           </ion-col>
         </ion-row>

@@ -10,6 +10,7 @@ import { LoaderFunctions } from 'src/functions/utils'
 import { formatDate } from '@angular/common';
 import { EditLavComponent } from 'src/app/Components/Modals/edit-lav/edit-lav.component'
 import { CortesService } from 'src/app/services/cortes/cortes.service';
+import { Calls } from 'src/functions/call';
 @Component({
   selector: 'app-lavado',
   templateUrl: './lavado.page.html',
@@ -62,13 +63,24 @@ export class LavadoPage implements OnInit {
     protected UserServiceService: UserServiceService,
     private funcs: LoaderFunctions,
     private cortesService: CortesService,
-    private md : ModalController
+    private md: ModalController,
+    private calls: Calls
   ) {
     this.fecha = this.fns.obtenerFechaHoraActual();
   }
 
-  ngOnInit() {
+  sucursales: any = []
+  idu: any = 0
+  async ngOnInit() {
     this.start();
+    this.sucursales = await this.calls.getsucus();
+    var user = this.UserServiceService.getUser()
+    this.idu = user.idsucursal
+  }
+
+  change() {
+    this.obtenerLavados(2, true, this.idu);
+
   }
 
   async handleRefresh(event: any) {
@@ -76,7 +88,7 @@ export class LavadoPage implements OnInit {
     event.target.complete();
   }
 
-  start(){
+  start() {
     this.obtenerCajaActiva()
     this.rol = this.UserServiceService.getRol()
     this.segmento = this.rol.id === 1 ? "hoy" : "pago"
@@ -93,6 +105,7 @@ export class LavadoPage implements OnInit {
     }, 5000);
     this.fechaActual = this.funcs.obtenerFechaHoraActual()
   }
+
   async Guardar(): Promise<void> {
     this.lavado.entidad.idsucursal = this.UserServiceService.getUser().idsucursal
     this.lavado.entidad.lavadodet = this.servicios
@@ -119,10 +132,13 @@ export class LavadoPage implements OnInit {
     let buttons = []
     let rol: any = this.UserServiceService.getRol()
     if (rol.rol == 1) {
-      buttons.push({ button: this.ac.btnEliminar, handler: () => this.Eliminar(data) })
     }
     else {
-      buttons.push({ button: this.ac.btncobrar, handler: () => { this.Cobrar(data); } })
+      buttons.push({ button: this.ac.btnEliminar, handler: () => this.Eliminar(data) })
+
+      var lavarray: any[] = []
+      lavarray.push(data)
+      buttons.push({ button: this.ac.btncobrar, handler: () => { this.Cobrar(lavarray); } })
       buttons.push({ button: this.ac.btnActualizar, handler: () => { this.AbrirModalLavado(data); } })
 
     }
@@ -178,11 +194,10 @@ export class LavadoPage implements OnInit {
   }
 
   loaded: boolean = false;
-  async obtenerLavados(estado: number, load: boolean = true): Promise<void> {
+  async obtenerLavados(estado: number, load: boolean = true, ids = 0): Promise<void> {
     this.loaded = false;
     try {
-      const response: any = await (await this.LavadoService.lavados(estado, load)).toPromise();
-
+      const response: any = await (await this.LavadoService.lavados(estado, load, ids)).toPromise();
       if (response && response.Lavados) {
         if (estado === 1) {
           this.lavados = response.Lavados;
@@ -219,8 +234,16 @@ export class LavadoPage implements OnInit {
       },
       backdropDismiss: true
     });
+    modal.onDidDismiss().then(() => {
+      this.accionAlCerrarModal(); // Llama a la función que quieres ejecutar al cerrar el modal
+    });
     return await modal.present();
 
+  }
+
+  accionAlCerrarModal() {
+    this.selectedLavados = []
+    
   }
 
   async openFilter(event: Event): Promise<void> {
@@ -251,7 +274,47 @@ export class LavadoPage implements OnInit {
   }
 
   async Eliminar(lavado: any): Promise<void> {
+    this.ac.presentCustomAlert("Estás seguro?", "Este lavado se eliminará", () => this.ConfirmDelete(lavado))
+  }
 
+  selectedLavados: any[] = [];
+
+  // Method to handle checkbox selection
+  toggleSelection(lavado: any) {
+
+
+
+    if (lavado.selected) {
+      this.selectedLavados.push(lavado);
+    } else {
+      this.selectedLavados = this.selectedLavados.filter(l => l.id !== lavado.id);
+    }
+
+
+  
+
+  }
+
+  multuple(){
+    console.log(this.selectedLavados)
+    this.Cobrar(this.selectedLavados)
+  }
+
+  async ConfirmDelete(lavado: any): Promise<void> {
+    console.log(lavado);
+    (await this.LavadoService.Eliminar(lavado)).subscribe(
+      async (response: any) => {
+        if (response) {
+          this.obtenerLavados(1, false);
+          this.ac.presentCustomAlert("Exito", response.message)
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
   }
 
   async obtenerServicios(): Promise<void> {

@@ -1,0 +1,240 @@
+<app-main-header [titulo]="data.nombrecompleto" [isModal]="true"></app-main-header>
+<ion-content class="main" id="main-content">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-segment [(ngModel)]="segmento">
+    <ion-segment-button value="inasistencias">
+      <ion-label>Inasistencias</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="consumos">
+      <ion-label>Consumos</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="tickets">
+      <ion-label>Tickets</ion-label>
+    </ion-segment-button>
+    <ion-segment-button *ngIf="rol.id === 1" value="salarios">
+      <ion-label>Salarios</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+
+  <ion-card class="custom-card" *ngIf="segmento !== 'salarios'">
+    <ion-card-content>
+      <h5 *ngIf="rol.id===1">Pagar: {{salariorestante | number:'1.2-2'}}</h5>
+      <h5>Deuda: {{ data.salario - salariorestante | number:'1.2-2'}}</h5>
+    </ion-card-content>
+  </ion-card>
+
+  <div *ngIf="segmento === 'salarios'" class="ion-padding">
+
+
+    <ion-card class="custom-card">
+      <ion-card-content>
+        <ion-select label="Periodo" [(ngModel)]="periodoindex" (ionChange)="change()">
+          <ion-select-option *ngFor="let periodo of messalario; let i = index" [value]="i">
+            {{periodo.periodo.lunes.split("T")[0]}} - {{periodo.periodo.domingo.split("T")[0]}}
+          </ion-select-option>
+        </ion-select>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="custom-card">
+      <div *ngIf="!periodo">
+        <h5>Seleccione un periodo a pagar</h5>
+      </div>
+
+      <table class="tabla" *ngIf="periodo && periodo.inasistencias">
+        <thead>
+          <th>Numero de inasistencias</th>
+          <th>Descuento</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{periodo.inasistencias.length}}</td>
+            <td>{{totaldescuento(periodo.inasistencias)}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table class="tabla" *ngIf="periodo && periodo.inasistencias">
+        <thead>
+          <th>Concepto</th>
+          <th>Cantidad</th>
+          <th>Monto</th>
+        </thead>
+        <tbody *ngIf="periodo && periodo.consumos">
+          <tr *ngFor="let consumo of periodo.consumos">
+            <td *ngIf="consumo.concepto != null">{{consumo.concepto}}</td>
+            <td *ngIf="consumo.idbebida != null">{{consumo.bebidas.nombre}}</td>
+            <td *ngIf="consumo.idplatillo != null">{{consumo.platillos.nombre}}</td>
+            <td> {{ consumo.concepto== null ? consumo.cantidad : 1}}</td>
+            <td *ngIf="consumo.concepto != null">{{consumo.cantidad}}</td>
+            <td *ngIf="consumo.idbebida != null">{{consumo.bebidas.precioempleados}}</td>
+            <td *ngIf="consumo.idplatillo != null">{{consumo.platillos.precioempleado}}</td>
+          </tr>
+          <tr>
+            <td colspan="3" class="ion-text-end negrita">Sub total(consumos) : $-{{periodo.totalconsumo}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="tabla" *ngIf="periodo && periodo.inasistencias">
+        <tr>
+          <td class="ion-text-end negrita">Sub total(Inasistencias): -{{totaldescuento(periodo.inasistencias)}}</td>
+        </tr>
+        <tr>
+          <td class="ion-text-end negrita">Pagar: {{data.salario - periodo.totalconsumo -
+            totaldescuento(periodo.inasistencias)}}</td>
+        </tr>
+      </table>
+
+    </ion-card>
+
+
+
+
+
+  </div>
+
+  <div *ngIf="segmento === 'inasistencias'" class="ion-padding">
+    <div>
+      <table *ngIf="verifi()" style="width: 100%;">
+        <tr>
+          <td style="width: 90%; text-align: start;">Registrar inasitencia</td>
+          <td style="width: 10%;">
+            <ion-checkbox [(ngModel)]="falta"></ion-checkbox>
+          </td>
+        </tr>
+      </table>
+      <div *ngIf="falta || edit">
+        <ion-input fill="outline" label="Motivo" labelPlacement="floating"
+          [(ngModel)]="inasistencia.Motivo"></ion-input>
+        <br>
+        <ion-button *ngIf="edit" style="width: 100%;" class="btn crear" (click)="confedit()">Actulizar
+          inasistencia</ion-button>
+        <ion-button *ngIf="falta" style="width: 100%;" class="btn crear" (click)="confirmar()">Guardar
+          inasistencia</ion-button>
+      </div>
+      <br>
+    </div>
+    <div class="table-container">
+      <table class="tabla" *ngIf="loaded">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Motivo</th>
+            <th>Dia</th>
+            <th>Descuento</th>
+            <th *ngIf="rol.id === 1">acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let inasistencia of inasistencias;" class="option">
+            <td>{{inasistencia.Fecha.split("T")[0]}}</td>
+            <td>{{inasistencia.Motivo}}</td>
+            <td>{{getday(inasistencia.Fecha)}}</td>
+            <td >{{ (data.salario / 7) | number:'1.2-2' }}</td>
+            <td *ngIf="rol.id === 1">
+              <ion-button class="btn crear" (click)="editar(inasistencia)">Editar</ion-button>
+              <ion-button class="btn crear" (click)="eliminar(inasistencia)">Eliminar</ion-button>
+
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="!inasistencias || inasistencias.length === 0">
+          <tr>
+            <td colspan="3">Aún no has registrado inasistencias</td>
+          </tr>
+        </tbody>
+      </table>
+      <app-skeleton *ngIf="!loaded" [columns]="3" type="tabla"></app-skeleton>
+    </div>
+  </div>
+
+  <div *ngIf="segmento === 'tickets'" class="ion-padding ion-margin-top">
+    <div>
+      <ion-input fill="outline" label="Numero de tickets" labelPlacement="floating"
+        [(ngModel)]="ticket.ntickets"></ion-input>
+      <br>
+      <ion-button style="width: 100%;" class="btn crear ion-margin-top" (click)="enviartckt()">Alamcenar
+        tickets</ion-button>
+      <br>
+    </div>
+
+
+    <div class="table-container">
+      <table class="tabla" *ngIf="loaded">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Dia</th>
+            <th>Tickets realizados</th>
+            <th>Acciones</th> <!-- New header for actions -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tkt of tickets;" class="option">
+            <td>{{ tkt.Fecha.split('T')[0] }}</td>
+            <td>{{ getday(tkt.Fecha) }}</td>
+            <td>{{ tkt.ntickets }}</td>
+            <td>
+              <ion-button fill="outline" color="primary" (click)="editTicket(tkt)">
+                Editar
+              </ion-button>
+            </td> <!-- Edit button added -->
+          </tr>
+        </tbody>
+        <tbody *ngIf="!inasistencias || inasistencias.length === 0">
+          <tr>
+            <td colspan="4">Aún no has registrado inasistencias</td> <!-- colspan updated to match columns -->
+          </tr>
+        </tbody>
+      </table>
+      <app-skeleton *ngIf="!loaded" [columns]="3" type="tabla"></app-skeleton>
+    </div>
+
+
+  </div>
+
+  <div *ngIf="segmento === 'consumos'" class="ion-padding ion-margin-top">
+    <div class="table-container">
+      <table class="tabla" *ngIf="loaded">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Dia</th>
+            <th>Concepto</th>
+            <th>Cantidad</th>
+            <th *ngIf="rol.id === 1">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let con of consumos;" class="option">
+            <td>{{con.fecha.split("T")[0]}}</td>
+            <td>{{getday(con.fecha)}}</td>
+            <td *ngIf="con.bebidas">
+              {{con.bebidas.nombre}}
+            </td>
+            <td *ngIf="con.platillos">
+              {{con.platillos.nombre}}
+            </td>
+            <td *ngIf="con.concepto">
+              {{con.concepto}}
+            </td>
+            <td>{{ con.cantidad }}</td>
+            <td *ngIf="rol.id === 1">
+              <ion-button class="btn crear" (click)="eliminar(con)">Eliminar</ion-button>
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="!inasistencias || inasistencias.length === 0">
+          <tr>
+            <td colspan="3">Aún no has registrado inasistencias</td>
+          </tr>
+        </tbody>
+      </table>
+      <app-skeleton *ngIf="!loaded" [columns]="3" type="tabla"></app-skeleton>
+    </div>
+  </div>
+
+</ion-content>

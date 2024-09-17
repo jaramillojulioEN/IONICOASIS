@@ -12,7 +12,8 @@ export class CortesService {
   constructor(
     private UserServiceService: UserServiceService,
     private loaderFunctions: LoaderFunctions,
-    private http: HttpClient
+    private http: HttpClient,
+    private user : UserServiceService
   ) {
     this.server = this.UserServiceService.getServer()
   }
@@ -114,17 +115,26 @@ export class CortesService {
     });
   }
 
-  async CortesActivos(estado: number, loader: boolean = true): Promise<Observable<any>> {
+  async CortesActivos(estado: number, loader: boolean = true, ids = 0): Promise<Observable<any>> {
     try {
-      return this.http.get<any>(`${this.server}api/Cortes/TodosCortes/${estado}`);
+      var user = this.user.getUser();
+      let idsuc = ids == 0  ? user.sucursales.id : ids
+      return this.http.get<any>(`${this.server}api/Cortes/TodosCortes/${estado}/${idsuc}`);
     } finally {
 
     }
   }
 
-  async RetirosActivos(loader: boolean = true, activos: boolean = true): Promise<Observable<any>> {
+  async Info(loader: boolean = true, idcaja : number): Promise<Observable<any>> {
     try {
-      return this.http.get<any>(`${this.server}api/Cortes/TodosRetiros/${activos}`);
+      return this.http.get<any>(`${this.server}api/Cortes/Obtenerinfo/${idcaja}`);
+    } finally {
+    }
+  }
+
+  async RetirosActivos(loader: boolean = true, activos: boolean = true, idu : number): Promise<Observable<any>> {
+    try {
+      return this.http.get<any>(`${this.server}api/Cortes/TodosRetiros/${activos}/${idu}`);
     } finally {
     }
   }
