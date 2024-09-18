@@ -15,6 +15,34 @@ export class OrdenesService {
     this.server = this.UserServiceService.getServer()
   }
 
+  async ActualizarPlato(model: any, isplat = true): Promise<Observable<any>> {
+    model.tiempo = Math.trunc(model.tiempo || 0);
+
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        var endpoint = ""
+        if(isplat){
+          endpoint = `${this.server}api/Detalles/AlctualizarProductoDetalle`;
+        }else{
+          endpoint = `${this.server}api/Detalles/AlctualizarBebidaDetalle`;
+        }
+        this.http.put<any>(endpoint, model, {
+          headers: { 'Content-Type': 'application/json' }
+        }).subscribe(
+          async updatedResponse => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(updatedResponse);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+
   async ActualizarOrden(model: any): Promise<Observable<any>> {
     model.tiempo = Math.trunc(model.tiempo || 0);
 
