@@ -58,7 +58,16 @@
         <ion-item lines="none">
           <ion-input type="number" label="Cantidad" labelPlacement="floating" [(ngModel)]="detallePlatillo.cantidad"
             name="cantidad" required></ion-input>
+            <ion-buttons slot="end">
+              <ion-button fill="clear" (click)="decreaseQuantity(false)" style="--size: 50px;">
+                <ion-icon name="remove-circle-outline" style="font-size: 40px;"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear" (click)="increaseQuantity(false)" style="--size: 50px;">
+                <ion-icon name="add-circle-outline" style="font-size: 40px;"></ion-icon>
+              </ion-button>
+            </ion-buttons>            
         </ion-item>
+
 
         <ion-item lines="none">
           <ion-input type="text" label="Observaciones" labelPlacement="floating"
@@ -77,9 +86,20 @@
           </div>
         </ion-item>
         <ion-item lines="none">
+
           <ion-input type="number" label="Cantidad" labelPlacement="floating" [(ngModel)]="DetalleBebida.cantidad"
             name="cantidad" required></ion-input>
+          <ion-buttons slot="end">
+            <ion-button fill="clear" (click)="decreaseQuantity(true)" style="--size: 50px;">
+              <ion-icon name="remove-circle-outline" style="font-size: 40px;"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" (click)="increaseQuantity(true)" style="--size: 50px;">
+              <ion-icon name="add-circle-outline" style="font-size: 40px;"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+
         </ion-item>
+
         <ion-button expand="full" type="submit"
           (click)="crearDetalle(!isprep ? DetalleBebida : detallePlatillo)">Agregar a la orden</ion-button>
       </div>

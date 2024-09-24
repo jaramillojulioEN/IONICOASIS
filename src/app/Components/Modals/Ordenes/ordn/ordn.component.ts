@@ -47,7 +47,7 @@ export class OrdnComponent implements OnInit {
   detallePlatillo = {
     id: 0,
     idplatillo: 0,
-    cantidad: 0,
+    cantidad: 1,
     idorden: 0,
     observaciones: '',
     estado: 0,
@@ -57,7 +57,7 @@ export class OrdnComponent implements OnInit {
   DetalleBebida = {
     id: 0,
     idbebida: 0,
-    cantidad: 0,
+    cantidad: 1,
     idorden: 0,
     estado: 0,
     fecha: this.funcs.obtenerFechaHoraActual()
@@ -240,6 +240,29 @@ export class OrdnComponent implements OnInit {
   total(): number {
     return this.OrdenesService.total(this.OrdenDetalles)
   }
+
+  increaseQuantity(beb = true) {
+    if (beb)
+      this.DetalleBebida.cantidad = (this.DetalleBebida.cantidad || 0) + 1;
+    else
+    this.detallePlatillo.cantidad = (this.detallePlatillo.cantidad || 0) + 1;
+
+  }
+
+  decreaseQuantity(beb = true) {
+    if(beb){
+      if (this.DetalleBebida.cantidad > 1) {
+        this.DetalleBebida.cantidad -= 1;
+      }
+      else{
+        if (this.detallePlatillo.cantidad > 1) {
+          this.detallePlatillo.cantidad -= 1;
+        }
+      }
+    }
+
+  }
+
 
 
   async Select(isPlatillo: boolean, event: Event) {

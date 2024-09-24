@@ -36,7 +36,8 @@
           <th>Platillo</th>
           <th>cantidad</th>
           <th>Observaciones</th>
-          <th colspan="2">Precio</th>
+          <th>Precio</th>
+          <th colspan="2">Total</th>
         </tr>
       </thead>
       <tbody>
@@ -45,6 +46,7 @@
           <td>{{detallep.cantidad}}</td>
           <td>{{detallep.observaciones}}</td>
           <td>{{detallep.platillos.precio}}</td>
+          <td>{{detallep.platillos.precio * detallep.cantidad}}</td>
           <td class="actions-cell">
             <ion-button fill="clear" (click)="Opciones(detallep, false)">
               <ion-icon name="ellipsis-vertical-outline"></ion-icon>
@@ -62,7 +64,8 @@
         <tr>
           <th>Bebida</th>
           <th>cantidad</th>
-          <th colspan="2">Precio</th>
+          <th>Precio</th>
+          <th colspan="2">Total</th>
         </tr>
       </thead>
       <tbody>
@@ -70,6 +73,7 @@
           <td>{{detalleb.bebidas.nombre}}</td>
           <td>{{detalleb.cantidad}}</td>
           <td>{{detalleb.bebidas.precioventa}}</td>
+          <td>{{detalleb.bebidas.precioventa * detalleb.cantidad}}</td>
           <td class="actions-cell">
             <ion-button fill="clear" (click)="Opciones(detalleb, true)">
               <ion-icon name="ellipsis-vertical-outline"></ion-icon>

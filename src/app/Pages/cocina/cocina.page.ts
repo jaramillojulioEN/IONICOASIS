@@ -81,18 +81,15 @@ export class CocinaPage implements OnInit {
     window.addEventListener('mesas', () => {
       this.ObtenerOrdenes();
     })
-    // this.intervalId = setInterval(() => {
-    //   console.log("Se cargó despuesde 8")
-    //   if (this.cargaactiva) {
-    //     this.ObtenerOrdenes(false);
-    //   }
-    // }, 8000);
+    this.intervalId = setInterval(() => {
+      
+    }, 8000);
 
     this.intervalId2 = setInterval(() => {
       if (this.cargaactiva) {
         this.updateTimers();
       }
-    }, 1000);
+    }, 10000);
 
     window.addEventListener('desactivar', () => {
       this.cargaactiva = false;

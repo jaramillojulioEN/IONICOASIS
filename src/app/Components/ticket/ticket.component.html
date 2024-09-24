@@ -66,7 +66,7 @@
           <ion-select *ngIf="lavadoenorden" [(ngModel)]="lavagregado" placeholder="Lavado a cobrar" [multiple]="true"
             (ionChange)="agregarLavados($event)">
             <ion-select-option *ngFor="let pend of lavadospendientes" [value]="pend">
-              {{ pend.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo }} - {{ pend.fecha }}
+              {{ pend.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo }} ${{ pend.total }}
             </ion-select-option>
           </ion-select>
 
@@ -95,7 +95,7 @@
       <ion-card-content>
         <div class="lavado-detalle" *ngFor="let lavado of lavado">
           <ion-grid>
-            <h5>#{{lavado.id}} {{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</h5>
+            <h5>{{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</h5>
             <ion-row *ngFor="let det of lavado.lavadodet">
               <ion-col size="5">
                 <h2 class="servicio-nombre">{{ det.Servicios.nombre_servicio }}</h2>
@@ -185,7 +185,7 @@
                 <div>---------Lavados-------</div>
                 <div *ngFor="let lavagregado of lavadosSeleccionados">
                   <div class="item">
-                    <span>LV{{lavagregado.id}} {{lavagregado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</span>
+                    <span>{{lavagregado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</span>
                     <span></span>
                   </div>
                   <div class="item" *ngFor="let det of lavagregado.lavadodet">
@@ -204,7 +204,7 @@
             <div class="content" *ngIf="lavado.length != 0">
               <div *ngFor="let lavado of lavado">
                 <div class="item">
-                  <span>LV{{lavado.id}} {{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</span>
+                  <span>{{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</span>
                     <span></span>
                 </div>
                 <div class="item" *ngFor="let det of lavado.lavadodet">
@@ -229,6 +229,11 @@
               </div>
             </div>
             <div class="footer">
+              <p *ngIf="orden">{{orden.mesas.descripcion}}</p>
+
+              <p *ngIf="orden">Atendió:</p>
+              <p *ngIf="orden">{{orden.usuarios.nombre}}</p>
+
               <p>¡Gracias por su compra!</p>
               <p>Vuelva pronto</p>
             </div>

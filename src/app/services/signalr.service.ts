@@ -24,6 +24,8 @@ export class SignalrService {
         .done(() => console.log('Conexión a SignalR iniciada'))
         .fail((err: any) => console.error('Error al iniciar la conexión: ', err));
     }
+
+    
   }
 
   public addListener(eventName: string, callback: (data: any) => void): void {

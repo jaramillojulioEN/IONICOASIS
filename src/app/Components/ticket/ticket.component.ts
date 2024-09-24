@@ -286,7 +286,7 @@ export class TicketComponent implements OnInit {
   @Input() lavado: any = []
 
   ngOnInit() {
-    console.log(this.lavado)
+    console.log(this.orden)
     this.obtenerLavados()
     this.buscarOrden()
   }

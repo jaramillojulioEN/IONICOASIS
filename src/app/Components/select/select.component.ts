@@ -15,8 +15,11 @@ export class SelectComponent implements OnInit {
   BebidaArry: any = [];
   criterio: string = ""
   @Input() isPlatillo: boolean = true
+  @Input() preciocliente: boolean = true
   bebsPrp: any = [];
   loaded: boolean = false;;
+
+
 
   constructor(
     private PlatilloService: PlatilloService,

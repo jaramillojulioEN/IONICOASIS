@@ -93,7 +93,7 @@ export class MesasService {
 
       let idsuc = iduc == 0  ? user.sucursales.id : iduc
       let idusuario = user.id
-      console.log(`${this.server}api/Mesas/TodasMesas/5/${idsuc}`)
+      console.log(`${this.server}api/Mesas/TodasMesas/5/${idsuc}/${idusuario}`)
       return this.http.get<any>(`${this.server}api/Mesas/TodasMesas/5/${idsuc}/${idusuario}`);
     } finally {
     }

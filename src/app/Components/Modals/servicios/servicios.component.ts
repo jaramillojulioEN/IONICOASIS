@@ -74,6 +74,21 @@ export class ServiciosComponent implements OnInit {
     );
   }
 
+  async EliminarServicio(data: any) {
+    (await this.LavadoService.EliminarServicio(data)).subscribe(
+      (response: any) => {
+        if (response.message) {
+          this.ac.presentCustomAlert("Notificacion", response.message)
+          this.obtenerServicios()
+          window.dispatchEvent(new Event('success'));
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
+  }
+
   @Input() vehiculo: any = {
     id_tipo_vehiculo: 0,
     tipo_vehiculo: "",
@@ -94,7 +109,13 @@ export class ServiciosComponent implements OnInit {
       this.serviciosSeleccionados.delete(id_servicio);
       const index = this.vehiculo.Servicio_Tipo_Vehiculo.findIndex((st: any) => st.id_servicio === id_servicio);
       if (index !== -1) {
+        this.vehiculo.Servicio_Tipo_Vehiculo[index].Servicios = null
+        console.log(this.vehiculo.Servicio_Tipo_Vehiculo[index])
+
+        this.EliminarServicio(this.vehiculo.Servicio_Tipo_Vehiculo[index])
+
         this.vehiculo.Servicio_Tipo_Vehiculo.splice(index, 1);
+        
       }
     } else {
       this.serviciosSeleccionados.add(id_servicio);

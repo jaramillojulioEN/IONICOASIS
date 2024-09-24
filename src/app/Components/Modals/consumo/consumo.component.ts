@@ -69,6 +69,7 @@ export class ConsumoComponent implements OnInit {
       backdropDismiss: true,
       componentProps: {
         isPlatillo: isPlatillo,
+        preciocliente : false
       },
       translucent: true,
       event: event,

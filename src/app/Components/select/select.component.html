@@ -11,7 +11,7 @@
         <ion-grid>
           <ion-row>
             <ion-col size="6">{{ pl.nombre }}</ion-col>
-            <ion-col size="6" class="ion-text-end">${{ pl.precio }}</ion-col>
+            <ion-col size="6" class="ion-text-end">${{ preciocliente ? pl.precio : pl.precioempleado}}</ion-col>
           </ion-row>
         </ion-grid>
 
@@ -35,7 +35,7 @@
       <ion-grid>
         <ion-row>
           <ion-col size="6">{{bd.nombre}}</ion-col>
-          <ion-col size="6" class="ion-text-end">${{bd.precioventa}}</ion-col>
+          <ion-col size="6" class="ion-text-end">${{ preciocliente ?  bd.precioventa : bd.precioempleados}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
@@ -54,7 +54,7 @@
       <ion-grid>
         <ion-row>
           <ion-col size="6">{{bd.nombre}}</ion-col>
-          <ion-col size="6" class="ion-text-end">${{bd.precio}}</ion-col>
+          <ion-col size="6" class="ion-text-end">${{ preciocliente ? bd.precio  : bd.precioempleado}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
