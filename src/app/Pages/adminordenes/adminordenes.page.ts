@@ -81,11 +81,16 @@ export class AdminordenesPage implements OnInit {
       if (response && response.ordenes) {
         this.ordenes = response.ordenes;
       } else {
-        if (response.message && response.message === "Caja cerrada") {
+        console.error('Error: Respuesta inválida');
+      }
+      if (response.message) {
+        if (response.message === "Caja cerrada")
           this.caja = false
-        } else {
-          console.error('Error: Respuesta inválida');
+        else {
+          this.caja = true
         }
+      } else {
+        console.error('Error: Respuesta inválida');
       }
     } catch (error) {
       console.error('Error en la solicitud:', error);

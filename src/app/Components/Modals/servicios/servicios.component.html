@@ -36,7 +36,7 @@
           </ion-row>
         </ion-grid>
         <ion-item *ngFor="let servicio of servicios">
-          <ion-label>{{ servicio.nombre_servicio }}</ion-label>
+          <ion-label>{{ servicio.nombre_servicio }} ${{servicio.precio}} </ion-label>
           <ion-checkbox slot="end" type="checkbox" [checked]="serviciosSeleccionados.has(servicio.id_servicio)"
             (ionChange)="toggleServicio(servicio.id_servicio)">
           </ion-checkbox>
