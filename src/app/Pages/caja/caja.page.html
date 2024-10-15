@@ -25,27 +25,32 @@
       </ion-card>
     </div>
 
-    <ion-grid>
-      <ion-row>
-        <ion-col size-lg="4" size-sm="12" *ngFor="let orden of ordenes">
-          <div class="ordenes" *ngIf="ordenes.length != 0 && mensaje != error">
-            <ion-card>
+    <ion-list lines="none" *ngIf="ordenes.length > 0">
+      <ng-container *ngFor="let estado of agruparPorEstado(ordenes)">
+        <ion-item-divider >{{ os.getEstado(estado.nombre) }}</ion-item-divider>
+        <ion-row>
+          <ion-col size-lg="4" size-sm="12" *ngFor="let orden of estado.ordenes" class="ion-padding">
+            <ion-card class="orden-card">
               <ion-card-header>
-                <ion-card-subtitle>ID de Orden: {{ orden.id }}</ion-card-subtitle>
-                <ion-card-subtitle>Fecha: {{ orden.fecha }}</ion-card-subtitle>
+                <ion-card-title>Orden #{{ orden.id }}</ion-card-title>
+                <ion-card-subtitle>Fecha: {{ orden.fecha | date: 'shortDate' }}</ion-card-subtitle>
                 <ion-card-subtitle>Mesa: {{ orden.mesas.descripcion }}</ion-card-subtitle>
+                <ion-card-subtitle>Mesa: {{ os.getEstado(orden.estado) }}</ion-card-subtitle>
               </ion-card-header>
-
+    
               <ion-card-content>
-                <ion-button expand="block" color="success" (click)="cobrarOrden(orden)">Cobrar Orden</ion-button>
+                <!-- Botón para cobrar la orden -->
+                <ion-button expand="fill"  (click)="cobrarOrden(orden)" class="crear">
+                  Cobrar Orden
+                </ion-button>
               </ion-card-content>
-
             </ion-card>
-          </div>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-
+          </ion-col>
+        </ion-row>
+      </ng-container>
+      <ion-item *ngIf="!loaded">No hay órdenes disponibles</ion-item>
+    </ion-list>
+    
 
 
   </ion-content>

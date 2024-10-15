@@ -43,9 +43,11 @@ export class OrdenesService {
     });
   }
 
-  async ActualizarOrden(model: any): Promise<Observable<any>> {
+  async ActualizarOrden(model: any, estado = 0): Promise<Observable<any>> {
     model.tiempo = Math.trunc(model.tiempo || 0);
-
+    if(estado == 4){
+      model.estado = estado
+    }
     return new Observable(observer => {
       window.dispatchEvent(new Event('desactivar'));
       this.loaderFunctions.StartLoader().then(() => {

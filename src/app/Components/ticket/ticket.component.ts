@@ -237,6 +237,21 @@ export class TicketComponent implements OnInit {
 
     console.log(this.lavadosSeleccionados)
   }
+
+  async cerrar(){
+    (await this.os.ActualizarOrden(this.orden, 4)).subscribe(
+      async (response: any) => {
+        if (response && response.message) {
+          this.buscarOrden()
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
+  }
   
 
   async cobrar(): Promise<void> {

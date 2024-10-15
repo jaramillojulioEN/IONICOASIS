@@ -31,7 +31,7 @@ export class ConsumoComponent implements OnInit {
     idplatillo: undefined,
     concepto: "",
     fecha: this.fn.obtenerFechaHoraActual(),
-    cantidad: 0,
+    cantidad: 1,
     idempleado: this.data.id
   }
   segmento : string = "prestamo"
@@ -55,7 +55,7 @@ export class ConsumoComponent implements OnInit {
       idplatillo: undefined,
       concepto: "",
       fecha: this.fn.obtenerFechaHoraActual(),
-      cantidad: 0,
+      cantidad: 1,
       idempleado : this.data.id
     }
     this.nombrebebida = "Seleccionar Bebida";
@@ -119,9 +119,10 @@ export class ConsumoComponent implements OnInit {
   validar () : boolean{
     let valido = true
 
-    if(this.consumo.cantidad ==0){
+    if(this.consumo.cantidad ==0 || this.consumo.cantidad ==null){
       valido = false
       this.mensaje = "la cantidad 0 no es valida"
+      this.limpiar()
       return valido
     }
     if(this.consumo.idbebida === 0 && this.consumo.idplatillo === 0 && this.consumo.concepto === "" ){

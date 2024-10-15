@@ -37,6 +37,19 @@ export class DetalleordenComponent implements OnInit {
   ) { }
 
 
+  async incrementarCantidad(dbeb: any) {
+
+    dbeb.cantidad += 1;
+    try {
+      const response = await (await this.OrdenesService.CrearOrdenDetail(dbeb)).toPromise();
+      this.buscarOrden()
+      this.Getestimandos();
+      this.ac.presentCustomAlert("Éxito", response.message);
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
+
+  }
 
   intervalId: any;
 

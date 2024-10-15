@@ -80,9 +80,14 @@
         </div>
 
         <div class="item-container">
-          <ion-input style="font-size: 20px;" label="Recibo" labelPlacement="floating" [(ngModel)]="serecibe"
-            (ionChange)="ccambio()" name="serecibe" type="number"></ion-input>
-          <ion-button color="primary" class="crear" (click)="ticket()" expand="full">Siguiente</ion-button>
+          <ion-input *ngIf="orden.estado === 4" style="font-size: 20px;" label="Recibo" labelPlacement="floating"
+            [(ngModel)]="serecibe" (ionChange)="ccambio()" name="serecibe" type="number"></ion-input>
+
+
+          <ion-button *ngIf="orden.estado === 4" class="crear" (click)="ticket()" expand="full">Siguiente</ion-button>
+          <ion-button *ngIf="orden.estado === 3" slot="end" class="crear" (click)="cerrar()" expand="full">Cerrar
+            orden</ion-button>
+
         </div>
 
       </ion-card-content>
@@ -160,13 +165,17 @@
           <!--ticket -->
           <div id="print-section" class="body-tt ion-margin-top">
             <div class="header-tt">
-              <p>{{usuario.sucursales.sucursal}}</p>
+              <p class="no-spacing">{{usuario.sucursales.sucursal}}</p>
               <img src="https://i.imgur.com/eOH1QhH.jpeg" width="150" alt="">
-              <p>{{usuario.sucursales.direccion}}</p>
-              <p>Tel: 7242677775</p>
-              <p *ngIf="orden.length != 0">Fecha: {{orden.fecha}}</p>
+              <span class="no-spacing" style="font-size: 14px;;">{{usuario.sucursales.direccion}}</span>
+              <ion-grid>
+                <ion-row>
+                  <ion-col size="12" class="no-spacing" style="font-size: 12px; text-align: center;">Tel. 7242677775 Fecha:
+                    {{orden.fecha}}</ion-col>
+                </ion-row>
+              </ion-grid>
             </div>
-            <div class="content" *ngIf="orden.length != 0">
+            <div class="content" *ngIf="orden.length != 0" style="font-size: 12px;">
               <div class="item" *ngFor="let detallep of orden.ordenesplatillos">
                 <span>{{detallep.cantidad}}X {{detallep.platillos.nombre}}</span>
                 <span>${{detallep.platillos.precio * detallep.cantidad}}</span>
@@ -201,11 +210,11 @@
                 <span>${{ordentotal(orden)}}</span>
               </div>
             </div>
-            <div class="content" *ngIf="lavado.length != 0">
+            <div class="content" *ngIf="lavado.length != 0" style="font-size: 12px;">
               <div *ngFor="let lavado of lavado">
                 <div class="item">
                   <span>{{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</span>
-                    <span></span>
+                  <span></span>
                 </div>
                 <div class="item" *ngFor="let det of lavado.lavadodet">
                   <span>{{det.Servicios.nombre_servicio}}</span>
@@ -213,12 +222,12 @@
                 </div>
               </div>
 
-              <div class="item total">
+              <div class="total">
                 <span>Total: </span>
                 <span>${{obtenerTotal()}}</span>
               </div>
             </div>
-            <div class="content">
+            <div class="" style="font-size: 12px;">
               <div class="item">
                 <span>Paga con: </span>
                 <span>${{serecibe}}</span>
@@ -227,15 +236,13 @@
                 <span>Cambio: </span>
                 <span>${{cambio}}</span>
               </div>
+              <span style="font-size: 12px;">-------------------------------</span>
             </div>
-            <div class="footer">
-              <p *ngIf="orden">{{orden.mesas.descripcion}}</p>
-
-              <p *ngIf="orden">Atendió:</p>
-              <p *ngIf="orden">{{orden.usuarios.nombre}}</p>
-
-              <p>¡Gracias por su compra!</p>
-              <p>Vuelva pronto</p>
+            <div class="footer no-spacing" style="font-size: 12px;">
+              <p *ngIf="orden" class="no-spacing" style="text-align: left;">Mesa: {{orden.mesas.descripcion}}</p>
+              <p *ngIf="orden" class="no-spacing" style="text-align: left;">Atendió: {{orden.usuarios.nombre}}</p>
+              <p class="no-spacing">¡Gracias por su compra!</p>
+              <p class="no-spacing">Vuelva pronto</p>
             </div>
           </div>
         </ion-col>

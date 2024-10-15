@@ -7,6 +7,13 @@
   margin-top: 20px;
 }
 
+
+.no-spacing {
+  margin: 0;
+  padding: 0;
+}
+
+
 .content-slide {
   animation: slideInFromLeft 0.2s ease-in-out;
 }
@@ -26,14 +33,14 @@
 .header-tt,
 .footer {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .content {
   border-top: 1px dashed #000;
   border-bottom: 1px dashed #000;
-  padding: 10px 0;
-  margin-bottom: 20px;
+  padding: 2px 0;
+  margin-bottom: 3px;
 }
 
 .item {

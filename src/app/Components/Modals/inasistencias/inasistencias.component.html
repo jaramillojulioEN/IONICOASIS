@@ -98,6 +98,8 @@
 
   <div *ngIf="segmento === 'inasistencias'" class="ion-padding">
     <div>
+      <ion-button class="crear ion-margin-button" style="width: 100%;" (click)="pasado()">Falta fecha
+        pasado</ion-button><br>
       <table *ngIf="verifi()" style="width: 100%;">
         <tr>
           <td style="width: 90%; text-align: start;">Registrar inasitencia</td>
@@ -110,6 +112,16 @@
         <ion-input fill="outline" label="Motivo" labelPlacement="floating"
           [(ngModel)]="inasistencia.Motivo"></ion-input>
         <br>
+
+        <ion-label>Fecha</ion-label>
+        <ion-datetime-button datetime="datetime"></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime [(ngModel)]="inasistencia.fecha" id="datetime"></ion-datetime>
+          </ng-template>
+        </ion-modal>
+        <br>
+
         <ion-button *ngIf="edit" style="width: 100%;" class="btn crear" (click)="confedit()">Actulizar
           inasistencia</ion-button>
         <ion-button *ngIf="falta" style="width: 100%;" class="btn crear" (click)="confirmar()">Guardar
@@ -133,7 +145,7 @@
             <td>{{inasistencia.Fecha.split("T")[0]}}</td>
             <td>{{inasistencia.Motivo}}</td>
             <td>{{getday(inasistencia.Fecha)}}</td>
-            <td >{{ (data.salario / 7) | number:'1.2-2' }}</td>
+            <td>{{ (data.salario / 7) | number:'1.2-2' }}</td>
             <td *ngIf="rol.id === 1">
               <ion-button class="btn crear" (click)="editar(inasistencia)">Editar</ion-button>
               <ion-button class="btn crear" (click)="eliminar(inasistencia)">Eliminar</ion-button>

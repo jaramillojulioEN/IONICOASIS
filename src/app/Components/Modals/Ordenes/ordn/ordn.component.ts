@@ -144,6 +144,9 @@ export class OrdnComponent implements OnInit {
     } catch (error) {
       console.error('Error en la solicitud:', error);
     }
+    finally{
+      this.isprep =false;
+    }
   }
 
   async CrearOrden(): Promise<void> {

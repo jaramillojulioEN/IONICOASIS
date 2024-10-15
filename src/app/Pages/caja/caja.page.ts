@@ -34,7 +34,7 @@ export class CajaPage implements OnInit {
   fechaf: any;
 
   constructor(
-    private os: OrdenesService,
+    public os: OrdenesService,
     protected pop: PopoverController,
     private mc: ModalController,
     private fns: LoaderFunctions,
@@ -43,8 +43,8 @@ export class CajaPage implements OnInit {
     private ac: AlertServiceService,
     private ModalController: ModalController
   ) { }
-  sucursales : any = []
-  ids : number = 0
+  sucursales: any = []
+  ids: number = 0
   async ngOnInit() {
     this.start()
     this.sucursales = await this.call.getsucus()
@@ -55,7 +55,21 @@ export class CajaPage implements OnInit {
     })
   }
 
-  change(){
+  agruparPorEstado(ordenes: any[]) {
+    return ordenes.reduce((acc, orden) => {
+      let estado = acc.find((e: { nombre: any; }) => e.nombre === orden.estado);
+      if (!estado) {
+        estado = { nombre: orden.estado, ordenes: [] };
+        acc.push(estado);
+      }
+      estado.ordenes.push(orden);
+      return acc;
+    }, []);
+  }
+
+
+
+  change() {
 
     this.getordenes(5, true, this.inicio, this.fin, this.ids);
 
@@ -169,6 +183,7 @@ export class CajaPage implements OnInit {
     return this.inicio > 0;
   }
 
+  estados = [1, 2, 3, 4, 5]
   async retrocederOrdenes(estado: number) {
     if (this.puedeRetroceder()) {
       this.inicio -= this.fin;
@@ -200,8 +215,8 @@ export class CajaPage implements OnInit {
     }
   }
 
-  delfil(){
-    this.filtered=false;
+  delfil() {
+    this.filtered = false;
     this.fechaf = ""
     this.historial();
 

@@ -18,8 +18,14 @@ export class SignalrService {
       // Usa $.hubConnection para crear la conexión
       // this.hubConnection = ($ as any).hubConnection('https://localhost:44397/signalR');  URL de tu servidor ASP.NET SignalR
       this.hubConnection = ($ as any).hubConnection(`${this.us.getServer()}/signalR`);
-      this.proxy = this.hubConnection.createHubProxy('MyHub1');  // Cambia 'nombreDelHub' por el nombre de tu hub
-
+      var user = this.us.getUser()
+      if(user.idsucursal == 1){
+        console.log('Hub OASIS 1')
+        this.proxy = this.hubConnection.createHubProxy('MyHub1');  // Cambia 'nombreDelHub' por el nombre de tu hub
+      }else{
+        console.log('Hub OASIS 2')
+        this.proxy = this.hubConnection.createHubProxy('MyHub2');  // Cambia 'nombreDelHub' por el nombre de tu hub
+      }
       this.hubConnection.start()
         .done(() => console.log('Conexión a SignalR iniciada'))
         .fail((err: any) => console.error('Error al iniciar la conexión: ', err));

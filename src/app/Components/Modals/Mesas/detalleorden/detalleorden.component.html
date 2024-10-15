@@ -90,23 +90,21 @@
           <h3 class="section-header">Detalles de las bebidas</h3>
           <div class="order-item" style="font-size: 150px;" *ngFor="let bebida of orden.ordenesbebidas">
             <div class="info">
-              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 50 : null)}"><strong>{{ bebida.bebidas.nombre }}</strong>
+              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 50 : null)}">
+                <strong>{{ bebida.cantidad }} X {{ bebida.bebidas.nombre }}</strong>
               </p>
-              <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 50 : null)}">Cantidad: {{ bebida.cantidad }}</p>
               <div class="button-container">
-                <ion-button fill="clear" (click)="Opciones(bebida, false)">
+                <ion-button fill="clear" style="margin-top: -290px;" (click)="Opciones(bebida, false)">
                   <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                </ion-button>
+                <!-- Botón de + -->
+                <ion-button fill="clear" style="margin-top: -290px;" (click)="incrementarCantidad(bebida)">
+                  <ion-icon name="add-outline"></ion-icon>
                 </ion-button>
               </div>
             </div>
-
-            <!-- <ion-button slot="end" color="danger" *ngIf="rol.id === 2 && orden.estado === 1"
-                (click)="EliminarBebida(bebida)">
-                Eliminar bebida
-                <ion-icon slot="end" name="trash-outline"></ion-icon>
-              </ion-button> -->
-
           </div>
+          
           <ion-label>Total Bebidas: {{orden.ordenesbebidas.length}}</ion-label>
         </div>
       </div>

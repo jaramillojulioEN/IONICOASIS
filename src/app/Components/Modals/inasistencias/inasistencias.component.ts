@@ -48,6 +48,14 @@ export class InasistenciasComponent implements OnInit {
   edit: boolean = false
 
 
+  ipasado = false
+  pasado(){
+
+    this.falta = true;
+    this.ipasado = true
+  }
+
+
   async confirmareliminar(item: any): Promise<void> {
     if (item.cantidad) {
       (await this.us.EliminarConsumos(item)).subscribe(
