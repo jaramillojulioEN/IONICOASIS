@@ -6,6 +6,7 @@ import { LoaderFunctions } from 'src/functions/utils';
 import { DatepickerComponent } from 'src/app/Components/Secciones/datepicker/datepicker.component'
 import { UserServiceService } from 'src/app/services/Users/user-service.service';
 import { Calls } from 'src/functions/call';
+import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 @Component({
   selector: 'app-corte',
   templateUrl: './corte.page.html',
@@ -20,7 +21,8 @@ export class CortePage implements OnInit {
     private md: ModalController,
     private funcions: LoaderFunctions,
     private PopoverController: PopoverController,
-    private call: Calls
+    private call: Calls,
+    private ac: AlertServiceService
   ) { }
 
   segmento: string = "curso"
@@ -122,9 +124,12 @@ export class CortePage implements OnInit {
   }
 
 
-  async AbrirModalRetiro() {
+  async AbrirModalRetiro(retiro : any = null) {
     const modal = await this.md.create({
       component: RetirarComponent,
+      componentProps:{
+        retiroedit : retiro
+      }
     });
     return await modal.present();
   }
@@ -162,5 +167,32 @@ export class CortePage implements OnInit {
 
   async Opciones(data: any) {
 
+    this.ac.configureAndPresentActionSheet([
+      { button: this.ac.btnEliminar, handler: () => this.EliminaCorte(data) },
+       { button: this.ac.btnActualizar, handler: () => { this.AbrirModalRetiro(data); } },
+      { button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }
+    ]);
+
   }
+
+  async EliminaCorte(corte: any) {
+    this.ac.presentCustomAlert("Eliminar", `Estás seguro de eliminar el corte: ${corte.concepto}`, () => this.ConfirmarELiminar(corte));
+  }
+
+  async ConfirmarELiminar(corte: any): Promise<void> {
+    (await this.cortesService.EliminarRetiro(corte)).subscribe(
+      async (response: any) => {
+        if (response) {
+          this.obtenerCortesActivos(false);
+          this.ac.presentCustomAlert("Exito", response.message)
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
+  }
+
 }

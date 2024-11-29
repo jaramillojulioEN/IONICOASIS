@@ -49,7 +49,7 @@ export class InasistenciasComponent implements OnInit {
 
 
   ipasado = false
-  pasado(){
+  pasado() {
 
     this.falta = true;
     this.ipasado = true
@@ -290,12 +290,16 @@ export class InasistenciasComponent implements OnInit {
     });
 
 
-    if (flag || this.ticket.id != 0) {
+    var tkdtta = new Date(this.ticket.fecha)
+
+    if (flag || this.ticket.id != 0 || tkdtta.getDate() != hoy.getDate()) {
       this.ticket.idempleado = this.data.id;
       (await this.empleadoservice.Registrartick(this.ticket)).subscribe(
         (response: any) => {
           this.ac.presentCustomAlert("Exito", response.message)
           this.obtenertkts()
+          this.ticket.ntickets = 0
+          this.ticket.fecha = this.fn.obtenerFechaHoraActual()
         },
         (error: any) => {
           console.error('Error en la solicitud:', error);

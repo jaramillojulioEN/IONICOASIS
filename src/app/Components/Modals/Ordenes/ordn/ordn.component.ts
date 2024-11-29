@@ -149,6 +149,47 @@ export class OrdnComponent implements OnInit {
     }
   }
 
+
+  async cantidadplatillo(suma : boolean, detalleplato:any){
+    if(suma){
+      detalleplato.cantidad = detalleplato.cantidad + 1;
+    }else{
+      detalleplato.cantidad = detalleplato.cantidad -1;
+    }
+    (await this.OrdenesService.ActualizarPlato(detalleplato, true)).subscribe(
+      async (response: any) => {
+        if (response && response.message) {
+          window.dispatchEvent(new Event('success'));
+        } else {
+          this.ac.presentCustomAlert("Error", response.message)
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
+  }
+  async cantidadbebida(suma : boolean, detallebebida:any){
+    if(suma){
+      detallebebida.cantidad = detallebebida.cantidad + 1;
+    }else{
+      detallebebida.cantidad = detallebebida.cantidad -1;
+    }
+    (await this.OrdenesService.ActualizarPlato(detallebebida, false)).subscribe(
+      async (response: any) => {
+        if (response && response.message) {
+          window.dispatchEvent(new Event('success'));
+        } else {
+          this.ac.presentCustomAlert("Error", response.message)
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
+  }
+
   async CrearOrden(): Promise<void> {
     this.NewOrden.estado = -1
     try {

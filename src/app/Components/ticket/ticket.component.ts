@@ -299,6 +299,7 @@ export class TicketComponent implements OnInit {
 
   @Input() orden: any = []
   @Input() lavado: any = []
+  @Input() isrev: boolean =false
 
   ngOnInit() {
     console.log(this.orden)

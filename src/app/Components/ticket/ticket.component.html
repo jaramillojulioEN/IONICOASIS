@@ -1,6 +1,6 @@
 <app-main-header titulo="Detalle de la venta" [isModal]="true"></app-main-header>
 <ion-content>
-  <div *ngIf="!sst" class="ion-padding">
+  <div *ngIf="!sst && !isrev" class="ion-padding">
     <ion-card *ngIf="orden.length != 0" class="custom-card">
       <ion-card-content>
         <div class="item-container">
@@ -138,11 +138,11 @@
   </div>
   <iframe src="" name="noneframe" style="display: none;" frameborder="0"></iframe>
 
-  <div class="detai" *ngIf="sst">
+  <div class="detai" *ngIf="sst || isrev">
 
     <ion-grid>
       <ion-row>
-        <ion-col sm-size="12" lg-size="4" class="ion-margin-top ion-padding">
+        <ion-col sm-size="12" lg-size="4" class="ion-margin-top ion-padding" *ngIf="!isrev">
           <div class="item-container">
             <iframe src="" name="noneframe" style="display: none;" frameborder="0"></iframe>
 
@@ -160,6 +160,14 @@
           <ion-button color="primary" class="crear" (click)="lavado.length !== 0 ? cobrarl() : cobrar()"
             expand="full">Cobrar</ion-button>
         </ion-col>
+
+        <ion-col sm-size="12" lg-size="4" class="ion-margin-top ion-padding" *ngIf="isrev">
+          <ion-input fill="outline" style="font-size: 20px;" label="Recibo" labelPlacement="floating"
+            [(ngModel)]="serecibe" (ionChange)="ccambio()" name="serecibe" type="number"></ion-input>
+
+            <ion-button color="primary" class="crear" (click)="imprimir('print-section')"
+            expand="full">Reimprimir Ticket</ion-button>
+        </ion-col>
         <ion-col sm-size="12" lg-size="8">
 
           <!--ticket -->
@@ -170,7 +178,8 @@
               <span class="no-spacing" style="font-size: 14px;;">{{usuario.sucursales.direccion}}</span>
               <ion-grid>
                 <ion-row>
-                  <ion-col size="12" class="no-spacing" style="font-size: 12px; text-align: center;">Tel. 7242677775 Fecha:
+                  <ion-col size="12" class="no-spacing" style="font-size: 12px; text-align: center;">Tel. 7242677775
+                    Fecha:
                     {{orden.fecha}}</ion-col>
                 </ion-row>
               </ion-grid>

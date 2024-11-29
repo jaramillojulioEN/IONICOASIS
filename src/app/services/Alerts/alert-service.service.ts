@@ -32,6 +32,12 @@ export class AlertServiceService {
     cssClass: ''
   }
 
+  public ticket: ActionSheetButton = {
+    text: 'Ver ticket',
+    handler: () => { },
+    cssClass: ''
+  }
+
   public btnestado: ActionSheetButton = {
     text: 'Cambiar Estado',
     handler: () => { },

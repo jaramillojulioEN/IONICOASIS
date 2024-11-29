@@ -72,10 +72,30 @@ export class LavadoPage implements OnInit {
   sucursales: any = []
   idu: any = 0
   async ngOnInit() {
+    this.rol = this.UserServiceService.getRol()
     this.start();
     this.sucursales = await this.calls.getsucus();
     var user = this.UserServiceService.getUser()
     this.idu = user.idsucursal
+  }
+
+  Opciones2(data: any) {
+    this.ac.configureAndPresentActionSheet([
+      { button: this.ac.ticket, handler: () => { this.verticket(data); } },
+      { button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }
+    ]);
+  }
+
+  async verticket(data : any){
+    const modal = await this.mc.create({
+      component: TicketComponent,
+      componentProps: {
+        lavado: [data],
+        isrev: true
+      },
+      backdropDismiss: true
+    });
+    return await modal.present();
   }
 
   change() {
@@ -90,12 +110,13 @@ export class LavadoPage implements OnInit {
 
   start() {
     this.obtenerCajaActiva()
-    this.rol = this.UserServiceService.getRol()
     this.segmento = this.rol.id === 1 ? "hoy" : "pago"
+    console.log(this.rol.id)
     window.addEventListener('success', () => {
       this.obtenerLavados(1, false);
     })
     if (this.rol.id === 1) {
+      this.segmento == "hoy"
       this.historial()
     } else {
       this.obtenerLavados(1)

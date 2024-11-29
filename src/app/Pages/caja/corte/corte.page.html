@@ -51,7 +51,7 @@
             <td>{{ corte.concepto}}</td>
             <td>{{ corte.monto }}</td>
             <td>{{ corte.fecha }}</td>
-            <td class="actions-cell">
+            <td class="actions-cell" *ngIf="rol.id === 1">
               <ion-button fill="clear" (click)="Opciones(corte)">
                 <ion-icon name="ellipsis-vertical-outline"></ion-icon>
               </ion-button>

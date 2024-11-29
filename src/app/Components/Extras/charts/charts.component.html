@@ -16,59 +16,102 @@
     <br>
     <app-skeleton *ngIf="!loaded" [columns]="3" type="tabla"></app-skeleton>
 
-    <table class="tabla" *ngIf="segmento === 'corte' && loaded">
-        <caption class="ion-text-center">Cortes</caption>
-        <thead>
-            <tr>
-                <th>Concepto</th>
-                <th>Cantidad</th>
-                <th>Fecha</th>
-            </tr>
-        </thead>
-        <tbody *ngIf="info.CortesCaja.length > 0">
-            <tr *ngFor="let corte of info.CortesCaja">
-                <td class="ion-text-start">{{corte.concepto}}</td>
-                <td>${{corte.monto}}</td>
-                <td>{{corte.fecha}}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div *ngIf="segmento === 'corte' && loaded">
+        <ion-card class="custom-card">
+            <ion-grid>
+                <ion-row>
+                    <ion-col class="ion-text-center" size="4">Total cortes</ion-col>
+                    <ion-col class="ion-text-center" size="4"><ion-icon
+                            name="cash-outline"></ion-icon>{{info.CortesCaja.length}}</ion-col>
+                    <ion-col class="ion-text-center" size="4"><ion-icon
+                            name="cash-outline"></ion-icon>${{totallab(info.CortesCaja, true)}}</ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-card>
+        <table class="tabla">
+            <caption class="ion-text-center">Cortes</caption>
+            <thead>
+                <tr>
+                    <th>Concepto</th>
+                    <th>Cantidad</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody *ngIf="info.CortesCaja.length > 0">
+                <tr *ngFor="let corte of info.CortesCaja">
+                    <td class="ion-text-start">{{corte.concepto}}</td>
+                    <td>${{corte.monto}}</td>
+                    <td>{{corte.fecha}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-    <table class="tabla" *ngIf="segmento === 'lav' && loaded">
-        <caption class="ion-text-center">Lavados</caption>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Total</th>
-                <th>Fecha</th>
-            </tr>
-        </thead>
-        <tbody *ngIf="info.LavadosCaja.length > 0 ">
-            <tr *ngFor="let lav of info.LavadosCaja">
-                <td>LAV #{{lav.id}}</td>
-                <td>${{lav.total}}</td>
-                <td>{{lav.fecha}}</td>
-            </tr>
-        </tbody>
-    </table>
 
-    <table class="tabla" *ngIf="segmento === 'ordenes' && loaded">
-        <caption class="ion-text-center">Ordenes</caption>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Total</th>
-                <th>Fecha</th>
-            </tr>
-        </thead>
-        <tbody *ngIf="info.OrdenesCaja.length > 0">
-            <tr *ngFor="let orden of info.OrdenesCaja">
-                <td>ORD #{{orden.id}}</td>
-                <td>${{orden.total}}</td>
-                <td>{{orden.fecha}}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div *ngIf="segmento === 'lav' && loaded">
+        <ion-card class="custom-card">
+            <ion-grid>
+                <ion-row>
+                    <ion-col class="ion-text-center" size="4">Total Autos</ion-col>
+                    <ion-col class="ion-text-center" size="4"><ion-icon
+                            name="car-sport-outline"></ion-icon>{{info.LavadosCaja.length}}</ion-col>
+                    <ion-col class="ion-text-center" size="4"><ion-icon
+                            name="cash-outline"></ion-icon>${{totallab(info.LavadosCaja)}}</ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-card>
+
+
+        <table class="tabla">
+            <caption class="ion-text-center">Lavados</caption>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody *ngIf="info.LavadosCaja.length > 0 ">
+
+                <tr *ngFor="let lav of info.LavadosCaja">
+                    <td>LAV #{{lav.id}}</td>
+                    <td>${{lav.total}}</td>
+                    <td>{{lav.fecha}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div *ngIf="segmento === 'ordenes' && loaded">
+        <ion-card class="custom-card">
+            <ion-grid>
+                <ion-row>
+                    <ion-col class="ion-text-center" size="4">Total Autos</ion-col>
+                    <ion-col class="ion-text-center" size="4"><ion-icon name="car-sport-outline"></ion-icon>{{info.LavadosCaja.length}}</ion-col>
+                    <ion-col class="ion-text-center" size="4"><ion-icon name="cash-outline"></ion-icon>${{totallab(info.LavadosCaja)}}</ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-card>
+        <table class="tabla">
+            <caption class="ion-text-center">Ordenes</caption>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody *ngIf="info.OrdenesCaja.length > 0">
+                <tr *ngFor="let orden of info.OrdenesCaja">
+                    <td>ORD #{{orden.id}}</td>
+                    <td>${{orden.total}}</td>
+                    <td>{{orden.fecha}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <div style="width: 80%; text-align: center;"><canvas id="ctx"></canvas></div>
 
 </ion-content>

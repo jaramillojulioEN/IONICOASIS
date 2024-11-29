@@ -159,8 +159,22 @@ export class CajaPage implements OnInit {
   Opciones(data: any) {
     this.ac.configureAndPresentActionSheet([
       { button: this.ac.btnVerOrden, handler: () => { this.VerOrden(data); } },
+      { button: this.ac.ticket, handler: () => { this.verticket(data); } },
       { button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }
     ]);
+  }
+
+
+  async verticket(data : any){
+    const modal = await this.mc.create({
+      component: TicketComponent,
+      componentProps: {
+        orden: data,
+        isrev: true
+      },
+      backdropDismiss: true
+    });
+    return await modal.present();
   }
 
 

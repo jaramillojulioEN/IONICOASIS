@@ -10,13 +10,14 @@ import { CortesService } from 'src/app/services/cortes/cortes.service';
 export class ChartsComponent implements OnInit {
   info: any = [];
 
-  constructor(private corteservice : CortesService) { }
+  constructor(private corteservice: CortesService) { }
   @Input() colores: string[] = []
   @Input() data: number[] = []
   @Input() caja: any = []
   @Input() labels: string[] = []
   ngOnInit() {
     this.ObtenerInfo();
+    console.log(this.info.CortesCaja)
     var chartExist = Chart.getChart("ctx");
     console.log(chartExist)
 
@@ -49,7 +50,14 @@ export class ChartsComponent implements OnInit {
     console.log(Chart.getChart("ctx"))
   }
 
-  segmento ="ordenes"
+  segmento = "ordenes"
+
+   totallab(lav: any[],corte : boolean = false): number {
+    if(corte)
+      return lav.reduce((acc, x) => acc + x.monto, 0);
+    return lav.reduce((acc, x) => acc + x.total, 0);
+  }
+  
 
   loaded = false;
   async ObtenerInfo(load: boolean = true): Promise<void> {

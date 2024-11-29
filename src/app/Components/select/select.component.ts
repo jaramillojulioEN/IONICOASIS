@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 import { BebidaService } from 'src/app/services/Bebidas/bebida.service';
 import { PlatilloService } from 'src/app/services/Platillos/platillo.service';
+import { UserServiceService } from 'src/app/services/Users/user-service.service';
 
 @Component({
   selector: 'app-select',
@@ -25,7 +26,8 @@ export class SelectComponent implements OnInit {
     private PlatilloService: PlatilloService,
     private BebidaService: BebidaService,
     private pop: PopoverController,
-    private ac: AlertServiceService
+    private ac: AlertServiceService,
+    private us: UserServiceService
   ) { }
   ngOnInit() {
     this.ObtenerPlatillos(true, this.criterio)
@@ -116,6 +118,22 @@ export class SelectComponent implements OnInit {
 
     }
   }
+
+  getcolor(bebida: any) {
+    debugger;
+    var ids = this.us.getUser().idsucursal;
+    let bebidaExistente = bebida.bebidasexitencias.find((b: any) => b.idsucursal == ids);
+    
+    if (bebidaExistente) {
+      var cantidad = bebidaExistente.cantidad;
+      if (cantidad <= 0) {
+        return "red";
+      }
+    }
+    
+    return null;
+  }
+  
 
   async ObtenerBebidas(load: boolean = false, criterio: string = ""): Promise<void> {
     try {

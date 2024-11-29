@@ -9,7 +9,7 @@ body {
 
 .image-container {
     position: relative;
-    width: 350px;
+    width: 160px;
 }
 
 .image-container img {
@@ -25,6 +25,6 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     color: black; /* Color del texto */
-    font-size: 15px; /* Tamaño del texto */
+    font-size: 14px; /* Tamaño del texto */
     font-weight: bold; /* Grosor del texto */
 }

@@ -168,6 +168,14 @@
       <ion-input fill="outline" label="Numero de tickets" labelPlacement="floating"
         [(ngModel)]="ticket.ntickets"></ion-input>
       <br>
+      <ion-label>Fecha</ion-label>
+      <ion-datetime-button datetime="datetime"></ion-datetime-button>
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime [(ngModel)]="ticket .fecha" id="datetime"></ion-datetime>
+        </ng-template>
+      </ion-modal>
+      <br>
       <ion-button style="width: 100%;" class="btn crear ion-margin-top" (click)="enviartckt()">Alamcenar
         tickets</ion-button>
       <br>

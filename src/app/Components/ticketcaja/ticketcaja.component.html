@@ -4,7 +4,11 @@
 
   <ion-grid>
     <ion-row>
-      <ion-col sm-size="12" lg-size="4" class="ion-margin-top ion-padding">
+      <ion-col sm-size="12" *ngIf="isrev" lg-size="4" class="ion-margin-top ion-padding">
+        <ion-button color="primary" class="crear" expand="full" (click)="imprimir('print-section')">Reimprimir
+          Ticket</ion-button>
+      </ion-col>
+      <ion-col sm-size="12" *ngIf="!isrev" lg-size="4" class="ion-margin-top ion-padding">
         <ion-card class="custom-card">
           <ion-card-content>
             <h5>Fecha de inicio: </h5>

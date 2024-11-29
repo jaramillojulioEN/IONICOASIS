@@ -32,7 +32,7 @@
       Bebidas
     </ion-list-header>
     <ion-item *ngFor="let bd of BebidaArry" (click)="Dissmiss(bd)">
-      <ion-grid>
+      <ion-grid [ngStyle]="{'background-color': getcolor(bd)}">
         <ion-row>
           <ion-col size="6">{{bd.nombre}}</ion-col>
           <ion-col size="6" class="ion-text-end">${{ preciocliente ?  bd.precioventa : bd.precioempleados}}</ion-col>

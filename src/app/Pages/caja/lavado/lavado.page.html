@@ -103,19 +103,16 @@
           <table class="tabla">
             <thead>
               <tr>
-                <th>Select</th>
                 <th>NO</th>
                 <th>Vehiculo</th>
                 <th>Servicios</th>
                 <th>Fecha</th>
-                <th>Total</th>
+                <th colspan="2">Total</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let lavado of lavadoshistorialf">
-                <td>
-                  <ion-checkbox slot="start" [(ngModel)]="lavado.selected" (ionChange)="toggleSelection(lavado)"></ion-checkbox>
-                </td>
+
                 <td>{{lavado.id}}</td>
                 <td>{{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</td>
                 <td>
@@ -125,6 +122,11 @@
                 </td>
                 <td>{{lavado.fecha}}</td>
                 <td>${{lavado.total}}</td>
+                <td>
+                  <ion-button fill="clear" (click)="Opciones2(lavado)">
+                    <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                  </ion-button>
+                </td>
               </tr>
             </tbody>
           </table>

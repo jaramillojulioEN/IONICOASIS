@@ -87,7 +87,7 @@
             <ion-card-content>
                 <ion-text>La caja fue cerrada, contacta con el administrador para activar la caja o volver a activar la
                     pasada</ion-text>
-                <ion-button  class="crear" (click)="Iniciar()" expand="full">Abrir
+                <ion-button class="crear" (click)="Iniciar()" expand="full">Abrir
                     la caja</ion-button>
             </ion-card-content>
         </ion-card>
@@ -108,7 +108,7 @@
                             <th>Suma Total</th>
                             <th>Salió de Caja</th>
                             <th>Ganancias</th>
-                            <th>Sucursal</th>
+                            <th colspan="2">Sucursal</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -123,6 +123,11 @@
                             <td>${{ data.saliodecaja }}</td>
                             <td>${{ data.ganancias }}</td>
                             <td>{{ data.sucursales.sucursal }}</td>
+                            <td>
+                                <ion-button fill="clear" (click)="Opciones(data)">
+                                    <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                                </ion-button>
+                            </td>
                         </tr>
                         <tr *ngIf="CortePasado.length === 0">No se ha cerrado ninguna caja</tr>
                     </tbody>

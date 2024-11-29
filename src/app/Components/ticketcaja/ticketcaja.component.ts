@@ -24,6 +24,7 @@ export class TicketcajaComponent implements OnInit {
   fecha: string = this.fn.obtenerFechaHoraActual()
   imprimirTicket: boolean = true
   @Input() caja: any = []
+  @Input() isrev: boolean = false
   ngOnInit() {
     console.log(this.caja)
   }
@@ -139,13 +140,14 @@ export class TicketcajaComponent implements OnInit {
   }
 
   async confirmaratualizar(caja: any): Promise<void> {
-    if (this.imprimirTicket) {
-      this.imprimir("print-section")
-    };
+
     (await this.cortesService.ActulizarCaja(caja)).subscribe(
       async (response: any) => {
         if (response && response.message) {
           window.dispatchEvent(new Event('success'));
+          if (this.imprimirTicket) {
+            this.imprimir("print-section")
+          };
           this.ac.presentCustomAlert("Alerta", response.message)
         } else {
           console.error('Error: Respuesta inválida');

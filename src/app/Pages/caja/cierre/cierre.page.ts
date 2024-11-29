@@ -58,6 +58,20 @@ export class CierrePage implements OnInit {
 
   }
 
+
+
+  async verticket(data : any){
+    const modal = await this.md.create({
+      component: TicketcajaComponent,
+      componentProps: {
+        caja: data,
+        isrev: true
+      },
+      backdropDismiss: true
+    });
+    return await modal.present();
+  }
+
   idu: any = 0
   change() {
     this.obtenerCortesActivos(true, this.idu);
@@ -137,13 +151,14 @@ export class CierrePage implements OnInit {
     );
   }
 
-  Opciones(data: any, index: number) {
+  Opciones(data: any, index: number = 0) {
     this.obtenerCortesActivos(false, this.idu)
     let cajaactiva = this.CorteActivo.length > 0 ? true : false
     let button: any[] = []
     if (index == 0 && !cajaactiva) {
       button.push({ button: this.ac.btnActivar, handler: () => this.reactivarOrden(data) })
     }
+    button.push({ button: this.ac.ticket, handler: () => this.verticket(data) })
     button.push({ button: this.ac.btnVerGrafico, handler: () => this.vergraficopasado(data) })
     button.push({ button: this.ac.btnCancelar, handler: () => console.log("cancelado") })
     this.ac.configureAndPresentActionSheet(button);

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 import { CortesService } from 'src/app/services/cortes/cortes.service';
@@ -13,7 +13,8 @@ export class RetirarComponent implements OnInit {
   caja: any = [];
   idcajaactiva: number = 0;
 
-
+  @Input() retiroedit:any= null;
+  skip: boolean = false;
 
   constructor(
     private cortes: CortesService,
@@ -33,6 +34,11 @@ export class RetirarComponent implements OnInit {
 
   ngOnInit() {
     this.obtenerCortesActivos()
+    if(this.retiroedit != null)
+    {
+      this.skip = true;
+      this.retiro = this.retiroedit;
+    }
   }
 
 
@@ -60,7 +66,8 @@ export class RetirarComponent implements OnInit {
 
   async confirmar() {
     console.log(this.retiro);
-    if ((this.caja[0].ganancias) >= this.retiro.monto) {
+    
+    if ((this.caja[0].ganancias) >= this.retiro.monto || this.skip) {
       (await this.cortes.Retirar(this.retiro)).subscribe(
         (response: any) => {
           window.dispatchEvent(new Event('success'));

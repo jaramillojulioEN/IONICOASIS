@@ -115,6 +115,32 @@ export class CortesService {
     });
   }
 
+  async EliminarRetiro(data: any): Promise<Observable<any>> {
+    console.log(data)
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: data
+    };
+
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.delete<any>(`${this.server}api/Servicios/EliminarCorte`, options).subscribe(
+          async deletedResponse => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(deletedResponse);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+
   async CortesActivos(estado: number, loader: boolean = true, ids = 0): Promise<Observable<any>> {
     try {
       var user = this.user.getUser();
