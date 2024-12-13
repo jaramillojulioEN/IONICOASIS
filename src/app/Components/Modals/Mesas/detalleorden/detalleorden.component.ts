@@ -51,6 +51,20 @@ export class DetalleordenComponent implements OnInit {
 
   }
 
+  async incrementarCantidadplat(dpla: any) {
+
+    dpla.cantidad += 1;
+    try {
+      const response = await (await this.OrdenesService.CrearOrdenDetail(dpla)).toPromise();
+      this.buscarOrden()
+      this.Getestimandos();
+      // this.ac.presentCustomAlert("Éxito", response.message);
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
+
+  }
+
   intervalId: any;
 
   // @Input() activetimers: { [id: number]: Timer } = {};

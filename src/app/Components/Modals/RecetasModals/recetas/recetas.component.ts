@@ -89,6 +89,8 @@ export class RecetasComponent implements OnInit {
   editarPaso(index: number) {
     this.pasos = this.pasosArray[index]
     this.pasoindex = index
+
+
   }
 
   eliminarPaso(index: number) {

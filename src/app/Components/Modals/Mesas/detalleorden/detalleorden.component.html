@@ -77,9 +77,12 @@
                 Observaciones: {{ platillo.observaciones }}
               </p>
               <div class="button-container">
-                <ion-button style="margin-top: -290px;" fill="clear" (click)="Opciones(platillo, true)">
-                  <ion-icon [color]="platillo.estado === 0 ? 'dark' : 'light'"
+                <ion-button *ngIf="platillo.estado !== 2" style="margin-top: -290px;" fill="clear" (click)="Opciones(platillo, true)">
+                  <ion-icon [color]="platillo.estado === 0 || platillo.estado === 2  ? 'dark' : 'light'"
                     name="ellipsis-vertical-outline"></ion-icon>
+                </ion-button>
+                <ion-button fill="clear" style="margin-top: -290px;"  (click)="incrementarCantidad(platillo)">
+                  <ion-icon name="add-outline" [color]="platillo.estado === 0  || platillo.estado === 2  ? 'dark' : 'light'"></ion-icon>
                 </ion-button>
               </div>
             </div>
