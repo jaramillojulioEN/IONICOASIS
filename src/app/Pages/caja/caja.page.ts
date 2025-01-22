@@ -11,6 +11,7 @@ import { CortesService } from 'src/app/services/cortes/cortes.service';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 import { DetalleadminComponent } from 'src/app/Components/Modals/detalleadmin/detalleadmin.component'
 import { Calls } from 'src/functions/call';
+import { VentaEspecialComponent } from 'src/app/Components/Modals/venta-especial/venta-especial.component';
 @Component({
   selector: 'app-caja',
   templateUrl: './caja.page.html',
@@ -52,6 +53,7 @@ export class CajaPage implements OnInit {
     this.ids = usuario.idsucursal
     window.addEventListener('success', () => {
       this.getordenes(4, true, 0, 0);
+      this.ModalController.dismiss();
     })
   }
 
@@ -78,6 +80,17 @@ export class CajaPage implements OnInit {
   async handleRefresh(event: any) {
     await this.start();
     event.target.complete();
+  }
+
+  async Especial(){
+    const modal = await this.mc.create({
+      component: VentaEspecialComponent,
+      componentProps: {
+        
+      },
+      backdropDismiss: true
+    });
+    return await modal.present();
   }
 
   async start() {

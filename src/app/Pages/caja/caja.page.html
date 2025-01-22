@@ -13,9 +13,26 @@
   </ion-segment>
 
   <ion-content *ngIf="segmento === 'pago'" class="ion-padding">
-    <div class="no-orders" *ngIf="ordenes.length === 0 && mensaje != error">
-      <h3 class="ion-text-center">No hay ordenes pendientes de cobro</h3>
-    </div>
+
+    <ion-item-divider>Ordenes especiales</ion-item-divider>
+    <ion-row>
+      <ion-col size-lg="4" size-sm="12" class="ion-padding">
+        <ion-card class="orden-card">
+          <ion-card-header>
+            <ion-card-title>Realizar venta especial</ion-card-title>
+            <ion-card-subtitle>Familia</ion-card-subtitle>
+            <ion-card-subtitle>Empleados</ion-card-subtitle>
+            <ion-card-subtitle>Sueltos</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-button expand="fill" (click)="Especial()" class="crear">
+              Cobrar Orden
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
 
     <div class="no-orders" *ngIf="mensaje == error ">
       <ion-card class="custom-card">
@@ -27,8 +44,10 @@
 
     <ion-list lines="none" *ngIf="ordenes.length > 0">
       <ng-container *ngFor="let estado of agruparPorEstado(ordenes)">
+
         <ion-item-divider >{{ os.getEstado(estado.nombre) }}</ion-item-divider>
         <ion-row>
+          
           <ion-col size-lg="4" size-sm="12" *ngFor="let orden of estado.ordenes" class="ion-padding">
             <ion-card class="orden-card">
               <ion-card-header>
@@ -48,6 +67,7 @@
           </ion-col>
         </ion-row>
       </ng-container>
+
       <ion-item *ngIf="!loaded">No hay órdenes disponibles</ion-item>
     </ion-list>
     

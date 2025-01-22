@@ -1,0 +1,130 @@
+<app-main-header titulo="Venta Especial" [isModal]="true"></app-main-header>
+
+<ion-content>
+  <!-- Selección de tipo de venta -->
+  <ion-segment [(ngModel)]="TipoVenta">
+    <ion-segment-button [value]="1">
+      <ion-text>Empleados</ion-text>
+    </ion-segment-button>
+    <ion-segment-button [value]="2">
+      <ion-text>Familia</ion-text>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div class="Especial ion-padding">
+
+    <div class="custom-card">
+      <!-- Sección de selección y cantidad -->
+      <ion-row>
+        <ion-col size="8">
+          <div class="custom-select inpt" role="button" (click)="Select($event)">
+            <div class="selected-item" style="height: 100%;">
+              <span>{{text}}</span><br>
+            </div>
+          </div>
+        </ion-col>
+        <ion-col size="4">
+          <ion-input class="inpt" type="number" label="Cantidad" labelPlacement="floating" fill="outline"
+            [(ngModel)]="cantidad" name="cantidad" required></ion-input>
+        </ion-col>
+      </ion-row>
+
+      <!-- Botones de categorías -->
+      <ion-row>
+        <ion-col size="8" class="ion-text-center">
+          <ion-button fill="clear" [color]="selectedCategory === 'Platillo' ? 'primary' : 'medium'"
+            (click)="selectCategory('Platillo')">
+            <ion-icon slot="start" name="fast-food-outline"></ion-icon>
+            Platillo
+          </ion-button>
+          <ion-button fill="clear" [color]="selectedCategory === 'Bebida' ? 'primary' : 'medium'"
+            (click)="selectCategory('Bebida')">
+            <ion-icon slot="start" name="wine-outline"></ion-icon>
+            Bebida
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <!-- Botón para añadir -->
+      <ion-row>
+        <ion-col size="12">
+          <ion-button class="ion-padding" (click)="confirmar()" expand="full">Añadir</ion-button>
+        </ion-col>
+      </ion-row>
+    </div>
+
+
+
+    <!-- Sección de detalles de la orden -->
+    <ion-card class="custom-card" *ngIf="orden.ordenesplatillos|| orden.ordenesbebidas">
+      <ion-card-content class="ion-padding">
+        <div class="order-details">
+          <div *ngIf="orden.ordenesplatillos && orden.ordenesplatillos.length !== 0">
+            <h3 class="section-header">Detalles de los Platillos</h3>
+            <div class="order-item" *ngFor="let platillo of orden.ordenesplatillos">
+              <div class="info">
+                <p><strong>{{platillo.platillos.nombre}}</strong></p>
+                <p>Cantidad: {{platillo.cantidad}}</p>
+                <p>Observaciones: {{platillo.observaciones}}</p>
+                <div class="button-container">
+                  <ion-buttons slot="end">
+                    <ion-button fill="clear" [disabled]="platillo.cantidad === 1"
+                      (click)="cantidadplatillo(false, platillo)" style="--size: 50px;">
+                      <ion-icon name="remove-circle-outline" style="font-size: 20px;"></ion-icon>
+                    </ion-button>
+                    <ion-button fill="clear" (click)="cantidadplatillo(true, platillo)" style="--size: 50px;">
+                      <ion-icon name="add-circle-outline" style="font-size: 20px;"></ion-icon>
+                    </ion-button>
+                    <ion-button fill="clear" (click)="Opciones(platillo, true)">
+                      <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                    </ion-button>
+                  </ion-buttons>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="orden.ordenesbebidas && orden.ordenesbebidas.length !== 0">
+            <h3 class="section-header">Detalles de las bebidas</h3>
+            <div class="order-item" *ngFor="let bebida of orden.ordenesbebidas">
+              <div class="info">
+                <p><strong>{{bebida.bebidas.nombre}}</strong></p>
+                <p>Cantidad: {{bebida.cantidad}}</p>
+                <div class="button-container">
+                  <ion-buttons slot="end">
+                    <ion-button fill="clear" [disabled]="bebida.cantidad === 1" (click)="cantidadbebida(false, bebida)"
+                      style="--size: 50px;">
+                      <ion-icon name="remove-circle-outline" style="font-size: 20px;"></ion-icon>
+                    </ion-button>
+                    <ion-button fill="clear" (click)="cantidadbebida(true, bebida)" style="--size: 50px;">
+                      <ion-icon name="add-circle-outline" style="font-size: 20px;"></ion-icon>
+                    </ion-button>
+                    <ion-button fill="clear" (click)="Opciones(bebida, false)">
+                      <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                    </ion-button>
+                  </ion-buttons>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="q">
+            <ion-row class="ion-align-items-center ion-justify-content-between">
+              <ion-col size="8">
+                <h1>Total: {{orden.total}}</h1>
+              </ion-col>
+              <ion-col size="4" class="ion-text-end">
+                <ion-button (click)="cobrarespecial()" color="warning">
+                  Cobrar
+                  <ion-icon slot="end" name="arrow-forward-circle-outline"></ion-icon>
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </div>
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+
+
+
+  </div>
+</ion-content>

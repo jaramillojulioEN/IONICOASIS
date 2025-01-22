@@ -36,6 +36,7 @@ import {EstadoComponent} from  'src/app/Components/Modals/estado/estado.componen
 import {ReloaderComponent } from '../Components/reloader/reloader.component'
 import { CantidesComponent} from '../Components/Modals/cantides/cantides.component'
 import { InasistenciasComponent } from './Modals/inasistencias/inasistencias.component';
+import { VentaEspecialComponent } from './Modals/venta-especial/venta-especial.component';
 @NgModule({
   declarations:
     [
@@ -44,6 +45,7 @@ import { InasistenciasComponent } from './Modals/inasistencias/inasistencias.com
       ReloaderComponent,
       EmpleadosComponent,
       TicketcajaComponent,
+      VentaEspecialComponent,
       InicioComponent,
       EditLavComponent,
       CantidesComponent,
@@ -81,6 +83,7 @@ import { InasistenciasComponent } from './Modals/inasistencias/inasistencias.com
     DetalleComponentReceta,
     MainHeaderComponent,
     ConsumoComponent,
+    VentaEspecialComponent,
     EditLavComponent,
     CantidesComponent,
     EstadoComponent,

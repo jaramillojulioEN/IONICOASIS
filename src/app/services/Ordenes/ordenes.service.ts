@@ -70,10 +70,11 @@ export class OrdenesService {
     });
   }
 
-  async CrearOrden(data: object): Promise<Observable<any>> {
+  async CrearOrden(data: object, TipoVenta: number = 0): Promise<Observable<any>> {
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
-        this.http.post<any>(`${this.server}api/Ordenes/CrearOrden`, data).subscribe(
+        const url = `${this.server}api/Ordenes/CrearOrden?TipoVenta=${TipoVenta}`;
+        this.http.post<any>(url, data).subscribe(
           async response => {
             await this.loaderFunctions.StopLoader();
             observer.next(response);
@@ -87,38 +88,42 @@ export class OrdenesService {
       });
     });
   }
+  
+  
 
-  async CrearOrdenDetail(data: any): Promise<Observable<any>> {
+  async CrearOrdenDetail(data: any, TipoVenta: number = 0): Promise<Observable<any>> {
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
         let request: Observable<any>;
+  
+        const urlPlatillo = `${this.server}api/Detalles/CrearDetallePlatillo?TipoVenta=${TipoVenta}`;
+        const urlBebida = `${this.server}api/Detalles/CrearDetalleBebida?TipoVenta=${TipoVenta}`;
+  
         if (data.idbebida === undefined && data.idplatillo != 0) {
-          request = this.http.post<any>(`${this.server}api/Detalles/CrearDetallePlatillo`, data);
+          request = this.http.post<any>(urlPlatillo, data);
         } else if (data.idplatillo === undefined && data.idbebida != 0) {
-          request = this.http.post<any>(`${this.server}api/Detalles/CrearDetalleBebida`, data);
+          request = this.http.post<any>(urlBebida, data);
         } else {
-          request = new Observable<any>();
-          this.ac.presentCustomAlert("Error", "Producto no encontrado")
-          this.loaderFunctions.StopLoader()
+          this.ac.presentCustomAlert("Error", "Producto no encontrado");
+          this.loaderFunctions.StopLoader();
           return;
         }
-        if (request != new Observable<any>()) {
-          request.subscribe(
-            async response => {
-              await this.loaderFunctions.StopLoader();
-              observer.next(response);
-              observer.complete();
-            },
-            async error => {
-              await this.loaderFunctions.StopLoader();
-              observer.error(error);
-            }
-          );
-        }
-
+  
+        request.subscribe(
+          async response => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
       });
     });
   }
+  
 
   async EliminarBDetalle(data: any): Promise<Observable<any>> {
     const options = {

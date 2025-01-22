@@ -30,9 +30,15 @@ export class SelectComponent implements OnInit {
     private us: UserServiceService
   ) { }
   ngOnInit() {
-    this.ObtenerPlatillos(true, this.criterio)
-    this.ObtenerBebidas(true, this.criterio)
-    this.ObtenerBebidasPrp(true, this.criterio)
+    if(this.isPlatillo)
+    {
+      this.ObtenerPlatillos(true, this.criterio)
+    }
+    else
+    {
+      this.ObtenerBebidas(true, this.criterio)
+      this.ObtenerBebidasPrp(true, this.criterio)
+    }
   }
 
   agruparPorCategoria(platillos: any[]) {
@@ -120,7 +126,6 @@ export class SelectComponent implements OnInit {
   }
 
   getcolor(bebida: any) {
-    debugger;
     var ids = this.us.getUser().idsucursal;
     let bebidaExistente = bebida.bebidasexitencias.find((b: any) => b.idsucursal == ids);
     

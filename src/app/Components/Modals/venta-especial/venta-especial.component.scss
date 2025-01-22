@@ -1,0 +1,118 @@
+.custom-select {
+    position: relative;
+    width: 100%;
+    /* ajusta el ancho según sea necesario */
+  }
+  
+  .selected-item {
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;.order-info {
+        margin-bottom: 20px;
+      }
+      
+      .order-section {
+        margin-top: 20px;
+      }
+      
+      .order-item {
+        margin-bottom: 15px;
+      }
+      
+      h3.section-header {
+        margin-bottom: 10px;
+        font-weight: bold;
+        padding: 10px;
+        background-color: #f0f0f0;
+        /* Color de fondo del separador */
+        border-radius: 5px;
+        /* Opcional: redondea los bordes */
+      }
+      
+      p {
+        margin: 0;
+        font-size: 16px;
+      }
+      
+      strong {
+        font-weight: bold;
+      }
+      
+      .order-details {
+        padding: 15px;
+      }
+      
+      
+      .custom-select {
+        position: relative;
+        width: 100%;
+        /* ajusta el ancho según sea necesario */
+      }
+      
+      .selected-item {
+        background-color: #f4f4f4;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+      }
+      
+      .selected-item:hover {
+        background-color: #e0e0e0;
+      }
+      
+      
+      .order-item .info {
+        position: relative; /* Añadido para que .button-container sea relativo a .info */
+        padding: 10px;
+      }
+      
+      .order-item .info .button-container {
+        position: absolute;
+        top: 10px; /* Ajusta la distancia desde la parte superior */
+        right: 10px; /* Ajusta la distancia desde la derecha */
+      }
+      
+      .order-item .info .button-container ion-button {
+        margin-left: 10px; /* Espacio entre los botones */
+      }
+      
+      
+  }
+  
+  .selected-item:hover {
+    background-color: #e0e0e0;
+  }
+
+  .inpt {
+    height:55px; /* Ajusta la altura */
+    --padding-start: 8px; /* Opcional: ajusta el padding interno */
+    --padding-end: 8px;
+  }
+  
+
+
+  .order-item .info {
+    position: relative; /* Añadido para que .button-container sea relativo a .info */
+    padding: 10px;
+  }
+  
+  .order-item .info .button-container {
+    position: absolute;
+    top: 10px; /* Ajusta la distancia desde la parte superior */
+    right: 10px; /* Ajusta la distancia desde la derecha */
+  }
+  
+  .order-item .info .button-container ion-button {
+    margin-left: 10px; /* Espacio entre los botones */
+  }
+  
+  
