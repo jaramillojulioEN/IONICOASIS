@@ -87,9 +87,28 @@
         <ion-card class="custom-card">
             <ion-grid>
                 <ion-row>
-                    <ion-col class="ion-text-center" size="4">Total Autos</ion-col>
-                    <ion-col class="ion-text-center" size="4"><ion-icon name="car-sport-outline"></ion-icon>{{info.LavadosCaja.length}}</ion-col>
-                    <ion-col class="ion-text-center" size="4"><ion-icon name="cash-outline"></ion-icon>${{totallab(info.LavadosCaja)}}</ion-col>
+                    <ion-col size="12">
+                        <h5>
+                            {{tipo()}}
+                        </h5>
+                    </ion-col>
+                    <ion-col class="ion-text-center" size="4">
+                        <span class="family" (click)="filter(0)" [ngClass]="{'active': estado === 0}">
+                            <ion-icon name="fast-food-outline"></ion-icon>
+                        </span>
+                        <span class="employee" (click)="filter(7)" [ngClass]="{'active': estado === 7}">
+                            <ion-icon name="person-outline"></ion-icon>
+                        </span>
+                        <span class="family" (click)="filter(8)" [ngClass]="{'active': estado === 8}">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                    </ion-col>
+                    <ion-col class="ion-text-center" size="4">Total ordenes
+                        {{ordenesEstado()}}
+                    </ion-col>
+
+                    <ion-col class="ion-text-center" size="4"><ion-icon
+                            name="cash-outline"></ion-icon>${{totalordn(info.OrdenesCaja)}}</ion-col>
                 </ion-row>
             </ion-grid>
         </ion-card>

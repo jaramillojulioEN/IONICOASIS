@@ -76,7 +76,7 @@
                 *ngIf="platillo.observaciones !== '' && platillo.observaciones !== null">
                 Observaciones: {{ platillo.observaciones }}
               </p>
-              <div class="button-container">
+              <div class="button-container" *ngIf="orden.estado !== 2">
                 <ion-button *ngIf="platillo.estado !== 2" style="margin-top: -290px;" fill="clear" (click)="Opciones(platillo, true)">
                   <ion-icon [color]="platillo.estado === 0 || platillo.estado === 2  ? 'dark' : 'light'"
                     name="ellipsis-vertical-outline"></ion-icon>
@@ -96,7 +96,7 @@
               <p [ngStyle]="{'font-size.px': (rol.id === 4 ? 50 : null)}">
                 <strong>{{ bebida.cantidad }} X {{ bebida.bebidas.nombre }}</strong>
               </p>
-              <div class="button-container">
+              <div class="button-container" *ngIf="orden.estado !== 2">
                 <ion-button fill="clear" style="margin-top: -290px;" (click)="Opciones(bebida, false)">
                   <ion-icon name="ellipsis-vertical-outline"></ion-icon>
                 </ion-button>

@@ -12,6 +12,9 @@
     </ion-segment-button>
   </ion-segment>
 
+  <ion-button expand="block" style="display: none;" class="crear" (click)="AbrirModalLavadoNuevo()">Crear Lavado</ion-button>
+
+
   <div *ngIf="segmento === 'pago'" class="ion-padding">
     <ion-grid *ngIf="loaded">
       <ion-row>

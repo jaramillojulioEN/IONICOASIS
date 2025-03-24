@@ -65,22 +65,18 @@
         </thead>
         <tbody *ngIf="periodo && periodo.consumos">
           <tr *ngFor="let consumo of periodo.consumos">
-            <td *ngIf="consumo.concepto != null">{{consumo.concepto}}</td>
-            <td *ngIf="consumo.idbebida != null">{{consumo.bebidas.nombre}}</td>
-            <td *ngIf="consumo.idplatillo != null">{{consumo.platillos.nombre}}</td>
-            <td> {{ consumo.concepto== null ? consumo.cantidad : 1}}</td>
-            <td *ngIf="consumo.concepto != null">{{consumo.cantidad}}</td>
-            <td *ngIf="consumo.idbebida != null">{{consumo.bebidas.precioempleados}}</td>
-            <td *ngIf="consumo.idplatillo != null">{{consumo.platillos.precioempleado}}</td>
-          </tr>
+            <td>{{consumo.concepto || consumo.bebidas?.nombre || consumo.platillos?.nombre}}</td>
+            <td>{{consumo.concepto !== "" ? 1 : consumo.cantidad }}</td>
+            <td>{{consumo.idbebida != null ? consumo.bebidas?.precioempleados * consumo.cantidad : consumo.idplatillo != null ? consumo.platillos?.precioempleado * consumo.cantidad: consumo.concepto !== "" ? consumo.cantidad : ''}}</td>
+          </tr>          
           <tr>
-            <td colspan="3" class="ion-text-end negrita">Sub total(consumos) : $-{{periodo.totalconsumo}}</td>
+            <td colspan="3" class="ion-text-end negrita">Consumos: ${{periodo.totalconsumo}}</td>
           </tr>
         </tbody>
       </table>
       <table class="tabla" *ngIf="periodo && periodo.inasistencias">
         <tr>
-          <td class="ion-text-end negrita">Sub total(Inasistencias): -{{totaldescuento(periodo.inasistencias)}}</td>
+          <td class="ion-text-end negrita">Inasistencias: ${{totaldescuento(periodo.inasistencias)}}</td>
         </tr>
         <tr>
           <td class="ion-text-end negrita">Pagar: {{data.salario - periodo.totalconsumo -

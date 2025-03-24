@@ -151,9 +151,9 @@ export class CortesService {
     }
   }
 
-  async Info(loader: boolean = true, idcaja : number): Promise<Observable<any>> {
+  async Info(loader: boolean = true, idcaja : number, estado = 0): Promise<Observable<any>> {
     try {
-      return this.http.get<any>(`${this.server}api/Cortes/Obtenerinfo/${idcaja}`);
+      return this.http.get<any>(`${this.server}api/Cortes/Obtenerinfo/${idcaja}/${estado}`);
     } finally {
     }
   }

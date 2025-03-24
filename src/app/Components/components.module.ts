@@ -37,10 +37,12 @@ import {ReloaderComponent } from '../Components/reloader/reloader.component'
 import { CantidesComponent} from '../Components/Modals/cantides/cantides.component'
 import { InasistenciasComponent } from './Modals/inasistencias/inasistencias.component';
 import { VentaEspecialComponent } from './Modals/venta-especial/venta-especial.component';
+import { CrearLavadoComponent } from './Modals/crear-lavado/crear-lavado.component';
 @NgModule({
   declarations:
     [
       CardComponent,
+      CrearLavadoComponent,
       InasistenciasComponent,
       ReloaderComponent,
       EmpleadosComponent,
@@ -82,6 +84,7 @@ import { VentaEspecialComponent } from './Modals/venta-especial/venta-especial.c
     InasistenciasComponent,
     DetalleComponentReceta,
     MainHeaderComponent,
+    CrearLavadoComponent,
     ConsumoComponent,
     VentaEspecialComponent,
     EditLavComponent,

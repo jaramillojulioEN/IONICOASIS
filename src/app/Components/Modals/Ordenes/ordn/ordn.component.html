@@ -122,7 +122,7 @@
               <p><strong>{{platillo.platillos.nombre}}</strong></p>
               <p>Cantidad: {{platillo.cantidad}}</p>
               <p>Observaciones: {{platillo.observaciones}}</p>
-              <div class="button-container">
+              <div class="button-container" *ngIf="OrdenDetalles.estado !== 2">
                 <ion-buttons slot="end">
                   <ion-button fill="clear" [disabled]="platillo.cantidad === 1" (click)="cantidadplatillo(false, platillo)" style="--size: 50px;">
                     <ion-icon name="remove-circle-outline" style="font-size: 20px;"></ion-icon>
@@ -144,7 +144,7 @@
             <div class="info">
               <p><strong>{{bebida.bebidas.nombre}}</strong></p>
               <p>Cantidad: {{bebida.cantidad}}</p>
-              <div class="button-container">
+              <div class="button-container" *ngIf="OrdenDetalles.estado !== 2">
                 <ion-buttons slot="end">
                   <ion-button fill="clear" [disabled]="bebida.cantidad === 1"  (click)="cantidadbebida(false, bebida)" style="--size: 50px;">
                     <ion-icon name="remove-circle-outline" style="font-size: 20px;"></ion-icon>

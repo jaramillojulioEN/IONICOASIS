@@ -11,6 +11,7 @@ import { formatDate } from '@angular/common';
 import { EditLavComponent } from 'src/app/Components/Modals/edit-lav/edit-lav.component'
 import { CortesService } from 'src/app/services/cortes/cortes.service';
 import { Calls } from 'src/functions/call';
+import { CrearLavadoComponent } from 'src/app/Components/Modals/crear-lavado/crear-lavado.component';
 @Component({
   selector: 'app-lavado',
   templateUrl: './lavado.page.html',
@@ -338,6 +339,8 @@ export class LavadoPage implements OnInit {
     );
   }
 
+
+
   async obtenerServicios(): Promise<void> {
     (await this.LavadoService.Vehiculos(false)).subscribe(
       async (response: any) => {
@@ -358,6 +361,16 @@ export class LavadoPage implements OnInit {
     this.filtered = false
     this.obtenerLavados(2)
   }
+
+
+  
+    async AbrirModalLavadoNuevo() {
+      const modal = await this.md.create({
+        component: CrearLavadoComponent,
+      });
+      return await modal.present();
+    }
+  
 
   historial(): void {
     this.obtenerLavados(2)

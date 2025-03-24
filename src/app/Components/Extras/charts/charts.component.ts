@@ -52,18 +52,43 @@ export class ChartsComponent implements OnInit {
 
   segmento = "ordenes"
 
-   totallab(lav: any[],corte : boolean = false): number {
-    if(corte)
+  totallab(lav: any[], corte: boolean = false): number {
+    if (corte)
       return lav.reduce((acc, x) => acc + x.monto, 0);
     return lav.reduce((acc, x) => acc + x.total, 0);
   }
+
+  totalordn(ordenes: any[]): number {
+    return ordenes
+      .filter(x => this.estado === 0 ? x.estado === 5 : x.estado === this.estado) 
+      .reduce((acc, x) => acc + x.total, 0); 
+  }
   
 
+  tipo(){
+    switch(this.estado){
+      case 0: return "Ordenes"
+      case 7: return "Empleados"
+      case 8: return "Familia"
+      default : return"desconocido"
+    }
+  }
+
+
+  ordenesEstado(): number {
+    if (this.estado != 0)
+      return this.info?.OrdenesCaja?.filter((o: any) => o.estado === this.estado).length || 0;
+    else
+      return this.info?.OrdenesCaja?.filter((o: any) => o.estado === 5).length || 0;
+  }
+
+
+  estado = 0;
   loaded = false;
   async ObtenerInfo(load: boolean = true): Promise<void> {
     this.loaded = false;
     try {
-      const response: any = await (await this.corteservice.Info(load, this.caja.id)).toPromise();
+      const response: any = await (await this.corteservice.Info(load, this.caja.id, this.estado)).toPromise();
       if (response && response.Info) {
         this.info = response.Info;
         console.log(this.info)
@@ -75,6 +100,12 @@ export class ChartsComponent implements OnInit {
     } finally {
       this.loaded = true;
     }
+  }
+
+
+  filter(estado: number) {
+    this.estado = estado
+    this.ObtenerInfo();
   }
 
 
