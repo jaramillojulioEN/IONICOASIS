@@ -37,8 +37,8 @@ export class UserServiceService {
   getServer(): string {
     let port = "44397"  
     let server = ""
-    // server = "https://muddywatter26-001-site1.ftempurl.com/"
-    server = "https://localhost:"+port
+    server = "https://muddywatter26-001-site1.ftempurl.com/"
+    // server = "https://localhost:"+port
     return `${server}/`
   }
 

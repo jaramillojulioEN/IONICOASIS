@@ -131,7 +131,7 @@ export class VentaEspecialComponent implements OnInit {
   async confirmar() {
     try {
       if (this.validar()) {
-        if (this.selectedCategory === "Bebida") {
+        if (this.selectedCategory === "Bebida" && !this.isprep) {
           this.detalle = {
             id: 0,
             idbebida: this.id,
@@ -141,6 +141,7 @@ export class VentaEspecialComponent implements OnInit {
             fecha: this.fn.obtenerFechaHoraActual()
           }
         } else {
+          console.log("platillo o preparado")
           this.detalle = {
             id: 0,
             idplatillo: this.id,
