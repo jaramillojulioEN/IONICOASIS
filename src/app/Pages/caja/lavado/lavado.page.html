@@ -12,32 +12,47 @@
     </ion-segment-button>
   </ion-segment>
 
-  <ion-button expand="block" style="display: none;" class="crear" (click)="AbrirModalLavadoNuevo()">Crear Lavado</ion-button>
+  <!-- <ion-button expand="block" style="display: none;" class="crear" (click)="AbrirModalLavadoNuevo()">Crear Lavado</ion-button> -->
+  <!-- <ion-button expand="block" style="display: block;" class="crear" (click)="AbrirModalLavadoNuevo()">Crear Lavado</ion-button> -->
 
 
   <div *ngIf="segmento === 'pago'" class="ion-padding">
-    <ion-grid *ngIf="loaded">
-      <ion-row>
-        <ion-col size="4">
-          <ion-select label="Vehiculo" interface="action-sheet" [(ngModel)]="vehiculo" placeholder="Selecciona un tipo de vehiculos">
-            <ion-select-option *ngFor="let vehiculo of vehiculos" [value]="vehiculo">{{vehiculo.tipo_vehiculo}}</ion-select-option>
-          </ion-select>
-        </ion-col>
-        <ion-col size="4">
-          <ion-select label="Servicios" [multiple]="true" [(ngModel)]="servicios" placeholder="Selecciona los servicios">
-            <ion-select-option [value]="{id_servicio: servcios.id_servicio, id_tipo_vehiculo: servcios.id_tipo_vehiculo}" *ngFor="let servcios of vehiculo.Servicio_Tipo_Vehiculo">
-              {{servcios.Servicios.nombre_servicio}} ${{servcios.Servicios.precio}}
-            </ion-select-option>
-          </ion-select>
-        </ion-col>
-        <ion-col size="4">
-          <ion-button expand="block" class="crear" (click)="Guardar()">Agregar</ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+    <ion-card  *ngIf="loaded">
+      <span style="padding-left: 10px; padding-top: 10px; margin-top: 5px;">Nuevo lavado</span>
+      <ion-grid>
+
+        <ion-row class="ion-align-items-center ion-justify-content-between">
+          <!-- Selector de Vehículo -->
+          <ion-col size="4">
+            <ion-select label="Selecciona vehiculo" label-placement="floating" fill="outline" interface="action-sheet"
+              [(ngModel)]="vehiculo" placeholder="Selecciona un tipo de vehículo">
+              <ion-select-option *ngFor="let vehiculo of vehiculos" [value]="vehiculo">
+                {{ vehiculo.tipo_vehiculo }}
+              </ion-select-option>
+            </ion-select>
+          </ion-col>
+
+          <!-- Botón de Seleccionar Servicio -->
+          <ion-col size="4">
+            <div class="custom-select inpt ion-text-center"
+              style="border: 0.5px solid rgb(172, 164, 164); padding: 12px; border-radius: 5px; cursor: pointer; height: 55px;"
+              role="button" (click)="selecionarserivcio()">
+              {{btntxt}}
+            </div>
+          </ion-col>
+
+          <!-- Botón de Agregar -->
+          <ion-col size="4">
+            <ion-button style="height: 55px;" expand="block" class="crear" (click)="Guardar()">Agregar</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+
     <ion-card>
       <ion-card-content class="scroll-container">
-        <ion-button *ngIf="selectedLavados.length > 0" (click)="multuple()" class="btn crear ion-margin-bottom" style="width: 100%;">Cobrar seleccionados</ion-button><br>
+        <ion-button *ngIf="selectedLavados.length > 0" (click)="multuple()" class="btn crear ion-margin-bottom"
+          style="width: 100%;">Cobrar seleccionados</ion-button><br>
         <div class="table-wrapper">
           <table class="tabla" *ngIf="loaded">
             <thead>
@@ -52,13 +67,15 @@
             <tbody *ngIf="lavados.length > 0; else noData">
               <tr *ngFor="let lavado of lavados">
                 <td *ngIf="segmento === 'pago'">
-                  <ion-checkbox slot="start" [(ngModel)]="lavado.selected" (ionChange)="toggleSelection(lavado)"></ion-checkbox>
+                  <ion-checkbox slot="start" [(ngModel)]="lavado.selected"
+                    (ionChange)="toggleSelection(lavado)"></ion-checkbox>
                 </td>
                 <td>{{lavado.id}}</td>
                 <td>{{lavado.lavadodet[0]?.Tipos_Vehiculos?.tipo_vehiculo}}</td>
                 <td>
                   <ul>
-                    <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}</li>
+                    <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}
+                    </li>
                   </ul>
                 </td>
                 <td>${{lavado.total}}</td>
@@ -88,7 +105,8 @@
           <ion-label *ngIf="rol.id === 1">Seleccionar Fecha</ion-label>
           <ion-label *ngIf="rol.id !== 1">Hoy</ion-label>
           <ion-select *ngIf="rol.id === 1" [(ngModel)]="idu" (ionChange)="change()" label="Sucursal">
-            <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">{{ sucursal.sucursal }}</ion-select-option>
+            <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">{{ sucursal.sucursal
+              }}</ion-select-option>
           </ion-select>
           <ion-button *ngIf="rol.id === 1" style="height: 100%;" (click)="openFilter($event)" class="crear">
             <ion-icon slot="start" name="filter"></ion-icon>
@@ -120,7 +138,8 @@
                 <td>{{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</td>
                 <td>
                   <ul>
-                    <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}</li>
+                    <li *ngFor="let det of lavado.lavadodet">{{det.Servicios.nombre_servicio}} ${{det.Servicios.precio}}
+                    </li>
                   </ul>
                 </td>
                 <td>{{lavado.fecha}}</td>

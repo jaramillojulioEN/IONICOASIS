@@ -66,6 +66,7 @@
             <caption class="ion-text-center">Lavados</caption>
             <thead>
                 <tr>
+                    <th>No.</th>
                     <th>ID</th>
                     <th>Total</th>
                     <th>Fecha</th>
@@ -122,10 +123,12 @@
                 </tr>
             </thead>
             <tbody *ngIf="info.OrdenesCaja.length > 0">
-                <tr *ngFor="let orden of info.OrdenesCaja">
-                    <td>ORD #{{orden.id}}</td>
-                    <td>${{orden.total}}</td>
-                    <td>{{orden.fecha}}</td>
+                <tr *ngFor="let orden of info.OrdenesCaja; let index = index" (click)="VerOrden(orden)" role="button"
+                    style="cursor: pointer;">
+                    <td>{{ index + 1 }}</td>
+                    <td>ORD #{{ orden.id }}</td>
+                    <td>${{ orden.total }}</td>
+                    <td>{{ orden.fecha }}</td>
                 </tr>
             </tbody>
         </table>

@@ -12,6 +12,7 @@ import { EditLavComponent } from 'src/app/Components/Modals/edit-lav/edit-lav.co
 import { CortesService } from 'src/app/services/cortes/cortes.service';
 import { Calls } from 'src/functions/call';
 import { CrearLavadoComponent } from 'src/app/Components/Modals/crear-lavado/crear-lavado.component';
+import { SelectLavadoComponent } from 'src/app/Components/Modals/select-lavado/select-lavado.component';
 @Component({
   selector: 'app-lavado',
   templateUrl: './lavado.page.html',
@@ -68,6 +69,31 @@ export class LavadoPage implements OnInit {
     private calls: Calls
   ) {
     this.fecha = this.fns.obtenerFechaHoraActual();
+  }
+
+
+  btntxt : string = ""
+
+
+  async selecionarserivcio(){
+    console.log(this.servicios)
+    const modal = await this.mc.create({
+      component: SelectLavadoComponent,
+      componentProps: {
+        servicios: this.vehiculo.Servicio_Tipo_Vehiculo,
+      },
+      backdropDismiss: true
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.data && result.data.serviciosSeleccionados) {
+        this.servicios = result.data.serviciosSeleccionados
+        console.log('Servicios seleccionados custom:', result.data.serviciosSeleccionados);
+        console.log('Servicios seleccionados:', this.servicios);
+        this.btntxt = this.servicios.length + " servicio seleccionados"
+      }
+    });
+    return await modal.present();
   }
 
   sucursales: any = []

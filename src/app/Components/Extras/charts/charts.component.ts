@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import Chart from 'chart.js/auto'
 import { CortesService } from 'src/app/services/cortes/cortes.service';
+import { DetalleadminComponent } from '../../Modals/detalleadmin/detalleadmin.component';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-charts',
@@ -10,17 +12,15 @@ import { CortesService } from 'src/app/services/cortes/cortes.service';
 export class ChartsComponent implements OnInit {
   info: any = [];
 
-  constructor(private corteservice: CortesService) { }
+  constructor(private corteservice: CortesService, private md: ModalController) { }
   @Input() colores: string[] = []
   @Input() data: number[] = []
   @Input() caja: any = []
   @Input() labels: string[] = []
   ngOnInit() {
     this.ObtenerInfo();
-    console.log(this.info.CortesCaja)
     var chartExist = Chart.getChart("ctx");
-    console.log(chartExist)
-
+    this.filter(0)
     if (chartExist != undefined) {
       chartExist.destroy();
     }
@@ -60,17 +60,31 @@ export class ChartsComponent implements OnInit {
 
   totalordn(ordenes: any[]): number {
     return ordenes
-      .filter(x => this.estado === 0 ? x.estado === 5 : x.estado === this.estado) 
-      .reduce((acc, x) => acc + x.total, 0); 
+      .filter(x => this.estado === 0 ? x.estado === 5 : x.estado === this.estado)
+      .reduce((acc, x) => acc + x.total, 0);
   }
-  
 
-  tipo(){
-    switch(this.estado){
+  async VerOrden(data: any) {
+    var modal: any = null;
+    modal = await this.md.create({
+      component: DetalleadminComponent,
+      canDismiss: true,
+      componentProps: {
+        ordenes: data,
+      },
+    });
+    return await modal.present();
+  }
+
+  index = 0
+
+
+  tipo() {
+    switch (this.estado) {
       case 0: return "Ordenes"
       case 7: return "Empleados"
       case 8: return "Familia"
-      default : return"desconocido"
+      default: return "desconocido"
     }
   }
 

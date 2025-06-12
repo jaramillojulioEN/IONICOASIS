@@ -1,0 +1,16 @@
+<ion-content class="ion-padding">
+  <ion-searchbar [(ngModel)]="query" (ionInput)="buscarServicios($event)" show-clear-button="always" clear-icon="trash"
+    placeholder="Buscar servicio" animated="true"></ion-searchbar>
+
+  <ion-list lines="none">
+    <ion-item *ngFor="let servicio of serviciosFiltrados" (click)="seleccionarServicio(servicio)">
+      <ion-checkbox justify="space-between" [checked]="isServicioSeleccionado(servicio)">
+        {{ servicio.Servicios.nombre_servicio }} ${{ servicio.Servicios.precio }}
+      </ion-checkbox>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="full" color="light" (click)="cerrarModal()">OK</ion-button>
+</ion-footer>

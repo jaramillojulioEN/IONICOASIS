@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "oasistest-485a4"
-  }
+  },
+  "targets": {
+    "oasistest-485a4": {
+      "hosting": {
+        "prod": ["oasistest-485a4"],
+        "test": ["pruebasoasis"]
+      }
+    }
+  },
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }

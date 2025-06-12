@@ -38,6 +38,7 @@ import { CantidesComponent} from '../Components/Modals/cantides/cantides.compone
 import { InasistenciasComponent } from './Modals/inasistencias/inasistencias.component';
 import { VentaEspecialComponent } from './Modals/venta-especial/venta-especial.component';
 import { CrearLavadoComponent } from './Modals/crear-lavado/crear-lavado.component';
+import { SelectLavadoComponent } from './Modals/select-lavado/select-lavado.component';
 @NgModule({
   declarations:
     [
@@ -45,6 +46,7 @@ import { CrearLavadoComponent } from './Modals/crear-lavado/crear-lavado.compone
       CrearLavadoComponent,
       InasistenciasComponent,
       ReloaderComponent,
+      SelectLavadoComponent,
       EmpleadosComponent,
       TicketcajaComponent,
       VentaEspecialComponent,
@@ -96,6 +98,7 @@ import { CrearLavadoComponent } from './Modals/crear-lavado/crear-lavado.compone
     TicketcajaComponent,
     ExistenciasComponent,
     ServiciosComponent,
+    SelectLavadoComponent,
     ChartsComponent,
     SelectComponent,
     DatepickerComponent,

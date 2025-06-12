@@ -11,6 +11,15 @@
     width: 100%;
     white-space: nowrap; 
   }
+
+  .nuevo{
+    --background: #2c507c;
+    --color: #fff;
+  }
+  .cancelar{
+    --background: #b1473f;
+    --color: #fff;
+  }
   
   .tabla th, .tabla td {
     padding: 8px; 
