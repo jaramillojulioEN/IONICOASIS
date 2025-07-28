@@ -1,8 +1,49 @@
 <app-main-header [isModal]="true" titulo="Cierre de caja"></app-main-header>
+
+
 <ion-content id="main-content">
+  <app-skeleton *ngIf="loading" colums="3" type="cards"></app-skeleton>
+
+  <div *ngIf="!canclose && !loading">
 
 
-  <ion-grid>
+    <!-- Ordenes pendientes -->
+    <div class="ordens ion-margin-top ion-padding ion-border"
+      *ngIf="pendientes.Ordenes && pendientes.Ordenes.length > 0">
+      <ion-item lines="none" class="ion-no-padding">
+        <ion-icon name="warning-outline" slot="start" color="warning"></ion-icon>
+        <ion-label>
+          <h5 class="ion-text-wrap">
+            Tienes <strong>{{ pendientes.Ordenes.length }}</strong> órdenes pendientes de cobro
+          </h5>
+        </ion-label>
+      </ion-item>
+      <ion-button expand="block" color="primary" (click)="irACobrar('ordenes')">
+        Cobrar órdenes
+      </ion-button>
+    </div>
+
+    <!-- Lavados pendientes -->
+    <div class="ordens ion-margin-top ion-padding ion-border"
+      *ngIf="pendientes.Lavados && pendientes.Lavados.length > 0">
+      <ion-item lines="none" class="ion-no-padding">
+        <ion-icon name="warning-outline" slot="start" color="warning"></ion-icon>
+        <ion-label>
+          <h5 class="ion-text-wrap">
+            Tienes <strong>{{ pendientes.Lavados.length }}</strong> lavados pendientes de cobro
+          </h5>
+        </ion-label>
+      </ion-item>
+      <ion-button expand="block" color="primary" (click)="irACobrar('lavados')">
+        Cobrar lavados
+      </ion-button>
+    </div>
+
+
+
+  </div>
+
+  <ion-grid *ngIf="canclose">
     <ion-row>
       <ion-col sm-size="12" *ngIf="isrev" lg-size="4" class="ion-margin-top ion-padding">
         <ion-button color="primary" class="crear" expand="full" (click)="imprimir('print-section')">Reimprimir

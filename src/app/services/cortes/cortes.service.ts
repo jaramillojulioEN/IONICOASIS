@@ -151,6 +151,14 @@ export class CortesService {
     }
   }
 
+  async AccionesPendientes(caja:any): Promise<Observable<any>> {
+    try {
+      return this.http.post<any>(`${this.server}api/Cortes/AccionesPendietes`, caja);
+    } finally {
+
+    }
+  }
+
   async Info(loader: boolean = true, idcaja : number, estado = 0): Promise<Observable<any>> {
     try {
       return this.http.get<any>(`${this.server}api/Cortes/Obtenerinfo/${idcaja}/${estado}`);

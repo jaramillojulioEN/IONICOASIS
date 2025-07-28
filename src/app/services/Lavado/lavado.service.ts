@@ -82,16 +82,14 @@ export class LavadoService {
     }
   }
 
-  async lavados(estado: number, loader: boolean = true, ids = 0): Promise<Observable<any>> {
+  async lavados(estado: number, ids = 0, pagina : any): Promise<Observable<any>> {
     try {
-      var user = this.UserServiceService.getUser();
-      let idsuc = ids == 0  ? user.sucursales.id : ids
-      return this.http.get<any>(`${this.server}api/Servicios/Lavados/${estado}/${idsuc}`);
+      return this.http.post<any>(`${this.server}api/Servicios/Lavados/${estado}/${ids}`, pagina);
     } finally {
     }
   }
 
- 
+
 
   async CrearLavado(data: object, load: boolean = true): Promise<Observable<any>> {
     return new Observable(observer => {
@@ -133,11 +131,11 @@ export class LavadoService {
       });
     });
   }
-  
+
   async ImprimirRecibo(data: object, load: boolean = true): Promise<Observable<any>> {
     return new Observable(observer => {
       const loaderPromise = load ? this.loaderFunctions.StartLoader("Imprimiendo Ticket") : Promise.resolve();
-  
+
       loaderPromise.then(() => {
         this.http.post<any>(`${this.server}api/Ordenes/Imprimir`, data).subscribe(
           async response => {
@@ -153,5 +151,5 @@ export class LavadoService {
       });
     });
   }
-  
+
 }

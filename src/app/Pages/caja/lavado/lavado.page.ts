@@ -19,13 +19,15 @@ import { SelectLavadoComponent } from 'src/app/Components/Modals/select-lavado/s
   styleUrls: ['./lavado.page.scss'],
 })
 export class LavadoPage implements OnInit {
-  //paginacion
-  registrosPorPagina: number = 5;
-  currentPage: number = 1;
-  totalRegistros: number = 0;
-  totalPages: number = 0;
-  filterdate: string = "";
-  //----------
+
+  pagina = {
+    PaginaActual: 1,
+    TotalPorPagina: 5,
+    TotalPages: 1,
+    TotalItems: 0,
+    Fecha: ""
+  }
+
 
   segmento: string = "pago"
   fechaActual: string = this.funcs.obtenerFechaHoraActual();
@@ -46,9 +48,6 @@ export class LavadoPage implements OnInit {
   }
   lavados: any = [];
 
-  lavadoshistorial: any = [];
-  lavadoshistorialnf: any = [];
-  lavadoshistorialf: any = [];
   filtered: boolean = false;
   fecha: string = "";
   message: string = "Error desconocido, conecta con soporte";
@@ -72,10 +71,10 @@ export class LavadoPage implements OnInit {
   }
 
 
-  btntxt : string = ""
+  btntxt: string = ""
 
 
-  async selecionarserivcio(){
+  async selecionarserivcio() {
     console.log(this.servicios)
     const modal = await this.mc.create({
       component: SelectLavadoComponent,
@@ -100,6 +99,8 @@ export class LavadoPage implements OnInit {
   idu: any = 0
   async ngOnInit() {
     this.rol = this.UserServiceService.getRol()
+    console.log(this.rol);
+
     this.start();
     this.sucursales = await this.calls.getsucus();
     var user = this.UserServiceService.getUser()
@@ -113,7 +114,7 @@ export class LavadoPage implements OnInit {
     ]);
   }
 
-  async verticket(data : any){
+  async verticket(data: any) {
     const modal = await this.mc.create({
       component: TicketComponent,
       componentProps: {
@@ -241,26 +242,17 @@ export class LavadoPage implements OnInit {
     }
   }
 
+
+
   loaded: boolean = false;
   async obtenerLavados(estado: number, load: boolean = true, ids = 0): Promise<void> {
+    ids = ids == 0 ? this.UserServiceService.gesucu() : ids
     this.loaded = false;
     try {
-      const response: any = await (await this.LavadoService.lavados(estado, load, ids)).toPromise();
+      const response: any = await (await this.LavadoService.lavados(estado, ids, this.pagina)).toPromise();
       if (response && response.Lavados) {
-        if (estado === 1) {
-          this.lavados = response.Lavados;
-          console.log(this.lavados = response.Lavados)
-        } else {
-          this.lavadoshistorial = response.Lavados;
-          this.lavadoshistorialnf = response.Lavados;
-
-          if (this.rol.id !== 1) {
-            this.lavadoshistorial = this.fns.filterbydate(this.lavadoshistorialnf, this.fechaActual);
-          }
-
-          this.cargarLavadosHistorialPagina();
-        }
-
+        this.lavados = response.Lavados;
+        this.pagina = response.Paginador
         this.obtenerServicios();
       } else {
         console.error('Error: Respuesta inválida');
@@ -272,6 +264,21 @@ export class LavadoPage implements OnInit {
     }
   }
 
+
+  cargarposcobrar() {
+    this.pagina.PaginaActual = 1;
+    this.pagina.TotalPages = 1;
+    this.pagina.TotalPages = 0;
+    this.obtenerLavados(1)
+
+  }
+
+  historial(): void {
+    this.pagina.PaginaActual = 1;
+    this.pagina.TotalPages = 1;
+    this.pagina.TotalPages = 0;
+    this.obtenerLavados(2)
+  }
 
   async Cobrar(lavado: any): Promise<void> {
     const modal = await this.mc.create({
@@ -291,7 +298,7 @@ export class LavadoPage implements OnInit {
 
   accionAlCerrarModal() {
     this.selectedLavados = []
-    
+
   }
 
   async openFilter(event: Event): Promise<void> {
@@ -311,9 +318,10 @@ export class LavadoPage implements OnInit {
       if (dataReturned !== undefined) {
         this.fecha = dataReturned.data
         if (this.fecha != undefined && this.fecha != null) {
-          this.lavadoshistorial = this.fns.filterbydate(this.lavadoshistorialnf, this.fecha)
-          this.cargarLavadosHistorialPagina();
-          this.filtered = true
+          this.pagina.Fecha = this.fecha
+          this.pagina.PaginaActual = 1;
+          this.filtered = true;
+          this.obtenerLavados(2);
         }
       }
     });
@@ -327,23 +335,15 @@ export class LavadoPage implements OnInit {
 
   selectedLavados: any[] = [];
 
-  // Method to handle checkbox selection
   toggleSelection(lavado: any) {
-
-
-
     if (lavado.selected) {
       this.selectedLavados.push(lavado);
     } else {
       this.selectedLavados = this.selectedLavados.filter(l => l.id !== lavado.id);
     }
-
-
-  
-
   }
 
-  multuple(){
+  multuple() {
     console.log(this.selectedLavados)
     this.Cobrar(this.selectedLavados)
   }
@@ -385,43 +385,33 @@ export class LavadoPage implements OnInit {
 
   deletefilter() {
     this.filtered = false
+    this.pagina.Fecha = "";
+    this.fecha = ""
     this.obtenerLavados(2)
   }
 
 
-  
-    async AbrirModalLavadoNuevo() {
-      const modal = await this.md.create({
-        component: CrearLavadoComponent,
-      });
-      return await modal.present();
-    }
-  
 
-  historial(): void {
-    this.obtenerLavados(2)
+  async AbrirModalLavadoNuevo() {
+    const modal = await this.md.create({
+      component: CrearLavadoComponent,
+    });
+    return await modal.present();
   }
+
+
+
 
   paginaAnterior() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.cargarLavadosHistorialPagina();
-    }
+    this.pagina.PaginaActual = this.pagina.PaginaActual - 1
+    var estado = this.segmento === "pago" ? 1 : 2;
+    this.obtenerLavados(estado, true)
   }
 
   paginaSiguiente() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.cargarLavadosHistorialPagina();
-    }
-  }
-
-  cargarLavadosHistorialPagina() {
-    this.totalRegistros = this.lavadoshistorial.length
-    this.totalPages = Math.ceil(this.totalRegistros / this.registrosPorPagina)
-    const startIndex = (this.currentPage - 1) * this.registrosPorPagina;
-    const endIndex = startIndex + this.registrosPorPagina;
-    this.lavadoshistorialf = this.lavadoshistorial.slice(startIndex, endIndex);
+    this.pagina.PaginaActual = this.pagina.PaginaActual + 1
+    var estado = this.segmento === "pago" ? 1 : 2;
+    this.obtenerLavados(estado, true)
   }
 
 }

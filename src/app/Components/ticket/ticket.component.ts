@@ -30,6 +30,13 @@ export class TicketComponent implements OnInit {
   cambio: number = 0;
   lavadoenorden: boolean = false
 
+  pagina = {
+    PaginaActual: 1,
+    TotalPorPagina: 5,
+    TotalPages: 1,
+    TotalItems: 0,
+    Fecha: ""
+  }
 
   ccambio(): void {
     let total = this.lavado.length != 0 ? this.obtenerTotal() : this.ordentotal(this.orden)
@@ -167,7 +174,7 @@ export class TicketComponent implements OnInit {
   ordentotal(orden: any) {
     var total = orden.total;
 
-    if(this.lavadosSeleccionados.length > 0){
+    if (this.lavadosSeleccionados.length > 0) {
       this.lavadosSeleccionados.forEach(element => {
         total += element.total;
       });
@@ -182,12 +189,12 @@ export class TicketComponent implements OnInit {
       this.imprimir("print-section")
     }
 
-    if(this.lavado.length >0){
+    if (this.lavado.length > 0) {
       this.lavado.forEach((lav: any) => {
         lav.estado = 2
       });
     }
-    
+
 
 
     if (this.lavadosSeleccionados.length > 0) {
@@ -223,7 +230,7 @@ export class TicketComponent implements OnInit {
   }
 
 
-  Eliminar(lavagregado :any) {
+  Eliminar(lavagregado: any) {
     this.ac.presentCustomAlert("Eliminar", "Estas seguro de querer eliminar este coche de esta orden?", () => this.confirmdelete(lavagregado))
   }
 
@@ -238,7 +245,7 @@ export class TicketComponent implements OnInit {
     console.log(this.lavadosSeleccionados)
   }
 
-  async cerrar(){
+  async cerrar() {
     (await this.os.ActualizarOrden(this.orden, 4)).subscribe(
       async (response: any) => {
         if (response && response.message) {
@@ -252,7 +259,7 @@ export class TicketComponent implements OnInit {
       }
     );
   }
-  
+
 
   async cobrar(): Promise<void> {
 
@@ -299,7 +306,7 @@ export class TicketComponent implements OnInit {
 
   @Input() orden: any = []
   @Input() lavado: any = []
-  @Input() isrev: boolean =false
+  @Input() isrev: boolean = false
 
   ngOnInit() {
     console.log(this.orden)
@@ -334,7 +341,7 @@ export class TicketComponent implements OnInit {
 
 
   async obtenerLavados(estado: number = 1, load: boolean = true): Promise<void> {
-    (await this.lav.lavados(estado, load)).subscribe(
+    (await this.lav.lavados(estado, this.usuario.sucursales.id, this.pagina)).subscribe(
       async (response: any) => {
         if (response && response.Lavados) {
           this.lavadospendientes = response.Lavados;

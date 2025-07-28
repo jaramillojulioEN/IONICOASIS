@@ -1,3 +1,4 @@
+import { ModalController } from '@ionic/angular';
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 import { LavadoService } from 'src/app/services/Lavado/lavado.service';
@@ -5,6 +6,7 @@ import { UserServiceService } from 'src/app/services/Users/user-service.service'
 import { CortesService } from 'src/app/services/cortes/cortes.service';
 import { LoaderFunctions } from 'src/functions/utils';
 import { NgxPrintModule } from 'ngx-print';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-ticketcaja',
@@ -12,22 +14,53 @@ import { NgxPrintModule } from 'ngx-print';
   styleUrls: ['./ticketcaja.component.scss'],
 })
 export class TicketcajaComponent implements OnInit {
+  pendientes: any;
 
   constructor(
     private UserServiceService: UserServiceService,
     private fn: LoaderFunctions,
     private ac: AlertServiceService,
     private cortesService: CortesService,
-    private lav: LavadoService
+    private lav: LavadoService,
+    private router: Router,
+    private ModalController : ModalController
   ) { }
   usuario: any = this.UserServiceService.getUser()
   fecha: string = this.fn.obtenerFechaHoraActual()
   imprimirTicket: boolean = true
   @Input() caja: any = []
   @Input() isrev: boolean = false
-  ngOnInit() {
-    console.log(this.caja)
+
+  canclose: boolean = false;
+  loading: boolean = true;
+
+  async ngOnInit() {
+    (await this.cortesService.AccionesPendientes(this.caja)).subscribe({
+      next: (response: any) => {
+        this.loading = false;
+        this.pendientes = response
+        console.log(this.pendientes.Lavados.length);
+
+        if (this.pendientes.Lavados.length > 0 || this.pendientes.Ordenes.length > 0) {
+          this.canclose = false
+        }
+        else {
+          this.canclose = true
+        }
+      }
+    });
   }
+
+  irACobrar(tipo: 'ordenes' | 'lavados') {
+    this.ModalController.dismiss();
+    if (tipo === 'ordenes') {
+      this.router.navigate(['/caja']);
+    } else if (tipo === 'lavados') {
+      this.router.navigate(['/lavado']);
+    }
+  }
+
+
 
   cerracaja(caja: any): void {
     caja.estado = 2
@@ -135,6 +168,7 @@ export class TicketcajaComponent implements OnInit {
         console.error('Error en la solicitud:', error);
       }
     );
+
 
     console.log(base64PrintContents);
   }

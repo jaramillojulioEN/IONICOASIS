@@ -42,8 +42,7 @@ export class VentaEspecialComponent implements OnInit {
     this.mensaje = ""
   }
 
-  cobrarespecial() 
-  {
+  cobrarespecial() {
     var estado = this.TipoVenta === 1 ? 7 : 8
     this.ac.presentCustomAlert("Orden especial", "Estás seguro de querer cobrar esta orden?", () => this.alterstate(estado))
   }
@@ -69,10 +68,10 @@ export class VentaEspecialComponent implements OnInit {
   async cantidadplatillo(suma: boolean, detalleplato: any) {
     // Actualizar la cantidad
     detalleplato.cantidad = suma ? detalleplato.cantidad + 1 : detalleplato.cantidad - 1;
-  
+
     try {
       const response = await (await this.OrdenesService.ActualizarPlato(detalleplato, true)).toPromise();
-  
+
       if (response && response.message) {
         // Lógica adicional si es necesario
       } else {
@@ -85,14 +84,14 @@ export class VentaEspecialComponent implements OnInit {
       this.buscarOrden(detalleplato.idorden);
     }
   }
-  
+
   async cantidadbebida(suma: boolean, detallebebida: any) {
     // Actualizar la cantidad
     detallebebida.cantidad = suma ? detallebebida.cantidad + 1 : detallebebida.cantidad - 1;
-  
+
     try {
       const response = await (await this.OrdenesService.ActualizarPlato(detallebebida, false)).toPromise();
-  
+
       if (response && response.message) {
         // Lógica adicional si es necesario
       } else {
@@ -105,7 +104,7 @@ export class VentaEspecialComponent implements OnInit {
       this.buscarOrden(detallebebida.idorden);
     }
   }
-  
+
 
   ngOnInit() {
     console.log(this.orden)
@@ -248,6 +247,11 @@ export class VentaEspecialComponent implements OnInit {
         if (response) {
           this.ac.presentCustomAlert("Exito", response.message)
           this.buscarOrden(bebida.idorden);
+          debugger;
+          this.orden.ordenesbebidas = this.orden.ordenesbebidas.filter(
+            (element: any) => element.id !== bebida.id
+          );
+          console.log(this.orden.ordenesbebidas);
 
         } else {
           console.error('Error: Respuesta inválida');

@@ -55,7 +55,7 @@
 
 
     <!-- Sección de detalles de la orden -->
-    <ion-card class="custom-card" *ngIf="orden.ordenesplatillos|| orden.ordenesbebidas">
+<ion-card class="custom-card" *ngIf="(orden.ordenesplatillos?.length || 0) > 0 || (orden.ordenesbebidas?.length || 0) > 0">
       <ion-card-content class="ion-padding">
         <div class="order-details">
           <div *ngIf="orden.ordenesplatillos && orden.ordenesplatillos.length !== 0">

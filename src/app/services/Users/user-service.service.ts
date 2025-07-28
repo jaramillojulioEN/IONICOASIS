@@ -67,6 +67,11 @@ export class UserServiceService {
     return this.isAuth() ? this.user : null
   }
 
+  gesucu(): any {
+    var user =  this.isAuth() ? this.user : null
+    return user.sucursales.id;
+  }
+
   async ActulizarInasistencia(data: any): Promise<Observable<any>> {
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {

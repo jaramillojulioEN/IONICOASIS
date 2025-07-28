@@ -4,7 +4,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-segment [(ngModel)]="segmento" *ngIf="rol.id !== 1">
-    <ion-segment-button value="pago" *ngIf="caja" (click)="obtenerLavados(1)">
+    <ion-segment-button value="pago" *ngIf="caja" (click)="cargarposcobrar()">
       <ion-label>Lavado</ion-label>
     </ion-segment-button>
     <ion-segment-button value="hoy" (click)="historial()">
@@ -17,7 +17,7 @@
 
 
   <div *ngIf="segmento === 'pago'" class="ion-padding">
-    <ion-card  *ngIf="loaded">
+    <ion-card *ngIf="loaded">
       <span style="padding-left: 10px; padding-top: 10px; margin-top: 5px;">Nuevo lavado</span>
       <ion-grid>
 
@@ -132,7 +132,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let lavado of lavadoshistorialf">
+              <tr *ngFor="let lavado of lavados">
 
                 <td>{{lavado.id}}</td>
                 <td>{{lavado.lavadodet[0].Tipos_Vehiculos.tipo_vehiculo}}</td>
@@ -153,19 +153,23 @@
             </tbody>
           </table>
         </div>
-        <div class="pagination-container">
-          <ion-button (click)="paginaAnterior()" [disabled]="currentPage === 1" fill="clear" color="primary">
-            <ion-icon name="chevron-back-outline"></ion-icon>
-          </ion-button>
-          <ion-label>{{ currentPage }} de {{ totalPages }}</ion-label>
-          <ion-button (click)="paginaSiguiente()" [disabled]="currentPage === totalPages" fill="clear" color="primary">
-            <ion-icon name="chevron-forward-outline"></ion-icon>
-          </ion-button>
-        </div>
+
       </ion-card-content>
       <ion-card-content *ngIf="!loaded">
         <app-skeleton *ngIf="!loaded" [columns]="6" type="tabla"></app-skeleton>
       </ion-card-content>
     </ion-card>
   </div>
+
+  <div class="pagination-container">
+    <ion-button (click)="paginaAnterior()" [disabled]="pagina.PaginaActual === 0" fill="clear" color="primary">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-button>
+    <ion-label>{{ pagina.PaginaActual }} de {{ pagina.TotalPages }}</ion-label>
+    <ion-button (click)="paginaSiguiente()" [disabled]="pagina.PaginaActual === pagina.TotalPages" fill="clear"
+      color="primary">
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </ion-button>
+  </div>
+
 </ion-content>
