@@ -113,6 +113,8 @@ export class VentaEspecialComponent implements OnInit {
     }
   }
 
+
+
   mensaje: string = ""
   validar(): boolean {
     if (this.id === 0) {

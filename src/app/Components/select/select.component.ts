@@ -28,14 +28,15 @@ export class SelectComponent implements OnInit {
     private pop: PopoverController,
     private ac: AlertServiceService,
     private us: UserServiceService
+
   ) { }
+  platosagrupados: any
+
   ngOnInit() {
-    if(this.isPlatillo)
-    {
+    if (this.isPlatillo) {
       this.ObtenerPlatillos(true, this.criterio)
     }
-    else
-    {
+    else {
       this.ObtenerBebidas(true, this.criterio)
       this.ObtenerBebidasPrp(true, this.criterio)
     }
@@ -57,10 +58,12 @@ export class SelectComponent implements OnInit {
   async ObtenerPlatillos(load: boolean = false, criterio: string = ""): Promise<void> {
     try {
       this.loaded = false;
+      debugger;
       const response: any = await (await this.PlatilloService.Platillos(load, 2, 0, criterio)).toPromise();
 
       if (response && response.platillos) {
         this.PlatilloArry = response.platillos;
+        this.platosagrupados = this.agruparPorCategoria(this.PlatilloArry);
       } else {
         console.error('Error: Respuesta inválida');
       }
@@ -83,9 +86,11 @@ export class SelectComponent implements OnInit {
     }
   }
 
+
   async ObtenerBebidasPrp(load: boolean = false, criterio: string = ""): Promise<void> {
     try {
       this.loaded = false;
+      debugger;
       const response: any = await (await this.PlatilloService.Platillos(load, 1, 0, criterio)).toPromise();
 
       if (response && response.platillos) {
@@ -128,17 +133,17 @@ export class SelectComponent implements OnInit {
   getcolor(bebida: any) {
     var ids = this.us.getUser().idsucursal;
     let bebidaExistente = bebida.bebidasexitencias.find((b: any) => b.idsucursal == ids);
-    
+
     if (bebidaExistente) {
       var cantidad = bebidaExistente.cantidad;
       if (cantidad <= 0) {
         return "red";
       }
     }
-    
+
     return null;
   }
-  
+
 
   async ObtenerBebidas(load: boolean = false, criterio: string = ""): Promise<void> {
     try {

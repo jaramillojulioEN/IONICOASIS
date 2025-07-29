@@ -5,6 +5,7 @@ import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { ModalController } from '@ionic/angular';
 import { LavadoService } from 'src/app/services/Lavado/lavado.service';
 import { Calls } from 'src/functions/call';
+import { flush } from '@angular/core/testing';
 @Component({
   selector: 'app-ticket',
   templateUrl: './ticket.component.html',
@@ -30,12 +31,18 @@ export class TicketComponent implements OnInit {
   cambio: number = 0;
   lavadoenorden: boolean = false
 
+  loaded: boolean = false;
+
+
+
   pagina = {
     PaginaActual: 1,
     TotalPorPagina: 5,
     TotalPages: 1,
     TotalItems: 0,
-    Fecha: ""
+    Fecha: "",
+    PaginationEnabled: false
+
   }
 
   ccambio(): void {
@@ -325,18 +332,22 @@ export class TicketComponent implements OnInit {
 
 
   async buscarOrden(): Promise<void> {
-    (await this.OrdenesService.BuscarOrden(true, this.orden.id)).subscribe(
-      async (response: any) => {
+    this.loaded = false;
+    await (await this.OrdenesService.BuscarOrden(true, this.orden.id)).subscribe({
+      next: (response: any) => {
         if (response && response.orden) {
           this.orden = response.orden
         } else {
-          console.error('Error: Respuesta inválida');
+          this.ac.presentCustomAlert("Error", response.message)
         }
       },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
-      }
-    );
+      error: (err) => {
+        this.ac.presentCustomAlert("Error", err)
+      },
+      complete: () => {
+        this.loaded = true;
+      },
+    });
   }
 
 

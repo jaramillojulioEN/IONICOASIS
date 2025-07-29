@@ -31,14 +31,15 @@ import { ExistenciasComponent } from './Modals/existencias/existencias.component
 import { TicketcajaComponent } from './ticketcaja/ticketcaja.component'
 import { SkeletonComponent } from './skeleton/skeleton.component'
 import { EditLavComponent } from './Modals/edit-lav/edit-lav.component'
-import {DetalleadminComponent} from 'src/app/Components/Modals/detalleadmin/detalleadmin.component'
-import {EstadoComponent} from  'src/app/Components/Modals/estado/estado.component'
-import {ReloaderComponent } from '../Components/reloader/reloader.component'
-import { CantidesComponent} from '../Components/Modals/cantides/cantides.component'
+import { DetalleadminComponent } from 'src/app/Components/Modals/detalleadmin/detalleadmin.component'
+import { EstadoComponent } from 'src/app/Components/Modals/estado/estado.component'
+import { ReloaderComponent } from '../Components/reloader/reloader.component'
+import { CantidesComponent } from '../Components/Modals/cantides/cantides.component'
 import { InasistenciasComponent } from './Modals/inasistencias/inasistencias.component';
 import { VentaEspecialComponent } from './Modals/venta-especial/venta-especial.component';
 import { CrearLavadoComponent } from './Modals/crear-lavado/crear-lavado.component';
 import { SelectLavadoComponent } from './Modals/select-lavado/select-lavado.component';
+import { TestComponent } from './test/test.component';
 @NgModule({
   declarations:
     [
@@ -78,7 +79,8 @@ import { SelectLavadoComponent } from './Modals/select-lavado/select-lavado.comp
       SideMenuComponent,
       PlatilloNuevoComponent,
       MainHeaderComponent,
-      BebidaComponent
+      BebidaComponent,
+      TestComponent
     ],
   exports: [
     CardComponent,
@@ -116,7 +118,8 @@ import { SelectLavadoComponent } from './Modals/select-lavado/select-lavado.comp
     RecetasComponent,
     SideMenuComponent,
     PlatilloNuevoComponent,
-    BebidaComponent
+    BebidaComponent,
+    TestComponent
   ],
   imports: [
     CommonModule,

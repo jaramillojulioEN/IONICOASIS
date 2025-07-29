@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
 import { ModalController } from '@ionic/angular';
-import { formatDate } from '@angular/common';
 import { PopoverController } from '@ionic/angular';
 import { DatepickerComponent } from 'src/app/Components/Secciones/datepicker/datepicker.component';
 import { LoaderFunctions } from 'src/functions/utils'
@@ -21,19 +20,26 @@ export class CajaPage implements OnInit {
   segmento: string = 'pago';
   rol: any;
   fechaActual: string = '';
+
   ordenes: any = [];
+  ordenesagruapdas: any = []
+
   filtered: boolean = false;
   fecha: any = this.fns.obtenerFechaHoraActual();
-  cobradas: any = [];
   caja: boolean = false;
   loaded: boolean = false;
   mensaje: any;
   error: any = 'Caja cerrada';
-  inicio: number = 0;
-  fin: number = 5;
-  totalOrdenes: number = 0;
   fechaf: any;
 
+  pagina = {
+    PaginaActual: 1,
+    TotalPorPagina: 5,
+    TotalPages: 1,
+    TotalItems: 0,
+    Fecha: "",
+    PaginationEnabled : true
+  }
   constructor(
     public os: OrdenesService,
     protected pop: PopoverController,
@@ -43,19 +49,23 @@ export class CajaPage implements OnInit {
     private call: Calls,
     private ac: AlertServiceService,
     private ModalController: ModalController
-  ) { }
+  ) {
+    this.rol = this.userservice.getRol();
+    this.idsucursal = this.userservice.gesucu()
+
+  }
   sucursales: any = []
-  ids: number = 0
+  idsucursal: number = 0
   async ngOnInit() {
-    this.start()
     this.sucursales = await this.call.getsucus()
-    var usuario = this.userservice.getUser();
-    this.ids = usuario.idsucursal
+    this.start()
+
     window.addEventListener('success', () => {
-      this.getordenes(4, true, 0, 0);
       this.ModalController.dismiss();
     })
   }
+
+
 
   agruparPorEstado(ordenes: any[]) {
     return ordenes.reduce((acc, orden) => {
@@ -70,23 +80,16 @@ export class CajaPage implements OnInit {
   }
 
 
-
-  change() {
-
-    this.getordenes(5, true, this.inicio, this.fin, this.ids);
-
-  }
-
   async handleRefresh(event: any) {
     await this.start();
     event.target.complete();
   }
 
-  async Especial(){
+  async Especial() {
     const modal = await this.mc.create({
       component: VentaEspecialComponent,
       componentProps: {
-        
+
       },
       backdropDismiss: true
     });
@@ -94,23 +97,15 @@ export class CajaPage implements OnInit {
   }
 
   async start() {
-    this.rol = this.userservice.getRol();
     this.segmento = this.rol.id !== 1 ? 'pago' : 'hoy';
     this.fechaActual = this.fns.obtenerFechaHoraActual();
-    this.inicio = 0;
-    this.fin = 5
+
     if (this.rol.id !== 1) {
-      this.getordenes(4, true, 0, 0);
+      this.getordenes(4, true);
     } else {
-      this.getordenes(5, true, this.inicio, this.fin);
+      this.getordenes(5, true);
     }
   }
-  historial(): void {
-    this.inicio = 0;
-    this.fin = 5
-    this.getordenes(5, true, this.inicio, this.fin);
-  }
-
   async openFilter(event: Event): Promise<void> {
     const popover = await this.pop.create({
       component: DatepickerComponent,
@@ -128,9 +123,10 @@ export class CajaPage implements OnInit {
       if (dataReturned !== undefined) {
         this.fechaf = dataReturned.data
         if (this.fechaf != undefined && this.fechaf != null) {
-          console.log(this.fechaf)
-          this.historial()
           this.filtered = true
+          this.pagina.Fecha = this.fechaf;
+          this.pagina.PaginaActual = 1;
+          this.getordenes(5)
         }
       }
     });
@@ -154,10 +150,6 @@ export class CajaPage implements OnInit {
     return valor < 10 ? '0' + valor : valor.toString();
   }
 
-
-
-
-
   async cobrarOrden(orden: any) {
     const modal = await this.mc.create({
       component: TicketComponent,
@@ -178,7 +170,7 @@ export class CajaPage implements OnInit {
   }
 
 
-  async verticket(data : any){
+  async verticket(data: any) {
     const modal = await this.mc.create({
       component: TicketComponent,
       componentProps: {
@@ -206,35 +198,38 @@ export class CajaPage implements OnInit {
 
 
 
-  puedeRetroceder(): boolean {
-    return this.inicio > 0;
+  paginaAnterior() {
+    this.pagina.PaginaActual = this.pagina.PaginaActual - 1
+    this.getordenes(5, true);
   }
 
-  estados = [1, 2, 3, 4, 5]
-  async retrocederOrdenes(estado: number) {
-    if (this.puedeRetroceder()) {
-      this.inicio -= this.fin;
-      await this.getordenes(estado, false, this.inicio, this.inicio + this.fin);
-    }
+  paginaSiguiente() {
+    this.pagina.PaginaActual = this.pagina.PaginaActual + 1
+    this.getordenes(5, true);
   }
-  async getordenes(estado: number, load: boolean = false, inicio: number, fin: number, ids = 0): Promise<void> {
 
-    if (load) {
-      this.loaded = false;
-    }
+
+  async getordenes(estado: number, load: boolean = true) {
+    this.loaded = !load
+    this.pagina.Fecha = this.rol.id != 1 ? this.pagina.Fecha = this.fechaActual : "";
+    this.pagina.PaginationEnabled = estado === 4 ? false : true;
     try {
-      console.log(this.fechaf)
-      const response: any = await (await this.os.OrdenesPendientes(load, estado, this.rol.id, inicio, fin, ids, this.fechaf ? this.fechaf.toString().split("T")[0] : "1900-01-01T00:00:00.0000")).toPromise();
-      this.mensaje = response.message;
-      this.totalOrdenes = response.total
-      console.log(this.totalOrdenes)
-      if (response && response.ordenes != null) {
-        if (estado === 4) {
-          this.ordenes = response.ordenes;
-        } else {
-          this.cobradas = response.ordenes;
+      (await this.os.OrdenesPendientesNuevo(estado, this.rol.id, this.idsucursal, this.pagina)).subscribe({
+        next: (response: any) => {
+          this.ordenes = response.Ordenes;
+          console.log(this.ordenes);
+          
+          this.ordenesagruapdas = this.agruparPorEstado(this.ordenes)
+          this.pagina = response.Paginador
+        },
+        error: (errro: any) => {
+          console.log(errro)
+        },
+        complete: () => {
+          this.loaded = true;
         }
-      }
+      });
+
     } catch (error) {
       console.error('Error en la solicitud:', error);
     } finally {
@@ -245,18 +240,11 @@ export class CajaPage implements OnInit {
   delfil() {
     this.filtered = false;
     this.fechaf = ""
-    this.historial();
+    this.pagina.Fecha = ""
+    this.filtered = false
+    this.pagina.PaginaActual = 1
+    this.getordenes(5);
 
-  }
-
-  async cargarMasOrdenes(estado: number) {
-    this.inicio += this.fin;
-    console.log(this.inicio)
-    await this.getordenes(estado, false, this.inicio, this.inicio + this.fin);
-  }
-
-  puedeCargarMas(): boolean {
-    return this.inicio + this.fin < this.totalOrdenes;
   }
 
 }

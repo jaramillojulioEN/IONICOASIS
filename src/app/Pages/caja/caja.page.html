@@ -7,13 +7,12 @@
     <ion-segment-button value="pago">
       <ion-label>Pendientes</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="hoy" (click)="historial()">
+    <ion-segment-button value="hoy" (click)="getordenes(5)">
       <ion-label>Cobradas</ion-label>
     </ion-segment-button>
   </ion-segment>
 
   <ion-content *ngIf="segmento === 'pago'" class="ion-padding">
-
     <ion-item-divider>Ordenes especiales</ion-item-divider>
     <ion-row>
       <ion-col size-lg="4" size-sm="12" class="ion-padding">
@@ -43,11 +42,11 @@
     </div>
 
     <ion-list lines="none" *ngIf="ordenes.length > 0">
-      <ng-container *ngFor="let estado of agruparPorEstado(ordenes)">
+      <ng-container *ngFor="let estado of ordenesagruapdas">
 
-        <ion-item-divider >{{ os.getEstado(estado.nombre) }}</ion-item-divider>
+        <ion-item-divider>{{ os.getEstado(estado.nombre) }}</ion-item-divider>
         <ion-row>
-          
+
           <ion-col size-lg="4" size-sm="12" *ngFor="let orden of estado.ordenes" class="ion-padding">
             <ion-card class="orden-card">
               <ion-card-header>
@@ -56,10 +55,10 @@
                 <ion-card-subtitle>Mesa: {{ orden.mesas.descripcion }}</ion-card-subtitle>
                 <ion-card-subtitle>Mesa: {{ os.getEstado(orden.estado) }}</ion-card-subtitle>
               </ion-card-header>
-    
+
               <ion-card-content>
                 <!-- Botón para cobrar la orden -->
-                <ion-button expand="fill"  (click)="cobrarOrden(orden)" class="crear">
+                <ion-button expand="fill" (click)="cobrarOrden(orden)" class="crear">
                   Cobrar Orden
                 </ion-button>
               </ion-card-content>
@@ -70,7 +69,7 @@
 
       <ion-item *ngIf="!loaded">No hay órdenes disponibles</ion-item>
     </ion-list>
-    
+
 
 
   </ion-content>
@@ -82,24 +81,25 @@
         <ion-item slot="end">
           <ion-label *ngIf="rol.id !== 1">Ordenes de hoy</ion-label>
           <ion-label></ion-label>
-          <ion-select *ngIf="rol.id === 1"  [(ngModel)]="ids" (ionChange)="change()" label="Sucursal">
+          <ion-select *ngIf="rol.id === 1" [(ngModel)]="idsucursal" (ionChange)="getordenes(5)" label="Sucursal">
             <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">{{ sucursal.sucursal
               }}</ion-select-option>
           </ion-select>
-          <ion-button (click)="openFilter($event)" style="height: 100%;" class="crear">
+          <ion-button *ngIf="rol.id === 1" (click)="openFilter($event)" style="height: 100%;" class="crear">
             <ion-icon slot="start" name="filter"></ion-icon>
             <ion-label>Fecha</ion-label>
           </ion-button>
-          <ion-button (click)="historial()"  style="height: 100%;" class="crear">
+          <ion-button (click)="pagina.PaginaActual = 1; getordenes(5)" style="height: 100%;" class="crear">
             <ion-label>Recargar</ion-label>
           </ion-button>
-          <ion-button style="margin-left: 8px;" color="danger" (click)="delfil()"  style="height: 100%;" *ngIf="filtered" class="crear">
+          <ion-button style="margin-left: 8px;" color="danger" (click)="delfil()" style="height: 100%;" *ngIf="filtered"
+            class="crear">
             <ion-icon slot="start" name="trash"></ion-icon>
             <ion-label>Eliminar filtros</ion-label>
           </ion-button>
         </ion-item>
-        <div class="table-wrapper">
-          <table class="tabla">
+        <div class="table-wrapper" *ngIf="loaded">
+          <table class="tabla" >
             <thead>
               <tr>
                 <th>NO</th>
@@ -110,8 +110,8 @@
                 <th colspan="2">Total</th>
               </tr>
             </thead>
-            <tbody *ngIf="cobradas.length !==0">
-              <tr *ngFor="let cf of cobradas">
+            <tbody *ngIf="ordenes.length !==0">
+              <tr *ngFor="let cf of ordenes">
                 <td>#{{cf.id}}</td>
                 <td>{{cf.mesas.descripcion}}</td>
                 <td>{{cf.usuarios.nombre}}</td>
@@ -125,7 +125,7 @@
                 </td>
               </tr>
             </tbody>
-            <tbody *ngIf="cobradas.length ===0">
+            <tbody *ngIf="ordenes.length === 0">
               <tr>
                 <td colspan="6">No se han realizado ordenes</td>
               </tr>
@@ -133,13 +133,14 @@
           </table>
         </div>
         <div class="pagination-container ion-text-center">
-          <ion-button [disabled]="!puedeRetroceder()" (click)="retrocederOrdenes(5)" fill="clear" color="primary">
+          <ion-button [disabled]="pagina.PaginaActual === 1" (click)="paginaAnterior()" fill="clear" color="primary">
             <ion-icon name="chevron-back-outline"></ion-icon>
           </ion-button>
 
-          <ion-label>Mostrando {{inicio+1}} - {{fin+inicio}}</ion-label>
+          <ion-label>Mostrando {{pagina.PaginaActual}} - {{pagina.TotalItems}}</ion-label>
 
-          <ion-button [disabled]="!puedeCargarMas()" (click)="cargarMasOrdenes(5)" fill="clear" color="primary">
+          <ion-button [disabled]="pagina.PaginaActual === pagina.TotalPages" (click)="paginaSiguiente()" fill="clear"
+            color="primary">
             <ion-icon name="chevron-forward-outline"></ion-icon>
           </ion-button>
         </div>

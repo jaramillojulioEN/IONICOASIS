@@ -5,7 +5,7 @@
       <ion-searchbar animated="true" placeholder="Buscar" [(ngModel)]="criterio" (ionInput)="onSearchInput($event)">
       </ion-searchbar>
     </ion-item>
-    <ng-container *ngFor="let categoria of agruparPorCategoria(PlatilloArry)">
+    <ng-container *ngFor="let categoria of  platosagrupados">
       <ion-item-divider color="light">{{ categoria.nombre }}</ion-item-divider>
       <ion-item *ngFor="let pl of categoria.platillos" (click)="Dissmiss(pl)">
         <ion-grid>

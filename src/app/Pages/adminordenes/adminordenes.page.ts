@@ -55,6 +55,7 @@ export class AdminordenesPage implements OnInit {
   }
 
 
+
   async alterstate(orden: any): Promise<void> {
     orden.estado = 6;
     (await this.OrdenesService.ActualizarOrden(orden)).subscribe(
@@ -72,26 +73,44 @@ export class AdminordenesPage implements OnInit {
     );
   }
 
+  pagina = {
+    PaginaActual: 1,
+    TotalPorPagina: 5,
+    TotalPages: 1,
+    TotalItems: 0,
+    Fecha: "",
+    PaginationEnabled: false
+  }
+
   async ObtenerOrdenes(load: boolean = true): Promise<void> {
     try {
       if (load) {
         this.loaded = false;
       }
-      const response: any = await (await this.OrdenesService.OrdenesPendientes(load, 0, 1, 0, 0, this.idu)).toPromise();
-      if (response && response.ordenes) {
-        this.ordenes = response.ordenes;
-      } else {
-        console.error('Error: Respuesta inválida');
-      }
-      if (response.message) {
-        if (response.message === "Caja cerrada")
-          this.caja = false
-        else {
-          this.caja = true
+      (await this.OrdenesService.OrdenesPendientesNuevo(0, 1, this.idu, this.pagina)).subscribe({
+        next: (response: any) => {
+          if (response && response.Ordenes) {
+            this.ordenes = response.Ordenes;
+          } else {
+            console.error('Error: Respuesta inválida');
+          }
+          if (response.message) {
+            if (response.message === "Caja cerrada")
+              this.caja = false
+            else {
+              this.caja = true
+            }
+          } else {
+            console.error('Error: Respuesta inválida');
+          }
+        },
+        error: (error: any) => {
+          this.ac.presentCustomAlert("Error", error)
+        },
+        complete: () => {
+          this.loaded = true;
         }
-      } else {
-        console.error('Error: Respuesta inválida');
-      }
+      })
     } catch (error) {
       console.error('Error en la solicitud:', error);
     } finally {

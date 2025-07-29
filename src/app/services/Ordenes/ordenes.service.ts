@@ -237,12 +237,21 @@ export class OrdenesService {
     }
   }
 
+    async OrdenesPendientesNuevo(estado: number, idrol:number, idsucursal:number, paginador:any): Promise<Observable<any>> {
+    try {
+
+      let resquest = `${this.server}api/Ordenes/TodasOrdenesNuevo/${estado}/${idrol}/${idsucursal}`
+      return this.http.post<any>(resquest, paginador);
+    } finally {
+    }
+  }
+
 
   async BuscarOrden(loader: boolean = false, id: number): Promise<Observable<any>> {
     return new Observable(observer => {
       if (loader) {
         this.loaderFunctions.StartLoader().then(() => {
-          this.http.get<any>(`${this.server}api/Ordenes/BuscarOrden/${id}`).subscribe(
+          this.http.get<any>(`${this.server}api/Ordenes/BuscarOrdenNuevo/${id}`).subscribe(
             async ordenResponse => {
               await this.loaderFunctions.StopLoader();
               observer.next(ordenResponse);
@@ -255,7 +264,7 @@ export class OrdenesService {
           );
         });
       } else {
-        this.http.get<any>(`${this.server}api/Ordenes/BuscarOrden/${id}`).subscribe(
+        this.http.get<any>(`${this.server}api/Ordenes/BuscarOrdenNuevo/${id}`).subscribe(
           ordenResponse => {
             observer.next(ordenResponse);
             observer.complete();

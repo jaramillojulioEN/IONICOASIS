@@ -1,5 +1,5 @@
 <app-main-header titulo="Detalle de la venta" [isModal]="true"></app-main-header>
-<ion-content>
+<ion-content *ngIf="loaded">
   <div *ngIf="!sst && !isrev" class="ion-padding">
     <ion-card *ngIf="orden.length != 0" class="custom-card">
       <ion-card-content>

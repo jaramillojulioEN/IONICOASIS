@@ -25,6 +25,8 @@ export class DetalleadminComponent implements OnInit {
   }
 
   @Input() ordenes: any = []
+
+  loaded: boolean = false
   ngOnInit() {
     this.detalle.cantidad = 0
     this.buscarOrden();
@@ -102,7 +104,7 @@ export class DetalleadminComponent implements OnInit {
             window.dispatchEvent(new Event('success'));
           } else {
             console.error('Error: Respuesta inválida');
-            
+
           }
         },
         (error: any) => {
@@ -111,7 +113,7 @@ export class DetalleadminComponent implements OnInit {
       );
 
     }
-   
+
 
   }
 
@@ -183,19 +185,23 @@ export class DetalleadminComponent implements OnInit {
   }
 
   async buscarOrden(): Promise<void> {
-    console.log("Se buscó");
-    (await this.ordenservice.BuscarOrden(false, this.ordenes.id)).subscribe(
-      async (response: any) => {
+    console.log(this.ordenes);
+    this.loaded = false;
+    await (await this.ordenservice.BuscarOrden(false, this.ordenes.id)).subscribe({
+      next: (response: any) => {
         if (response && response.orden) {
           this.ordenes = response.orden
         } else {
-          console.error('Error: Respuesta inválida');
+          this.ac.presentCustomAlert("error", response.message)
         }
       },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
-      }
-    );
+      error: (error: any) => {
+        console.log(error);
+      },
+      complete : () =>{
+        this.loaded = true;
+      },
+    });
   }
 
 

@@ -1,6 +1,5 @@
 <app-main-header titulo="Detalles de la orden" [isModal]="true"></app-main-header>
-<ion-content>
-
+<ion-content *ngIf="loaded">
   <ion-card class="custom-card" *ngIf="edit">
     <ion-card-content>
       <ion-item lines="none">
