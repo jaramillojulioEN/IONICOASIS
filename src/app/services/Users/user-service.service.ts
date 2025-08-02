@@ -40,6 +40,7 @@ export class UserServiceService {
     // server = "https://muddywatter26-001-site2.ntempurl.com/"
     server = "https://muddywatter26-001-site1.ftempurl.com/"
     // server = "https://localhost:"+port
+
     return `${server}/`
   }
 
