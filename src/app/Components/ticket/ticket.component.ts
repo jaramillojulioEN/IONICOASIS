@@ -333,6 +333,10 @@ export class TicketComponent implements OnInit {
 
   async buscarOrden(): Promise<void> {
     this.loaded = false;
+    if(this.orden.id === undefined){
+      this.loaded = true;
+      return;
+    }
     await (await this.OrdenesService.BuscarOrden(true, this.orden.id)).subscribe({
       next: (response: any) => {
         if (response && response.orden) {
