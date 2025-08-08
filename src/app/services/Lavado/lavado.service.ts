@@ -23,6 +23,31 @@ export class LavadoService {
     }
   }
 
+  async EliminarTipo(data: any): Promise<Observable<any>> {
+
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: data
+    };
+
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.delete<any>(`${this.server}api/Servicios/EliminarTipoVehiculo`, options).subscribe(
+          async deletedResponse => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(deletedResponse);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
 
     async EliminarServicio(data: any): Promise<Observable<any>> {
 

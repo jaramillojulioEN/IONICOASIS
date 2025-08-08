@@ -15,7 +15,36 @@ export class EstadoComponent implements OnInit {
     private ac: AlertServiceService
   ) { }
 
-  ngOnInit() { }
+  loaded = false;
+
+  ngOnInit() {
+    this.buscarOrden();
+    console.log(this.ordenes.id)
+  }
+
+  async buscarOrden(): Promise<void> {
+    if(this.ordenes.id === undefined){
+      this.loaded = true;
+      return;
+    }
+    await (await this.ordenservise.BuscarOrden(false, this.ordenes.id)).subscribe({
+      next: (response: any) => {
+        if (response && response.orden) {
+          this.ordenes = response.orden
+        } else {
+          this.ac.presentCustomAlert("error", response.message)
+        }
+      },
+      error: (error: any) => {
+        console.log(error);
+      },
+      complete: () => {
+        this.loaded = true;
+      },
+    });
+  }
+
+
   estados: any = this.ordenservise.estados
   estado: any
   getEstado(estado: number): string {
@@ -23,6 +52,8 @@ export class EstadoComponent implements OnInit {
   }
 
   async alterstate(): Promise<void> {
+    console.log(this.ordenes);
+
     if (this.ordenes.estado == 3) {
       this.ordenes.ordenesplatillos.forEach((element: any) => {
         element.estado = 2

@@ -1,7 +1,8 @@
 <app-main-header titulo="Estado de la orden" [isModal]="true"></app-main-header>
 <ion-content>
 
-    <div class="container">
+    <div *ngIf="!loaded" class="container">No se encontro la orden</div>
+    <div class="container" *ngIf="loaded">
         <ion-card class="custom-card">
             <ion-card-content>
                 <h5>Mesa: {{ ordenes.mesas.descripcion }}</h5>

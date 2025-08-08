@@ -246,6 +246,8 @@ export class LavadoPage implements OnInit {
 
   loaded: boolean = false;
   async obtenerLavados(estado: number, load: boolean = true, ids = 0): Promise<void> {
+    console.log(ids);
+    
     ids = ids == 0 ? this.UserServiceService.gesucu() : ids
     this.loaded = false;
     try {
