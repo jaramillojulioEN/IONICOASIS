@@ -31,6 +31,11 @@
 
     <ion-card class="custom-card">
       <ion-card-content>
+        <ion-select label="Mes" [(ngModel)]="mesSeleccionado" (ionChange)="meschange()">
+          <ion-select-option *ngFor="let mes of meses" [value]="mes.numero">
+            {{ mes.nombre }}
+          </ion-select-option>
+        </ion-select>
         <ion-select label="Periodo" [(ngModel)]="periodoindex" (ionChange)="change()">
           <ion-select-option *ngFor="let periodo of messalario; let i = index" [value]="i">
             {{periodo.periodo.lunes.split("T")[0]}} - {{periodo.periodo.domingo.split("T")[0]}}
@@ -67,8 +72,10 @@
           <tr *ngFor="let consumo of periodo.consumos">
             <td>{{consumo.concepto || consumo.bebidas?.nombre || consumo.platillos?.nombre}}</td>
             <td>{{consumo.concepto !== "" ? 1 : consumo.cantidad }}</td>
-            <td>{{consumo.idbebida != null ? consumo.bebidas?.precioempleados * consumo.cantidad : consumo.idplatillo != null ? consumo.platillos?.precioempleado * consumo.cantidad: consumo.concepto !== "" ? consumo.cantidad : ''}}</td>
-          </tr>          
+            <td>{{consumo.idbebida != null ? consumo.bebidas?.precioempleados * consumo.cantidad : consumo.idplatillo !=
+              null ? consumo.platillos?.precioempleado * consumo.cantidad: consumo.concepto !== "" ? consumo.cantidad :
+              ''}}</td>
+          </tr>
           <tr>
             <td colspan="3" class="ion-text-end negrita">Consumos: ${{periodo.totalconsumo}}</td>
           </tr>
