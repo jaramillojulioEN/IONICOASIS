@@ -25,7 +25,7 @@ export class DetalleordenComponent implements OnInit {
   @Input() orden: any = [];
   estimados: any;
   rol: any = [];
-  @Input() tiempo: number = 0;
+  @Input() tiempo: string = "";
 
   constructor(
     private ac: AlertServiceService,

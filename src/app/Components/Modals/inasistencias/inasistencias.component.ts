@@ -188,7 +188,8 @@ export class InasistenciasComponent implements OnInit {
 
     console.log(this.periodoindex)
     this.periodo = this.messalario[this.periodoindex]
-    console.log(this.periodo)
+    this.tickets = this.periodo.tickets
+    console.log(this.periodo.tickets)
   }
 
   meschange(){

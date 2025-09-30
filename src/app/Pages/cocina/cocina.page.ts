@@ -40,7 +40,7 @@ export class CocinaPage implements OnInit {
     private ac: AlertServiceService,
     private cortesService: CortesService,
     private fn: LoaderFunctions,
-    private signalRService : SignalrService
+    private signalRService: SignalrService
   ) {
     this.sound = new Howl({
       src: ['assets/audio/file.mp3']
@@ -57,6 +57,8 @@ export class CocinaPage implements OnInit {
   private clearNotifications(): void {
     localStorage.removeItem('notificaciones');
   }
+
+  tiemposTranscurridos: { [id: number]: string } = {}; // Objeto para guardar tiempos transcurridos en segundos por id
 
   ngOnInit() {
     const notificacionesString = localStorage.getItem("notificaciones");
@@ -81,16 +83,6 @@ export class CocinaPage implements OnInit {
     window.addEventListener('mesas', () => {
       this.ObtenerOrdenes();
     })
-    this.intervalId = setInterval(() => {
-      
-    }, 8000);
-
-    this.intervalId2 = setInterval(() => {
-      if (this.cargaactiva) {
-        this.updateTimers();
-      }
-    }, 10000);
-
     window.addEventListener('desactivar', () => {
       this.cargaactiva = false;
       console.log("se desctivo la carga")
@@ -99,10 +91,36 @@ export class CocinaPage implements OnInit {
     window.addEventListener('activar', () => {
       this.cargaactiva = true;
       console.log("se activo la carga")
-
     })
 
+    setInterval(() => {
+      this.ordenes.forEach((orden: any) => {
+        this.tiemposTranscurridos[Number(orden.id)] = this.transcurrido(orden);
+      });
+    }, 1000);
+
   }
+
+
+  transcurrido(orden: any): string {
+    if (orden.isPausado) return "Pausado";
+
+    const ordendate = new Date(orden.fecha);
+    const inicio = ordendate.getTime();
+    const hoy = Date.now();
+    const diffInSeconds = (hoy - inicio - this.convertirHorasAMilisegundos(orden.tiempoPausado)) / 1000;
+
+    const hours = Math.floor(diffInSeconds / 3600);
+    const minutes = Math.floor((diffInSeconds % 3600) / 60);
+    const seconds = Math.floor(diffInSeconds % 60);
+
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  convertirHorasAMilisegundos(horas: number): number {
+    return horas * 60 * 60 * 1000; // 1 hora = 60 minutos = 60 segundos = 1000 milisegundos
+  }
+
 
   async handleRefresh(event: any) {
     this.ngOnInit();
@@ -177,56 +195,4 @@ export class CocinaPage implements OnInit {
       this.loaded = true;
     }
   }
-
-
-  tiemposTranscurridos: { [id: string]: number } = {}; // Objeto para guardar tiempos transcurridos en segundos por id
-
-  updateTimer(orden: any): string {
-    return this.transcurrido(orden);
-  }
-
-  transcurrido(orden: any): string {
-    if (orden.isPausado) return "Pausado";
-
-    const ordendate = new Date(orden.fecha);
-    const inicio = ordendate.getTime();
-    const hoy = Date.now();
-    const diffInSeconds = (hoy - inicio - this.convertirHorasAMilisegundos(orden.tiempoPausado)) / 1000;
-    this.tiemposTranscurridos[orden.id] = diffInSeconds;
-
-    const hours = Math.floor(diffInSeconds / 3600);
-    const minutes = Math.floor((diffInSeconds % 3600) / 60);
-    const seconds = Math.floor(diffInSeconds % 60);
-
-    const tiempoFormateado = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    return tiempoFormateado;
-  }
-
-  updateTimers() {
-    if (this.ordenes != null) {
-      for (let orden of this.ordenes) {
-        this.updateTimer(orden);
-      }
-    }
-
-  }
-
-
-  convertirHorasAMilisegundos(horas: number): number {
-    return horas * 60 * 60 * 1000; // 1 hora = 60 minutos = 60 segundos = 1000 milisegundos
-  }
-
-  // Getestimandos(orden: any): any {
-  //   let tiempototal = 0;
-  //   const fechaorden = new Date(orden.fecha);
-  //   orden.ordenesplatillos.forEach((element: any) => {
-  //     tiempototal += element.platillos.recetas.tiempopreparacion;
-  //   });
-  //   fechaorden.setMinutes(fechaorden.getMinutes() + tiempototal);
-  //   const horaEntrega =
-  //     fechaorden.getHours() + ':' +
-  //     (fechaorden.getMinutes() <= 9 ? '0' + fechaorden.getMinutes() : fechaorden.getMinutes());
-  //   return [tiempototal, horaEntrega];
-  // }
-
 }

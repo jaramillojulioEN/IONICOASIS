@@ -134,6 +134,11 @@ export class LavadoService {
   }
 
   async lavados(estado: number, ids = 0, pagina : any): Promise<Observable<any>> {
+    if(estado === 1)
+      pagina.PaginationEnabled = false
+    else{
+      pagina.PaginationEnabled =  true;
+    }
     try {
       return this.http.post<any>(`${this.server}api/Servicios/Lavados/${estado}/${ids}`, pagina);
     } finally {

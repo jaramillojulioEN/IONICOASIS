@@ -16,7 +16,9 @@
           <ion-card-content>
             <ion-card>
               <ion-card-content>
-                <ion-card-title class="ion-text-center"></ion-card-title>
+                <ion-card-title class="ion-text-center">
+                  {{tiemposTranscurridos[orden.id]}}
+                </ion-card-title>
                 <div class="notification-circle" *ngIf="notificaciones[orden.id]">+{{notificaciones[orden.id]}}</div>
               </ion-card-content>
             </ion-card>
