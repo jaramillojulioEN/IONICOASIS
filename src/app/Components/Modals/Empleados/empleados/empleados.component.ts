@@ -130,9 +130,12 @@ export class EmpleadosComponent implements OnInit {
         (response: any) => {
           console.log(response);
           this.md.dismiss();
+          alert(response.mensaje)
           window.dispatchEvent(new Event('success'));
         },
         (error: any) => {
+          alert(error.error.message)
+
           console.error('Error en la solicitud:', error);
         }
       );
