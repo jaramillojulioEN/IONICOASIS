@@ -43,6 +43,26 @@ export class RecetasPage implements OnInit {
     this.ObtenerRecetas();
   }
 
+  pagina = {
+    PaginaActual: 1,
+    TotalPorPagina: 5,
+    TotalPages: 1,
+    TotalItems: 0,
+    Fecha: "",
+    PaginationEnabled: true
+  }
+
+  paginaAnterior() {
+    this.pagina.PaginaActual = this.pagina.PaginaActual - 1
+    this.ObtenerRecetas()
+  }
+
+  paginaSiguiente() {
+    this.pagina.PaginaActual = this.pagina.PaginaActual + 1
+    this.ObtenerRecetas()
+  }
+
+
   async ObtenerCategorias(): Promise<void> {
     try {
       await new Promise<void>((resolve, reject) => {
@@ -75,32 +95,14 @@ export class RecetasPage implements OnInit {
     await modal.present();
   }
 
-  incio: number = 0;
-  fin: number = 10;
-  totalItems: number = 0;
-
-  paginaActual: number = 1;
-  totalPaginas: number = 1;
-  itemsPorPagina: number = 10;
-
-  cambiarPagina(cambio: number) {
-    const nuevaPagina = this.paginaActual + cambio;
-    if (nuevaPagina > 0 && nuevaPagina <= this.totalPaginas) {
-      this.paginaActual = nuevaPagina;
-      this.incio = (this.paginaActual - 1) * this.itemsPorPagina;
-      this.fin = this.incio + this.itemsPorPagina;
-      this.ObtenerRecetas();
-    }
-  }
 
   async ObtenerRecetas(): Promise<void> {
     this.loaded = false;
     try {
-      const response: any = await (await this.RecetasService.Recetas(this.idcatego, this.incio, this.fin)).toPromise();
+      const response: any = await (await this.RecetasService.TodasRecetas(this.pagina, this.idcatego)).toPromise();
       if (response && response.recetas) {
         this.recetas = response.recetas;
-        this.totalItems = response.total
-        this.totalPaginas = Math.ceil(this.totalItems / this.itemsPorPagina);
+        this.pagina = response.Paginador
         console.log(this.recetas);
       } else {
         console.error('Error: Respuesta inválida');
@@ -112,7 +114,7 @@ export class RecetasPage implements OnInit {
     }
   }
 
- 
+
 
   Opciones(data: any) {
     console.log(this.rol);
