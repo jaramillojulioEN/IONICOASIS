@@ -5,6 +5,7 @@ import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { UserServiceService } from 'src/app/services/Users/user-service.service'
 import { ModalController, PopoverController } from '@ionic/angular';
 import { LoaderFunctions } from 'src/functions/utils';
+import { data } from 'jquery';
 @Component({
   selector: 'app-ordn',
   templateUrl: './ordn.component.html',
@@ -144,8 +145,8 @@ export class OrdnComponent implements OnInit {
     } catch (error) {
       console.error('Error en la solicitud:', error);
     }
-    finally{
-      this.isprep =false;
+    finally {
+      this.isprep = false;
     }
   }
 
@@ -153,10 +154,10 @@ export class OrdnComponent implements OnInit {
   async cantidadplatillo(suma: boolean, detalleplato: any) {
     // Actualizar la cantidad
     detalleplato.cantidad = suma ? detalleplato.cantidad + 1 : detalleplato.cantidad - 1;
-  
+
     try {
       const response = await (await this.OrdenesService.ActualizarPlato(detalleplato, true)).toPromise();
-  
+
       if (response && response.message) {
         window.dispatchEvent(new Event('success'));
       } else {
@@ -169,14 +170,14 @@ export class OrdnComponent implements OnInit {
       this.buscarOrden(detalleplato.idorden);
     }
   }
-  
+
   async cantidadbebida(suma: boolean, detallebebida: any) {
     // Actualizar la cantidad
     detallebebida.cantidad = suma ? detallebebida.cantidad + 1 : detallebebida.cantidad - 1;
-  
+
     try {
       const response = await (await this.OrdenesService.ActualizarPlato(detallebebida, false)).toPromise();
-  
+
       if (response && response.message) {
         window.dispatchEvent(new Event('success'));
       } else {
@@ -189,7 +190,7 @@ export class OrdnComponent implements OnInit {
       this.buscarOrden(detallebebida.idorden);
     }
   }
-  
+
 
   async CrearOrden(): Promise<void> {
     this.NewOrden.estado = -1
@@ -280,33 +281,48 @@ export class OrdnComponent implements OnInit {
     this.DetalleBebida.idbebida = 0
     this.detalleb = ""
     this.detallep = ""
+    this.quantylimitant = null;
   }
 
   total(): number {
     return this.OrdenesService.total(this.OrdenDetalles)
   }
 
+  quantylimitant: null | number = null;
+
   increaseQuantity(beb = true) {
     if (beb)
       this.DetalleBebida.cantidad = (this.DetalleBebida.cantidad || 0) + 1;
     else
-    this.detallePlatillo.cantidad = (this.detallePlatillo.cantidad || 0) + 1;
+      this.detallePlatillo.cantidad = (this.detallePlatillo.cantidad || 0) + 1;
 
   }
 
   decreaseQuantity(beb = true) {
-    if(beb){
-      if (this.DetalleBebida.cantidad > 1) {
-        this.DetalleBebida.cantidad -= 1;
-      }
-      else{
-        if (this.detallePlatillo.cantidad > 1) {
-          this.detallePlatillo.cantidad -= 1;
-        }
-      }
+    if (beb)
+      this.DetalleBebida.cantidad -= 1;
+    else
+      this.detallePlatillo.cantidad -= 1;
+  }
+
+  onCantidadChange(event: any) {
+    let value = Number(event.target.value);
+
+    if (isNaN(value) || value < 1) {
+      this.DetalleBebida.cantidad = 1;
+      return;
     }
 
+    // Si hay límite y lo supera
+    if (this.quantylimitant !== null && value > this.quantylimitant) {
+      this.DetalleBebida.cantidad = this.quantylimitant;
+      return;
+    }
+
+    // Fuerza entero
+    this.DetalleBebida.cantidad = Math.floor(value);
   }
+
 
 
 
@@ -327,6 +343,7 @@ export class OrdnComponent implements OnInit {
       mode: 'ios'
     });
     modal.onDidDismiss().then((dataReturned: any) => {
+      this.quantylimitant = dataReturned.data.disponibles.Disponibles;
       if (dataReturned.data) {
         if (isPlatillo) {
           this.detallep = dataReturned.data.nombre
