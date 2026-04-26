@@ -57,8 +57,8 @@
 
         <ion-item lines="none">
           <ion-input type="number" label="Cantidad" labelPlacement="floating" [(ngModel)]="detallePlatillo.cantidad"
-            name="cantidad" [min]="1" [max]="quantylimitant" inputmode="numeric" pattern="[0-9]*"
-            (ionInput)="onCantidadChange($event)" required></ion-input>
+            name="cantidadPlatillo" inputmode="numeric" pattern="[0-9]*" required>
+          </ion-input>
           <ion-buttons slot="end">
             <ion-button fill="clear" (click)="decreaseQuantity(false)" style="--size: 50px;">
               <ion-icon name="remove-circle-outline" style="font-size: 40px;"></ion-icon>
@@ -89,9 +89,9 @@
         </ion-item>
         <ion-item lines="none">
 
+          <!-- Input Bebida -->
           <ion-input type="number" label="Cantidad" labelPlacement="floating" [(ngModel)]="DetalleBebida.cantidad"
-            name="cantidad" [min]="1" [max]="quantylimitant" inputmode="numeric" pattern="[0-9]*"
-            (ionInput)="onCantidadChange($event)" required>
+            name="cantidadBebida" inputmode="numeric" pattern="[0-9]*" min="1" required>
           </ion-input>
 
           <ion-buttons slot="end">

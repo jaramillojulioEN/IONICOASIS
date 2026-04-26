@@ -150,8 +150,9 @@ export class SelectComponent implements OnInit {
   }
 
 
-   getcolorPlato(platillo: any) {
+  getcolorPlato(platillo: any) {
     var ids = this.us.getUser().idsucursal;
+    if (!platillo.disponibilidad) return null;
     let disponibles = platillo.disponibilidad.find((b: any) => b.IdSucursal == ids);
 
     if (disponibles) {

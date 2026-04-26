@@ -89,25 +89,34 @@ export class OrdnComponent implements OnInit {
   async crearDetalle(detalle: any): Promise<void> {
     if (this.isprep) {
       if (this.DetalleBebida.cantidad == 0) {
-        this.ac.presentCustomAlert("Error", "Debes agregar una cantidad")
+        this.ac.presentCustomAlert("Error", "Debes agregar una cantidad");
+        return;
       }
-      detalle.cantidad = this.DetalleBebida.cantidad
-    }
-    console.log(detalle);
-    if (detalle.cantidad !== 0) {
-      if (this.ordenold.id) {
-        detalle.idorden = this.ordenold.id;
-        console.log(detalle);
-        await this.procesarDetalle(detalle); // Procesar el detalle directamente
-      } else {
-        await this.CrearOrden(); // Esperar a que se cree la orden
-        detalle.idorden = this.ordenold.id; // Asignar el ID de la orden creada
-        await this.procesarDetalle(detalle); // Procesar el detalle después de crear la orden
-      }
-    } else {
-      this.ac.presentCustomAlert("Error", "Debes agregar una cantidad")
+      detalle.cantidad = this.DetalleBebida.cantidad;
     }
 
+    if (detalle.cantidad === 0) {
+      this.ac.presentCustomAlert("Error", "Debes agregar una cantidad");
+      return;
+    }
+
+    if (this.quantylimitant !== null && detalle.cantidad > this.quantylimitant) {
+      this.ac.presentCustomAlert(
+        "Sin disponibilidad",
+        `No se puede preparar esa cantidad. Solo se pueden preparar ${this.quantylimitant}.`
+      );
+      return;
+    }
+
+    console.log(detalle);
+    if (this.ordenold.id) {
+      detalle.idorden = this.ordenold.id;
+      await this.procesarDetalle(detalle);
+    } else {
+      await this.CrearOrden();
+      detalle.idorden = this.ordenold.id;
+      await this.procesarDetalle(detalle);
+    }
   }
 
   enviarcocina(estado: number) {
@@ -304,27 +313,6 @@ export class OrdnComponent implements OnInit {
     else
       this.detallePlatillo.cantidad -= 1;
   }
-
-  onCantidadChange(event: any) {
-    let value = Number(event.target.value);
-
-    if (isNaN(value) || value < 1) {
-      this.DetalleBebida.cantidad = 1;
-      return;
-    }
-
-    // Si hay límite y lo supera
-    if (this.quantylimitant !== null && value > this.quantylimitant) {
-      this.DetalleBebida.cantidad = this.quantylimitant;
-      return;
-    }
-
-    // Fuerza entero
-    this.DetalleBebida.cantidad = Math.floor(value);
-  }
-
-
-
 
   async Select(isPlatillo: boolean, event: Event) {
     window.dispatchEvent(new Event('carga'));

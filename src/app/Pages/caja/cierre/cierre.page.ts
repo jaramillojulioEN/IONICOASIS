@@ -1,5 +1,5 @@
 import { Component, OnInit, booleanAttribute } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 import { CortesService } from 'src/app/services/cortes/cortes.service';
 import { ChartsComponent } from 'src/app/Components/Extras/charts/charts.component'
@@ -39,7 +39,8 @@ export class CierrePage implements OnInit {
     private md: ModalController,
     private us: UserServiceService,
     private call: Calls,
-    private functiosn: LoaderFunctions
+    private functiosn: LoaderFunctions,
+    private alertCtrl: AlertController
   ) { }
 
   async ngOnInit() {
@@ -160,8 +161,52 @@ export class CierrePage implements OnInit {
     }
     button.push({ button: this.ac.ticket, handler: () => this.verticket(data) })
     button.push({ button: this.ac.btnVerGrafico, handler: () => this.vergraficopasado(data) })
+    button.push({ button: this.ac.btnRecalcular, handler: () => this.recalcularCaja(data) })
     button.push({ button: this.ac.btnCancelar, handler: () => console.log("cancelado") })
     this.ac.configureAndPresentActionSheet(button);
+  }
+
+  async recalcularCaja(caja: any): Promise<void> {
+    const alert = await this.alertCtrl.create({
+      header: 'Recalcular caja',
+      inputs: [
+        {
+          name: 'totalcaja',
+          type: 'number',
+          label: 'Efectivo en caja',
+          placeholder: 'Efectivo en caja',
+          value: caja.totalcaja,
+          min: 0
+        }
+      ],
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Recalcular',
+          handler: (data) => {
+            this.confirmarRecalcular(caja.id, Number(data.totalcaja));
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async confirmarRecalcular(idcaja: number, totalcaja: number): Promise<void> {
+    (await this.cortesService.Recalcular({ idcaja, totalcaja })).subscribe(
+      async (response: any) => {
+        if (response && response.message) {
+          this.obtenerCortesActivos(true, this.idu);
+          this.obtenerCortesPasados(true, this.idu);
+          this.ac.presentCustomAlert("Éxito", response.message);
+        } else {
+          console.error('Error: Respuesta inválida');
+        }
+      },
+      (error: any) => {
+        console.error('Error en la solicitud:', error);
+      }
+    );
   }
 
   reactivarOrden(cortepasado: any): void {

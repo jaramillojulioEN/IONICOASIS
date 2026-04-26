@@ -173,5 +173,21 @@ export class CortesService {
     }
   }
 
+  async Recalcular(data: { idcaja: number, totalcaja: number }): Promise<Observable<any>> {
+    this.loaderFunctions.StartLoader();
+    return new Observable(observer => {
+      this.http.post<any>(`${this.server}api/Cortes/recalcular`, data).subscribe(
+        async response => {
+          await this.loaderFunctions.StopLoader();
+          observer.next(response);
+          observer.complete();
+        },
+        async error => {
+          await this.loaderFunctions.StopLoader();
+          observer.error(error);
+        }
+      );
+    });
+  }
 
 }

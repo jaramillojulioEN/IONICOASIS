@@ -8,7 +8,7 @@
     <ng-container *ngFor="let categoria of  platosagrupados">
       <ion-item-divider color="light">{{ categoria.nombre }}</ion-item-divider>
       <ion-item *ngFor="let pl of categoria.platillos" (click)="Dissmiss(pl)">
-         <ion-grid [ngStyle]="{'background-color': getcolorPlato(pl)}">
+        <ion-grid [ngStyle]="{'background-color': getcolorPlato(pl)}">
           <ion-row>
             <ion-col size="6">{{ pl.nombre }}</ion-col>
             <ion-col size="6" class="ion-text-end">${{ preciocliente ? pl.precio : pl.precioempleado}}</ion-col>
@@ -35,7 +35,7 @@
       <ion-grid [ngStyle]="{'background-color': getcolor(bd)}">
         <ion-row>
           <ion-col size="6">{{bd.nombre}}</ion-col>
-          <ion-col size="6" class="ion-text-end">${{ preciocliente ?  bd.precioventa : bd.precioempleados}}</ion-col>
+          <ion-col size="6" class="ion-text-end">${{ preciocliente ? bd.precioventa : bd.precioempleados}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
@@ -51,10 +51,9 @@
     </ion-list-header>
     <ion-item *ngFor="let bd of bebsPrp" (click)="Dissmiss(bd, true)">
 
-      <ion-grid>
-        <ion-row>
+      <ion-grid [ngStyle]="{'background-color': getcolorPlato(bd)}"> <ion-row>
           <ion-col size="6">{{bd.nombre}}</ion-col>
-          <ion-col size="6" class="ion-text-end">${{ preciocliente ? bd.precio  : bd.precioempleado}}</ion-col>
+          <ion-col size="6" class="ion-text-end">${{ preciocliente ? bd.precio : bd.precioempleado}}</ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
