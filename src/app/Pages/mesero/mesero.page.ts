@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { MesasService } from 'src/app/services/Mesas/mesas.service'
 import { OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.component'
 import { DetalleordenComponent } from 'src/app/Components/Modals/Mesas/detalleorden/detalleorden.component'
 import { CortesService } from 'src/app/services/cortes/cortes.service';
+import { SignalrService } from 'src/app/services/signalr.service';
 @Component({
   selector: 'app-mesero',
   templateUrl: './mesero.page.html',
@@ -25,7 +26,9 @@ export class MeseroPage implements OnInit {
   constructor(
     private MesasService: MesasService,
     private cortesService: CortesService,
-    private ModalController: ModalController) { }
+    private ModalController: ModalController,
+    private signalRService: SignalrService,
+    private zone: NgZone) { }
 
 
 
@@ -78,6 +81,12 @@ export class MeseroPage implements OnInit {
 
   ngOnInit() {
     this.ObtenerMesas()
+
+    this.signalRService.startConnection();
+    this.signalRService.addListener('OrdenesModificadasCocina', () => {
+      this.zone.run(() => this.ObtenerMesas(false));
+    });
+
     window.addEventListener('success', () => {
       this.ObtenerMesas(false)
     })

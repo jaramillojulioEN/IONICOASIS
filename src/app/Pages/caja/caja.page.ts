@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
 import { ModalController } from '@ionic/angular';
@@ -11,6 +11,7 @@ import { AlertServiceService } from 'src/app/services/Alerts/alert-service.servi
 import { DetalleadminComponent } from 'src/app/Components/Modals/detalleadmin/detalleadmin.component'
 import { Calls } from 'src/functions/call';
 import { VentaEspecialComponent } from 'src/app/Components/Modals/venta-especial/venta-especial.component';
+import { SignalrService } from 'src/app/services/signalr.service';
 @Component({
   selector: 'app-caja',
   templateUrl: './caja.page.html',
@@ -48,7 +49,9 @@ export class CajaPage implements OnInit {
     private userservice: UserServiceService,
     private call: Calls,
     private ac: AlertServiceService,
-    private ModalController: ModalController
+    private ModalController: ModalController,
+    private signalRService: SignalrService,
+    private zone: NgZone
   ) {
     this.rol = this.userservice.getRol();
     this.idsucursal = this.userservice.gesucu()
@@ -59,6 +62,11 @@ export class CajaPage implements OnInit {
   async ngOnInit() {
     this.sucursales = await this.call.getsucus()
     this.start()
+
+    this.signalRService.startConnection();
+    this.signalRService.addListener('OrdenesModificadasCocina', () => {
+      this.zone.run(() => this.getordenes(4, false));
+    });
 
     window.addEventListener('success', () => {
       this.ModalController.dismiss();
@@ -97,6 +105,8 @@ export class CajaPage implements OnInit {
   }
 
   async start() {
+    const id = this.userservice.gesucu();
+    if (id) this.idsucursal = id;
     this.segmento = this.rol.id !== 1 ? 'pago' : 'hoy';
     this.fechaActual = this.fns.obtenerFechaHoraActual();
 

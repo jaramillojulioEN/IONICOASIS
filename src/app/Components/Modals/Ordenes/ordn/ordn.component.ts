@@ -134,11 +134,11 @@ export class OrdnComponent implements OnInit {
           window.dispatchEvent(new Event('success'));
           await this.buscarOrden(this.OrdenDetalles.id);
         } else {
-          console.error('Error: Respuesta inválida');
+          this.ac.presentCustomAlert("Error", response?.message || "No se pudo actualizar la orden.");
         }
       },
       (error: any) => {
-        console.error('Error en la solicitud:', error);
+        this.ac.presentCustomAlert("Error", "No se pudo actualizar la orden.");
       }
     );
   }
@@ -152,7 +152,7 @@ export class OrdnComponent implements OnInit {
       this.NewOrden.total = this.total()
       this.ac.presentCustomAlert("Éxito", response.message);
     } catch (error) {
-      console.error('Error en la solicitud:', error);
+      this.ac.presentCustomAlert("Error", "No se pudo agregar el detalle a la orden.");
     }
     finally {
       this.isprep = false;
@@ -173,15 +173,13 @@ export class OrdnComponent implements OnInit {
         this.ac.presentCustomAlert("Error", response?.message || "Error desconocido");
       }
     } catch (error) {
-      console.error('Error en la solicitud:', error);
+      this.ac.presentCustomAlert("Error", "No se pudo actualizar la cantidad del platillo.");
     } finally {
-      // Llamar a buscarOrden siempre al final
       this.buscarOrden(detalleplato.idorden);
     }
   }
 
   async cantidadbebida(suma: boolean, detallebebida: any) {
-    // Actualizar la cantidad
     detallebebida.cantidad = suma ? detallebebida.cantidad + 1 : detallebebida.cantidad - 1;
 
     try {
@@ -193,9 +191,8 @@ export class OrdnComponent implements OnInit {
         this.ac.presentCustomAlert("Error", response?.message || "Error desconocido");
       }
     } catch (error) {
-      console.error('Error en la solicitud:', error);
+      this.ac.presentCustomAlert("Error", "No se pudo actualizar la cantidad de la bebida.");
     } finally {
-      // Llamar a buscarOrden siempre al final
       this.buscarOrden(detallebebida.idorden);
     }
   }
@@ -207,7 +204,7 @@ export class OrdnComponent implements OnInit {
       const response = await (await this.OrdenesService.CrearOrden(this.NewOrden)).toPromise();
       this.ordenold.id = response.id;
     } catch (error) {
-      console.error('Error en la solicitud:', error);
+      this.ac.presentCustomAlert("Error", "No se pudo crear la orden.");
       throw error;
     }
   }
@@ -218,11 +215,11 @@ export class OrdnComponent implements OnInit {
         if (response && response.orden) {
           this.OrdenDetalles = response.orden
         } else {
-          console.error('Error: Respuesta inválida');
+          this.ac.presentCustomAlert("Aviso", response?.message || "No se pudo cargar la orden.");
         }
       },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+      (_error: any) => {
+        this.ac.presentCustomAlert("Error", "No se pudo cargar la orden.");
       }
     );
   }
@@ -246,15 +243,15 @@ export class OrdnComponent implements OnInit {
   async ConfirmarELiminar(platillo: any): Promise<void> {
     (await this.OrdenesService.EliminarPDetalle(platillo)).subscribe(
       async (response: any) => {
-        if (response) {
+        if (response && response.message) {
           this.buscarOrden(platillo.idorden);
           this.ac.presentCustomAlert("Exito", response.message)
         } else {
-          console.error('Error: Respuesta inválida');
+          this.ac.presentCustomAlert("Error", response?.message || "No se pudo eliminar el platillo.");
         }
       },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+      (_error: any) => {
+        this.ac.presentCustomAlert("Error", "No se pudo eliminar el platillo.");
       }
     );
   }
@@ -266,16 +263,15 @@ export class OrdnComponent implements OnInit {
   async ConfirmarELiminarBebida(bebida: any): Promise<void> {
     (await this.OrdenesService.EliminarBDetalle(bebida)).subscribe(
       async (response: any) => {
-        if (response) {
+        if (response && response.message) {
           this.ac.presentCustomAlert("Exito", response.message)
           this.buscarOrden(bebida.idorden);
-
         } else {
-          console.error('Error: Respuesta inválida');
+          this.ac.presentCustomAlert("Error", response?.message || "No se pudo eliminar la bebida.");
         }
       },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
+      (_error: any) => {
+        this.ac.presentCustomAlert("Error", "No se pudo eliminar la bebida.");
       }
     );
   }
@@ -283,10 +279,10 @@ export class OrdnComponent implements OnInit {
 
 
   limpiar(): void {
-    this.detallePlatillo.cantidad = 0
+    this.detallePlatillo.cantidad = 1
     this.detallePlatillo.idplatillo = 0
     this.detallePlatillo.observaciones = ""
-    this.DetalleBebida.cantidad = 0
+    this.DetalleBebida.cantidad = 1
     this.DetalleBebida.idbebida = 0
     this.detalleb = ""
     this.detallep = ""
@@ -300,18 +296,38 @@ export class OrdnComponent implements OnInit {
   quantylimitant: null | number = null;
 
   increaseQuantity(beb = true) {
+    const actual = beb ? this.DetalleBebida.cantidad : this.detallePlatillo.cantidad;
+    if (this.quantylimitant !== null && actual >= this.quantylimitant) {
+      this.ac.presentCustomAlert('Sin disponibilidad', `Solo hay ${this.quantylimitant} unidad(es) disponible(s).`);
+      return;
+    }
     if (beb)
-      this.DetalleBebida.cantidad = (this.DetalleBebida.cantidad || 0) + 1;
+      this.DetalleBebida.cantidad = (actual || 1) + 1;
     else
-      this.detallePlatillo.cantidad = (this.detallePlatillo.cantidad || 0) + 1;
+      this.detallePlatillo.cantidad = (actual || 1) + 1;
+  }
 
+  clampCantidad(beb = true) {
+    const actual = beb ? this.DetalleBebida.cantidad : this.detallePlatillo.cantidad;
+    if (actual !== null && actual < 1) {
+      this.ac.presentCustomAlert('Valor inválido', 'No se admiten valores menores a 1.');
+      if (beb)
+        this.DetalleBebida.cantidad = 1;
+      else
+        this.detallePlatillo.cantidad = 1;
+    }
   }
 
   decreaseQuantity(beb = true) {
+    const actual = beb ? this.DetalleBebida.cantidad : this.detallePlatillo.cantidad;
+    if (actual <= 1) {
+      this.ac.presentCustomAlert('Cantidad mínima', 'La cantidad mínima es 1.');
+      return;
+    }
     if (beb)
-      this.DetalleBebida.cantidad -= 1;
+      this.DetalleBebida.cantidad = actual - 1;
     else
-      this.detallePlatillo.cantidad -= 1;
+      this.detallePlatillo.cantidad = actual - 1;
   }
 
   async Select(isPlatillo: boolean, event: Event) {
@@ -331,19 +347,32 @@ export class OrdnComponent implements OnInit {
       mode: 'ios'
     });
     modal.onDidDismiss().then((dataReturned: any) => {
-      this.quantylimitant = dataReturned.data.disponibles.Disponibles;
+      const disp = dataReturned.data?.disponibles;
+      this.quantylimitant = (typeof disp === 'object' ? disp?.Disponibles : disp) ?? null;
       if (dataReturned.data) {
         if (isPlatillo) {
-          this.detallep = dataReturned.data.nombre
-          this.detallePlatillo.idplatillo = dataReturned.data.id
+          // Limpiar selección de bebidas al seleccionar platillo
+          this.detalleb = "";
+          this.DetalleBebida.idbebida = 0;
+          this.DetalleBebida.cantidad = 1;
+          this.isprep = false;
+          this.detallep = dataReturned.data.nombre;
+          this.detallePlatillo.idplatillo = dataReturned.data.id;
         } else {
+          // Limpiar selección de platillo al seleccionar bebida
+          this.detallep = "";
           if (dataReturned.data.isprep) {
-            this.isprep = dataReturned.data.isprep;
-            this.detalleb = dataReturned.data.nombre
-            this.detallePlatillo.idplatillo = dataReturned.data.id
+            this.isprep = true;
+            this.DetalleBebida.idbebida = 0;
+            this.DetalleBebida.cantidad = 1;
+            this.detalleb = dataReturned.data.nombre;
+            this.detallePlatillo.idplatillo = dataReturned.data.id;
           } else {
-            this.detalleb = dataReturned.data.nombre
-            this.DetalleBebida.idbebida = dataReturned.data.id
+            this.isprep = false;
+            this.detallePlatillo.idplatillo = 0;
+            this.detallePlatillo.cantidad = 1;
+            this.detalleb = dataReturned.data.nombre;
+            this.DetalleBebida.idbebida = dataReturned.data.id;
           }
         }
       }

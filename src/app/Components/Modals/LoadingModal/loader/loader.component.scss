@@ -1,39 +1,71 @@
-@import url('//fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
 
-body{ 
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 900;
-}
-#contenedor{ 
-  background-color: #00b8de; 
+#contenedor {
+  background: linear-gradient(135deg, #0077a8 0%, #00b8de 50%, #00d4c8 100%);
   display: grid;
   place-content: center;
   height: 100vh;
-  color: #000;
+  animation: fadeIn 0.4s ease;
 }
-.cargando{ 
-  position: relative; 
-  color: #FFF;
-  margin-top: 2em;
-  letter-spacing: 0.08em;
-  text-transform: uppercase
+
+.contenedor-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner-wrap {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.45));
 }
 
 .rueda {
-  border: 10px solid rgba(255, 255, 255, .3);
+  position: absolute;
   border-radius: 50%;
-  border-left-color: transparent;
-  width: 80px;
-  height: 80px;
-  animation: giro 1s linear infinite;
+  border: 8px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #ffffff;
+  width: 90px;
+  height: 90px;
+  animation: giro 0.9s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+
+  &--inner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid rgba(255, 255, 255, 0.15);
+    border-bottom-color: rgba(255, 255, 255, 0.85);
+    animation-duration: 0.65s;
+    animation-direction: reverse;
+  }
+}
+
+.cargando {
+  color: #fff;
+  margin-top: 2em;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  opacity: 0.9;
+  animation: pulse 1.8s ease-in-out infinite;
 }
 
 @keyframes giro {
-  0% {
-    transform: rotate(0deg);
-  }
+  to { transform: rotate(360deg); }
+}
 
-  100% {
-    transform: rotate(360deg);
-  }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.9; }
+  50%       { opacity: 0.55; }
 }

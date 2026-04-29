@@ -93,8 +93,6 @@ export class SelectComponent implements OnInit {
 
       if (response && response.platillos) {
         this.bebsPrp = response.platillos;
-        console.log(this.bebsPrp)
-
       } else {
         console.error('Error: Respuesta inválida');
       }
@@ -137,7 +135,7 @@ export class SelectComponent implements OnInit {
 
     if (bebidaExistente) {
       bebida.disponibles = {
-        Disponibles : bebidaExistente.cantidad,
+        Disponibles : bebidaExistente.disponibles,
         IdSucursal : ids
       };
       var cantidad = bebidaExistente.cantidad;
@@ -174,6 +172,8 @@ export class SelectComponent implements OnInit {
 
       if (response && response.bebidas) {
         this.BebidaArry = response.bebidas;
+        console.log(this.BebidaArry)
+
       } else {
         console.error('Error: Respuesta inválida');
       }

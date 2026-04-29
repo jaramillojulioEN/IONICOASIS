@@ -2,27 +2,48 @@
   <div class="login-container">
     <ion-card>
       <ion-card-content class="login-card-content">
+
         <div class="login-image">
-          <img src="https://i.imgur.com/fvrkb3f.png" alt="Imagen de login">
+          <img src="https://i.imgur.com/fvrkb3f.png" alt="Logo">
         </div>
+
         <div class="login-form">
           <ion-item lines="none" class="input-item">
-            <ion-icon slot="start" name="person" aria-hidden="true"></ion-icon>
-            <ion-input labelPlacement="stacked" label="Usuario" type="text" [(ngModel)]="usuario" name="usuario"
-              class="rounded-input" placeholder="Ingrese su usuario"></ion-input>
+            <ion-icon slot="start" name="person-outline" aria-hidden="true"></ion-icon>
+            <ion-input
+              labelPlacement="stacked"
+              label="Usuario"
+              type="text"
+              [(ngModel)]="usuario"
+              name="usuario"
+              class="rounded-input"
+              placeholder="Ingrese su usuario">
+            </ion-input>
           </ion-item>
           <div *ngIf="message[0]" class="error-message">{{ message[0] }}</div>
 
           <ion-item lines="none" class="input-item">
-            <ion-icon slot="start" name="lock-closed" aria-hidden="true"></ion-icon>
-            <ion-input labelPlacement="stacked" label="Contraseña" type="password" [(ngModel)]="password"
-              name="password" class="rounded-input" placeholder="Ingrese su contraseña"></ion-input>
+            <ion-icon slot="start" name="lock-closed-outline" aria-hidden="true"></ion-icon>
+            <ion-input
+              labelPlacement="stacked"
+              label="Contraseña"
+              type="password"
+              [(ngModel)]="password"
+              name="password"
+              class="rounded-input"
+              placeholder="Ingrese su contraseña">
+            </ion-input>
           </ion-item>
           <div *ngIf="message[1]" class="error-message">{{ message[1] }}</div>
-          <ion-button color="primary" (click)="login()" expand="full" type="submit">Ingresar</ion-button>
-          <br>
-          <div *ngIf="message[2]" class="error-message ion-text-center">{{ message[2] }}</div>
+
+          <ion-button class="btn-login" (click)="login()" expand="full" type="submit">
+            <ion-icon slot="start" name="log-in-outline"></ion-icon>
+            Ingresar
+          </ion-button>
+
+          <div *ngIf="message[2]" class="error-message ion-text-center" style="margin-top: 12px;">{{ message[2] }}</div>
         </div>
+
       </ion-card-content>
     </ion-card>
   </div>
