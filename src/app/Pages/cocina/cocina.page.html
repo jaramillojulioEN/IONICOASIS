@@ -1,6 +1,5 @@
 <app-main-header titulo="Ordenes Pendientes"></app-main-header>
-
-<ion-content [fullscreen]="true" id="main-content">
+<ion-content [fullscreen]=" true" id="main-content" class="ion-padding">
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -36,12 +35,7 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-
-</ion-content>
-
-<ion-content *ngIf="mensaje == error">
-
-  <ion-card class="custom-card">
+  <ion-card class="custom-card" *ngIf="mensaje == error">
     <ion-card-content>
       <h5>Las ordenes no llegarán, la caja no se activado, por tanto, no se pueden realizar</h5>
     </ion-card-content>

@@ -58,7 +58,6 @@ export class SelectComponent implements OnInit {
   async ObtenerPlatillos(load: boolean = false, criterio: string = ""): Promise<void> {
     try {
       this.loaded = false;
-      debugger;
       const response: any = await (await this.PlatilloService.Platillos(load, 2, 0, criterio)).toPromise();
 
       if (response && response.platillos) {
@@ -90,13 +89,10 @@ export class SelectComponent implements OnInit {
   async ObtenerBebidasPrp(load: boolean = false, criterio: string = ""): Promise<void> {
     try {
       this.loaded = false;
-      debugger;
       const response: any = await (await this.PlatilloService.Platillos(load, 1, 0, criterio)).toPromise();
 
       if (response && response.platillos) {
         this.bebsPrp = response.platillos;
-        console.log(this.bebsPrp)
-
       } else {
         console.error('Error: Respuesta inválida');
       }
@@ -109,7 +105,10 @@ export class SelectComponent implements OnInit {
 
 
   async Dissmiss(data: any, isprp: boolean = false) {
-    if (await this.ValidarExistencia(data)) {
+    var disponibilidad = data.disponibles;
+    var disponible  = disponibilidad.Disponibles === null ||  disponibilidad.Disponibles > 0;
+
+    if (disponible) {
       if (isprp) {
         data.isprep = isprp
       }
@@ -135,8 +134,29 @@ export class SelectComponent implements OnInit {
     let bebidaExistente = bebida.bebidasexitencias.find((b: any) => b.idsucursal == ids);
 
     if (bebidaExistente) {
+      bebida.disponibles = {
+        Disponibles : bebidaExistente.disponibles,
+        IdSucursal : ids
+      };
       var cantidad = bebidaExistente.cantidad;
       if (cantidad <= 0) {
+        return "red";
+      }
+    }
+
+    return null;
+  }
+
+
+  getcolorPlato(platillo: any) {
+    var ids = this.us.getUser().idsucursal;
+    if (!platillo.disponibilidad) return null;
+    let disponibles = platillo.disponibilidad.find((b: any) => b.IdSucursal == ids);
+
+    if (disponibles) {
+      platillo.disponibles = disponibles;
+      var cantidad = disponibles.Disponibles;
+      if (cantidad != null && cantidad <= 0) {
         return "red";
       }
     }
@@ -152,6 +172,8 @@ export class SelectComponent implements OnInit {
 
       if (response && response.bebidas) {
         this.BebidaArry = response.bebidas;
+        console.log(this.BebidaArry)
+
       } else {
         console.error('Error: Respuesta inválida');
       }

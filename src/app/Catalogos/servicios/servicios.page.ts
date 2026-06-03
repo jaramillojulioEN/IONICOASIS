@@ -100,6 +100,39 @@ export class ServiciosPage implements OnInit {
 
 
   async Eliminar(data: any) {
+    let isService = data.id_servicio != undefined ? true : false
+
+    if (isService) {
+      (await this.LavadoService.EliminarServicio(data)).subscribe({
+        next: (response: any) => {
+          if (response && response.message) {
+            this.ac.presentCustomAlert("Aviso", response.message)
+          }
+        },
+        error: (error: any) => {
+          console.log(error)
+        },
+        complete: () => {
+          this.obtenerServicios(false);
+          this.obtenerVehiculos(false);
+        }
+      });
+    } else {
+      (await this.LavadoService.EliminarTipo(data)).subscribe({
+        next: (response: any) => {
+          if (response && response.message) {
+            this.ac.presentCustomAlert("Aviso", response.message)
+          }
+        },
+        error: (error: any) => {
+          console.log(error)
+        },
+        complete: () => {
+          this.obtenerServicios(false);
+          this.obtenerVehiculos(false);
+        }
+      });
+    }
 
   }
 

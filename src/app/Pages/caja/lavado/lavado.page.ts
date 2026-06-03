@@ -25,7 +25,8 @@ export class LavadoPage implements OnInit {
     TotalPorPagina: 5,
     TotalPages: 1,
     TotalItems: 0,
-    Fecha: ""
+    Fecha: "",
+    PaginationEnabled :  true
   }
 
 
@@ -246,6 +247,8 @@ export class LavadoPage implements OnInit {
 
   loaded: boolean = false;
   async obtenerLavados(estado: number, load: boolean = true, ids = 0): Promise<void> {
+    console.log(ids);
+    
     ids = ids == 0 ? this.UserServiceService.gesucu() : ids
     this.loaded = false;
     try {
@@ -269,6 +272,7 @@ export class LavadoPage implements OnInit {
     this.pagina.PaginaActual = 1;
     this.pagina.TotalPages = 1;
     this.pagina.TotalPages = 0;
+    this.pagina.PaginationEnabled = false;
     this.obtenerLavados(1)
 
   }
@@ -277,6 +281,7 @@ export class LavadoPage implements OnInit {
     this.pagina.PaginaActual = 1;
     this.pagina.TotalPages = 1;
     this.pagina.TotalPages = 0;
+    this.pagina.PaginationEnabled= true;
     this.obtenerLavados(2)
   }
 

@@ -26,7 +26,7 @@ export class RecetasService {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-  
+
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
         this.http.post(url, body, { headers }).pipe(
@@ -48,13 +48,13 @@ export class RecetasService {
       });
     });
   }
-  
+
   agregarIngredienteALista(data: any) {
     const url = this.server + 'api/Recetas/CrearIngredientes';
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-  
+
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
         this.http.post(url, data, { headers }).pipe(
@@ -76,7 +76,7 @@ export class RecetasService {
       });
     });
   }
-  
+
   async EliminarIngrediente(idi: number, idl: number): Promise<Observable<any>> {
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
@@ -112,7 +112,7 @@ export class RecetasService {
       });
     });
   }
-  
+
   async CrearReceta(data: any): Promise<Observable<any>> {
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
@@ -130,7 +130,7 @@ export class RecetasService {
       });
     });
   }
-  
+
   async EliminarImagen(idi: number, idl: number): Promise<Observable<any>> {
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
@@ -148,7 +148,7 @@ export class RecetasService {
       });
     });
   }
-  
+
 
   crearListaIngredientes(descripcion: string) {
     const url = this.server + 'api/Recetas/CrearListaIngredientes';
@@ -207,17 +207,14 @@ export class RecetasService {
   }
 
 
-  async Recetas(catego = 0, inicio = 0, fin = 0, id = 0): Promise<Observable<any>> {
+  async TodasRecetas(paginador: any, catego: number, detalle : number =1): Promise<Observable<any>> {
     try {
-      if(id ===0)
-      return this.http.get<any>(`${this.server}api/Recetas/TodasRecetas/${catego}/${inicio}/${fin}`);
-      else
-      return this.http.get<any>(`${this.server}api/Recetas/BuscarReceta/${id}`);
+      return this.http.post<any>(`${this.server}api/Recetas/TodasRecetas/${catego}/${detalle}`,  paginador);
     } finally {
     }
   }
 
-  async Receta(id : number): Promise<Observable<any>> {
+  async Receta(id: number): Promise<Observable<any>> {
     try {
       console.log(`${this.server}api/Recetas/BuscarReceta/${id}`)
       return this.http.get<any>(`${this.server}api/Recetas/BuscarReceta/${id}`);
@@ -226,7 +223,7 @@ export class RecetasService {
   }
 
 
-  async Recetasimple(id : number): Promise<Observable<any>> {
+  async Recetasimple(id: number): Promise<Observable<any>> {
     try {
       return this.http.get<any>(`${this.server}api/Recetas/simplereceta/${id}`);
     } finally {

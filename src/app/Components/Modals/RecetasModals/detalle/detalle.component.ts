@@ -19,7 +19,7 @@ export class DetalleComponentReceta implements OnInit {
   async ObtenerRecetas(): Promise<void> {
 
     try {
-      const response: any = await (await this.RecetasService.Recetas(0, 0, 0, this.receta.id)).toPromise();
+      const response: any = await (await this.RecetasService.Receta(this.receta.id)).toPromise();
 
       if (response && response.receta) {
         this.receta = response.receta;

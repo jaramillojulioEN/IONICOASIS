@@ -188,7 +188,12 @@ export class InasistenciasComponent implements OnInit {
 
     console.log(this.periodoindex)
     this.periodo = this.messalario[this.periodoindex]
-    console.log(this.periodo)
+    this.tickets = this.periodo.tickets
+    console.log(this.periodo.tickets)
+  }
+
+  meschange(){
+    this.ObtenerSalarioMes();
   }
 
 
@@ -199,10 +204,26 @@ export class InasistenciasComponent implements OnInit {
     var descTruncado = parseFloat(desc.toFixed(2));
     return descTruncado;
   }
+  meses = [
+    { numero: 1, nombre: 'Enero' },
+    { numero: 2, nombre: 'Febrero' },
+    { numero: 3, nombre: 'Marzo' },
+    { numero: 4, nombre: 'Abril' },
+    { numero: 5, nombre: 'Mayo' },
+    { numero: 6, nombre: 'Junio' },
+    { numero: 7, nombre: 'Julio' },
+    { numero: 8, nombre: 'Agosto' },
+    { numero: 9, nombre: 'Septiembre' },
+    { numero: 10, nombre: 'Octubre' },
+    { numero: 11, nombre: 'Noviembre' },
+    { numero: 12, nombre: 'Diciembre' }
+  ];
+
+  mesSeleccionado: number = new Date().getMonth() + 1; 
 
 
   async ObtenerSalarioMes(load: boolean = true): Promise<void> {
-    (await this.empleadoservice.SalariosMes(load, this.data.id)).subscribe(
+    (await this.empleadoservice.SalariosMes(load, this.data.id, this.mesSeleccionado)).subscribe(
       async (response: any) => {
         if (response && response.salarios) {
           this.messalario = response.salarios;

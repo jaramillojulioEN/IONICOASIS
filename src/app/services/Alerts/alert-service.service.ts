@@ -81,6 +81,12 @@ export class AlertServiceService {
     text: 'Activar caja',
     handler: () => { }
   }
+
+  public btnRecalcular: ActionSheetButton = {
+    text: 'Recalcular caja',
+    icon: 'refresh-circle-outline',
+    handler: () => { }
+  }
   public btnVer: ActionSheetButton = {
     text: 'Ver receta',
     handler: () => { }

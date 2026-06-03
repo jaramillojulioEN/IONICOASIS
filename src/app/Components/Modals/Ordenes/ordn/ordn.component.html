@@ -57,12 +57,16 @@
 
         <ion-item lines="none">
           <ion-input type="number" label="Cantidad" labelPlacement="floating" [(ngModel)]="detallePlatillo.cantidad"
-            name="cantidad" required></ion-input>
+            name="cantidadPlatillo" inputmode="numeric" pattern="[0-9]*" min="1" (ionInput)="clampCantidad(false)"
+            [disabled]="detallePlatillo.idplatillo === 0" required>
+          </ion-input>
           <ion-buttons slot="end">
-            <ion-button fill="clear" (click)="decreaseQuantity(false)" style="--size: 50px;">
+            <ion-button fill="clear" (click)="decreaseQuantity(false)" style="--size: 50px;"
+              [disabled]="detallePlatillo.idplatillo === 0">
               <ion-icon name="remove-circle-outline" style="font-size: 40px;"></ion-icon>
             </ion-button>
-            <ion-button fill="clear" (click)="increaseQuantity(false)" style="--size: 50px;">
+            <ion-button fill="clear" (click)="increaseQuantity(false)" style="--size: 50px;"
+              [disabled]="detallePlatillo.idplatillo === 0">
               <ion-icon name="add-circle-outline" style="font-size: 40px;"></ion-icon>
             </ion-button>
           </ion-buttons>
@@ -87,14 +91,19 @@
         </ion-item>
         <ion-item lines="none">
 
+          <!-- Input Bebida -->
           <ion-input type="number" label="Cantidad" labelPlacement="floating" [(ngModel)]="DetalleBebida.cantidad"
-            name="cantidad" required></ion-input>
+            name="cantidadBebida" inputmode="numeric" pattern="[0-9]*" min="1" (ionInput)="clampCantidad(true)"
+            [disabled]="!isprep && DetalleBebida.idbebida === 0 || isprep && detallePlatillo.idplatillo === 0" required>
+          </ion-input>
 
           <ion-buttons slot="end">
-            <ion-button fill="clear" (click)="decreaseQuantity(true)" style="--size: 50px;">
+            <ion-button fill="clear" (click)="decreaseQuantity(true)" style="--size: 50px;"
+              [disabled]="!isprep && DetalleBebida.idbebida === 0 || isprep && detallePlatillo.idplatillo === 0">
               <ion-icon name="remove-circle-outline" style="font-size: 40px;"></ion-icon>
             </ion-button>
-            <ion-button fill="clear" (click)="increaseQuantity(true)" style="--size: 50px;">
+            <ion-button fill="clear" (click)="increaseQuantity(true)" style="--size: 50px;"
+              [disabled]="!isprep && DetalleBebida.idbebida === 0 || isprep && detallePlatillo.idplatillo === 0">
               <ion-icon name="add-circle-outline" style="font-size: 40px;"></ion-icon>
             </ion-button>
           </ion-buttons>
@@ -124,7 +133,8 @@
               <p>Observaciones: {{platillo.observaciones}}</p>
               <div class="button-container" *ngIf="OrdenDetalles.estado !== 2">
                 <ion-buttons slot="end">
-                  <ion-button fill="clear" [disabled]="platillo.cantidad === 1" (click)="cantidadplatillo(false, platillo)" style="--size: 50px;">
+                  <ion-button fill="clear" [disabled]="platillo.cantidad === 1"
+                    (click)="cantidadplatillo(false, platillo)" style="--size: 50px;">
                     <ion-icon name="remove-circle-outline" style="font-size: 20px;"></ion-icon>
                   </ion-button>
                   <ion-button fill="clear" (click)="cantidadplatillo(true, platillo)" style="--size: 50px;">
@@ -146,7 +156,8 @@
               <p>Cantidad: {{bebida.cantidad}}</p>
               <div class="button-container" *ngIf="OrdenDetalles.estado !== 2">
                 <ion-buttons slot="end">
-                  <ion-button fill="clear" [disabled]="bebida.cantidad === 1"  (click)="cantidadbebida(false, bebida)" style="--size: 50px;">
+                  <ion-button fill="clear" [disabled]="bebida.cantidad === 1" (click)="cantidadbebida(false, bebida)"
+                    style="--size: 50px;">
                     <ion-icon name="remove-circle-outline" style="font-size: 20px;"></ion-icon>
                   </ion-button>
                   <ion-button fill="clear" (click)="cantidadbebida(true, bebida)" style="--size: 50px;">
@@ -156,7 +167,7 @@
                     <ion-icon name="ellipsis-vertical-outline"></ion-icon>
                   </ion-button>
                 </ion-buttons>
-                
+
               </div>
             </div>
           </div>

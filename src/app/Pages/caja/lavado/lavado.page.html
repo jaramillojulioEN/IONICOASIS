@@ -161,7 +161,7 @@
     </ion-card>
   </div>
 
-  <div class="pagination-container">
+  <div class="pagination-container" *ngIf="pagina.PaginationEnabled">
     <ion-button (click)="paginaAnterior()" [disabled]="pagina.PaginaActual === 0" fill="clear" color="primary">
       <ion-icon name="chevron-back-outline"></ion-icon>
     </ion-button>

@@ -49,21 +49,16 @@
     </ion-grid>
 
     <!-- Controles de Paginación -->
-    <ion-grid>
-      <ion-row>
-        <ion-col size="12" class="pagination-controls">
-          <ion-button (click)="cambiarPagina(-1)" [disabled]="paginaActual === 1">
-            <ion-icon name="arrow-back"></ion-icon>
-            Anterior
-          </ion-button>
-          <span>{{ paginaActual }} de {{ totalPaginas }}</span>
-          <ion-button (click)="cambiarPagina(1)" [disabled]="paginaActual === totalPaginas">
-            Siguiente
-            <ion-icon name="arrow-forward"></ion-icon>
-          </ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+    <div class="pagination-container" *ngIf="pagina.PaginationEnabled">
+      <ion-button (click)="paginaAnterior()" [disabled]="pagina.PaginaActual === 0" fill="clear" color="primary">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+      <ion-label>{{ pagina.PaginaActual }} de {{ pagina.TotalPages }}</ion-label>
+      <ion-button (click)="paginaSiguiente()" [disabled]="pagina.PaginaActual === pagina.TotalPages" fill="clear"
+        color="primary">
+        <ion-icon name="chevron-forward-outline"></ion-icon>
+      </ion-button>
+    </div>
   </div>
 </ion-content>
 
@@ -76,7 +71,8 @@
 
   .image-container {
     width: 100%;
-    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    padding-top: 56.25%;
+    /* 16:9 Aspect Ratio */
     position: relative;
     overflow: hidden;
   }
@@ -87,7 +83,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Makes the image maintain its aspect ratio and cover the container */
+    object-fit: cover;
+    /* Makes the image maintain its aspect ratio and cover the container */
   }
 
   .pagination-controls {

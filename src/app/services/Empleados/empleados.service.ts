@@ -190,9 +190,9 @@ export class EmpleadosService {
     }
   }
 
-  async SalariosMes(loader: boolean = true, ide: any = 0): Promise<Observable<any>> {
+  async SalariosMes(loader: boolean = true, ide: any = 0, mes : number| null ): Promise<Observable<any>> {
     try {
-      return this.http.get<any>(`${this.server}api/Empleados/SalarioMes/${ide}`);
+      return this.http.get<any>(`${this.server}api/Empleados/SalarioMes/${ide}/${mes}`);
     } finally {
     }
   }

@@ -3,7 +3,7 @@ import { RecetasService } from '../../../../services/Recetas/recetas.service'
 import { CategoriaServiceService } from '../../../../services/Categorias/categoria-service.service'
 import { PlatilloService } from '../../../../services/Platillos/platillo.service'
 import { AlertController, ModalController } from '@ionic/angular';
-import {AlertServiceService} from 'src/app/services/Alerts/alert-service.service'
+import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service'
 @Component({
   selector: 'app-platillo-nuevo',
   templateUrl: './platillo-nuevo.component.html',
@@ -35,7 +35,7 @@ export class PlatilloNuevoComponent implements OnInit {
     private PlatilloService: PlatilloService,
     private alertController: AlertController,
     private recetaservice: RecetasService,
-    private ac : AlertServiceService,
+    private ac: AlertServiceService,
     private categoservice: CategoriaServiceService,
   ) { }
 
@@ -88,11 +88,19 @@ export class PlatilloNuevoComponent implements OnInit {
 
 
   async ObtenerRecetas(): Promise<void> {
-    this.loaded = false; 
-  
+    this.loaded = false;
+
+    const pagina = {
+      PaginaActual: 0,
+      TotalPorPagina: 0,
+      TotalPages: 0,
+      TotalItems: 0,
+      Fecha: "",
+      PaginationEnabled: false
+    }
     try {
-      const response: any = await (await this.recetaservice.Recetas(this.platillos.idcategoria)).toPromise();
-  
+      const response: any = await (await this.recetaservice.TodasRecetas(pagina, this.platillos.idcategoria, 0)).toPromise();
+
       if (response && response.recetas) {
         this.recetas = response.recetas;
       } else {
@@ -101,13 +109,13 @@ export class PlatilloNuevoComponent implements OnInit {
     } catch (error) {
       console.error('Error en la solicitud:', error);
     } finally {
-      this.loaded = true; 
+      this.loaded = true;
     }
   }
-  
+
   ObtenerCategorias(): void {
     this.loaded = false;
-  
+
     this.categoservice.Categorias().subscribe(
       (response: any) => {
         if (response && response.categorias) {
@@ -124,7 +132,7 @@ export class PlatilloNuevoComponent implements OnInit {
       }
     );
   }
-  
+
 
   validarPlatillo(platillo: any): { valido: boolean, mensaje: string } {
     if (!platillo.nombre || platillo.nombre.trim().length === 0) {

@@ -40,7 +40,7 @@ export class CocinaPage implements OnInit {
     private ac: AlertServiceService,
     private cortesService: CortesService,
     private fn: LoaderFunctions,
-    private signalRService : SignalrService
+    private signalRService: SignalrService
   ) {
     this.sound = new Howl({
       src: ['assets/audio/file.mp3']
@@ -57,6 +57,8 @@ export class CocinaPage implements OnInit {
   private clearNotifications(): void {
     localStorage.removeItem('notificaciones');
   }
+
+  tiemposTranscurridos: { [id: number]: string } = {}; // Objeto para guardar tiempos transcurridos en segundos por id
 
   ngOnInit() {
     const notificacionesString = localStorage.getItem("notificaciones");
@@ -99,10 +101,36 @@ export class CocinaPage implements OnInit {
     window.addEventListener('activar', () => {
       this.cargaactiva = true;
       console.log("se activo la carga")
-
     })
 
+    setInterval(() => {
+      this.ordenes.forEach((orden: any) => {
+        this.tiemposTranscurridos[Number(orden.id)] = this.transcurrido(orden);
+      });
+    }, 1000);
+
   }
+
+
+  transcurrido(orden: any): string {
+    if (orden.isPausado) return "Pausado";
+
+    const ordendate = new Date(orden.fecha);
+    const inicio = ordendate.getTime();
+    const hoy = Date.now();
+    const diffInSeconds = (hoy - inicio - this.convertirHorasAMilisegundos(orden.tiempoPausado)) / 1000;
+
+    const hours = Math.floor(diffInSeconds / 3600);
+    const minutes = Math.floor((diffInSeconds % 3600) / 60);
+    const seconds = Math.floor(diffInSeconds % 60);
+
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  convertirHorasAMilisegundos(horas: number): number {
+    return horas * 60 * 60 * 1000; // 1 hora = 60 minutos = 60 segundos = 1000 milisegundos
+  }
+
 
   async handleRefresh(event: any) {
     this.ngOnInit();

@@ -74,8 +74,8 @@ export class ServiciosComponent implements OnInit {
     );
   }
 
-  async EliminarServicio(data: any) {
-    (await this.LavadoService.EliminarServicio(data)).subscribe(
+  async EliminarServicioVehiculo(data: any) {
+    (await this.LavadoService.EliminarServicioVehiculo(data)).subscribe(
       (response: any) => {
         if (response.message) {
           this.ac.presentCustomAlert("Notificacion", response.message)
@@ -112,7 +112,7 @@ export class ServiciosComponent implements OnInit {
         this.vehiculo.Servicio_Tipo_Vehiculo[index].Servicios = null
         console.log(this.vehiculo.Servicio_Tipo_Vehiculo[index])
 
-        this.EliminarServicio(this.vehiculo.Servicio_Tipo_Vehiculo[index])
+        this.EliminarServicioVehiculo(this.vehiculo.Servicio_Tipo_Vehiculo[index])
 
         this.vehiculo.Servicio_Tipo_Vehiculo.splice(index, 1);
         

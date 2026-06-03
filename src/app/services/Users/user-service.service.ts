@@ -39,7 +39,8 @@ export class UserServiceService {
     let server = ""
     // server = "https://muddywatter26-001-site2.ntempurl.com/"
     server = "https://muddywatter26-001-site1.ftempurl.com/"
-    // server = "https://localhost:"+port
+    //  server = "https://localhost:"+port
+
     return `${server}/`
   }
 
@@ -67,9 +68,9 @@ export class UserServiceService {
     return this.isAuth() ? this.user : null
   }
 
-  gesucu(): any {
-    var user =  this.isAuth() ? this.user : null
-    return user.sucursales.id;
+  gesucu(): number {
+    const user = this.isAuth() ? this.user : null;
+    return user?.sucursales?.id ?? 0;
   }
 
   async ActulizarInasistencia(data: any): Promise<Observable<any>> {
