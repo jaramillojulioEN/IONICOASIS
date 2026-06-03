@@ -64,6 +64,33 @@
       </table>
       <app-skeleton *ngIf="!loaded" [columns]="5" type="tabla"></app-skeleton>
     </div>
+
+    <div class="table-container" *ngIf="loaded">
+      <h6 class="ion-padding-start ion-padding-top">Préstamos a empleados</h6>
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>EMPLEADO</th>
+            <th>CONCEPTO</th>
+            <th>CANTIDAD</th>
+            <th>FECHA</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="prestamoscurso.length !== 0">
+          <tr *ngFor="let prestamo of prestamoscurso">
+            <td>{{ prestamo.id }}</td>
+            <td>{{ prestamo.empleado || '—' }}</td>
+            <td>{{ prestamo.concepto }}</td>
+            <td>{{ prestamo.cantidad }}</td>
+            <td>{{ prestamo.fecha }}</td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="prestamoscurso.length === 0">
+          <tr><td colspan="5">No hay préstamos registrados</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
 
@@ -125,6 +152,38 @@
         </div>
       </ion-card-content>
     </ion-card>
+
+    <ion-card *ngIf="loaded">
+      <ion-card-content>
+        <h6>Préstamos a empleados</h6>
+        <div class="table-wrapper">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>EMPLEADO</th>
+                <th>CONCEPTO</th>
+                <th>CANTIDAD</th>
+                <th>FECHA</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="prestamoshistorial.length > 0">
+              <tr *ngFor="let prestamo of prestamoshistorial">
+                <td>{{ prestamo.id }}</td>
+                <td>{{ prestamo.empleado || '—' }}</td>
+                <td>{{ prestamo.concepto }}</td>
+                <td>{{ prestamo.cantidad }}</td>
+                <td>{{ prestamo.fecha }}</td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="prestamoshistorial.length === 0">
+              <td colspan="5">No hay préstamos registrados</td>
+            </tbody>
+          </table>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
     <ion-card *ngIf="!loaded">
       <ion-content>
         <app-skeleton [columns]="5" type="tabla"></app-skeleton>

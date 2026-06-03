@@ -89,7 +89,7 @@ export class CocinaPage implements OnInit {
       if (this.cargaactiva) {
         this.updateTimers();
       }
-    }, 10000);
+    }, 1000);
 
     window.addEventListener('desactivar', () => {
       this.cargaactiva = false;
@@ -175,40 +175,38 @@ export class CocinaPage implements OnInit {
       console.error('Error en la solicitud:', error);
     } finally {
       this.loaded = true;
+      this.updateTimers();
     }
   }
 
 
-  tiemposTranscurridos: { [id: string]: number } = {}; // Objeto para guardar tiempos transcurridos en segundos por id
+  tiemposTranscurridos: { [id: string]: number } = {};
+  tiemposFormateados: { [id: string]: string } = {};
 
-  updateTimer(orden: any): string {
-    return this.transcurrido(orden);
-  }
+  transcurrido(orden: any): void {
+    if (orden.isPausado) {
+      this.tiemposFormateados[orden.id] = 'Pausado';
+      return;
+    }
 
-  transcurrido(orden: any): string {
-    if (orden.isPausado) return "Pausado";
-
-    const ordendate = new Date(orden.fecha);
-    const inicio = ordendate.getTime();
-    const hoy = Date.now();
-    const diffInSeconds = (hoy - inicio - this.convertirHorasAMilisegundos(orden.tiempoPausado)) / 1000;
+    const inicio = new Date(orden.fecha).getTime();
+    const pausadoMs = this.convertirHorasAMilisegundos(orden.tiempoPausado || 0);
+    const diffInSeconds = (Date.now() - inicio - pausadoMs) / 1000;
     this.tiemposTranscurridos[orden.id] = diffInSeconds;
 
     const hours = Math.floor(diffInSeconds / 3600);
     const minutes = Math.floor((diffInSeconds % 3600) / 60);
     const seconds = Math.floor(diffInSeconds % 60);
 
-    const tiempoFormateado = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    return tiempoFormateado;
+    this.tiemposFormateados[orden.id] = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   }
 
   updateTimers() {
     if (this.ordenes != null) {
-      for (let orden of this.ordenes) {
-        this.updateTimer(orden);
+      for (const orden of this.ordenes) {
+        this.transcurrido(orden);
       }
     }
-
   }
 
 

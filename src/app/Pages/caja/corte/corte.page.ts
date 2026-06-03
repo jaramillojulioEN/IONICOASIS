@@ -67,6 +67,8 @@ export class CortePage implements OnInit {
   retiroshistorial: any = []
   retiroshistorialnofiltrado: any = []
   retiroshistorialfiltrado: any = []
+  prestamoscurso: any = []
+  prestamoshistorial: any = []
   ///
 
   async openFilter(event: Event): Promise<void> {
@@ -143,9 +145,11 @@ export class CortePage implements OnInit {
       if (response && response.Cortes) {
         if (activos) {
           this.cortescurso = response.Cortes;
+          this.prestamoscurso = response.Prestamos || [];
         } else {
           this.retiroshistorial = response.Cortes;
           this.retiroshistorialnofiltrado = response.Cortes;
+          this.prestamoshistorial = response.Prestamos || [];
 
           if (this.rol.id !== 1) {
             this.retiroshistorial = this.funcions.filterbydate(this.retiroshistorialnofiltrado, this.filterdate);
