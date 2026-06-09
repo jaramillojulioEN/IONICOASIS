@@ -23,6 +23,7 @@
           <!-- <th>Disponibles</th> -->
           <th>Fecha de modificación</th>
           <th *ngFor="let suc of sucursales">Existencias {{suc.sucursal}}</th>
+          <th>Historial</th>
           <th *ngIf="rol.id === 1" colspan="2">Acciones</th>
         </tr>
       </thead>
@@ -78,6 +79,11 @@
               </tbody>
             </table>
           </td>
+          <td class="actions-cell">
+            <ion-button fill="clear" (click)="verHistorial(producto)">
+              <ion-icon name="time-outline"></ion-icon>
+            </ion-button>
+          </td>
           <td class="actions-cell" *ngIf="rol.id === 1">
             <ion-button fill="clear" (click)="Opciones(producto)">
               <ion-icon name="ellipsis-vertical-outline"></ion-icon>
@@ -107,7 +113,7 @@
           <th>Fecha modificación</th>
 
           <th *ngFor="let suc of sucursales">Existencias {{suc.sucursal}}</th>
-
+          <th>Historial</th>
           <th *ngIf="rol.id === 1" colspan="2">Acciones</th>
         </tr>
       </thead>
@@ -162,6 +168,11 @@
                 </tr>
               </tbody>
             </table>
+          </td>
+          <td class="actions-cell">
+            <ion-button fill="clear" (click)="verHistorial(bebida)">
+              <ion-icon name="time-outline"></ion-icon>
+            </ion-button>
           </td>
           <td *ngIf="rol.id === 1" class="actions-cell">
             <ion-button fill="clear" (click)="Opciones(bebida)">

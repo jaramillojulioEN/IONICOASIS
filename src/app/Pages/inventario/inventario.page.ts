@@ -6,6 +6,7 @@ import { ProductoServiceService } from 'src/app/services/Prodcutos/producto-serv
 import { ExistenciasComponent } from 'src/app/Components/Modals/existencias/existencias.component'
 import { UserServiceService } from 'src/app/services/Users/user-service.service';
 import { CantidesComponent } from 'src/app/Components/Modals/cantides/cantides.component';
+import { HistorialExistenciasComponent } from 'src/app/Components/Modals/historial-existencias/historial-existencias.component';
 import { Calls } from 'src/functions/call';
 @Component({
   selector: 'app-inventario',
@@ -75,6 +76,18 @@ export class InventarioPage implements OnInit {
       component: CantidesComponent,
       componentProps: {
         data: data
+      },
+    });
+    return await modal.present();
+  }
+
+  async verHistorial(data: any) {
+    const modal = await this.ModalController.create({
+      component: HistorialExistenciasComponent,
+      componentProps: {
+        id: data.id,
+        nombre: data.nombre,
+        isbebida: data.precioventa ? true : false
       },
     });
     return await modal.present();

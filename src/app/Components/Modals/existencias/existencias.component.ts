@@ -119,7 +119,8 @@ export class ExistenciasComponent implements OnInit {
 
   async confirmarupdate() {
     this.data.fecha = this.fn.obtenerFechaHoraActual()
-    this.existencias.disponibles = this.existencias.cantidad - this.existencias.vendidos
+    this.existencias.vendidos = 0
+    this.existencias.disponibles = this.existencias.cantidad
     if (this.data.productosexitencias) {
       this.data.productosexitencias.push(this.existencias)
     } else {
