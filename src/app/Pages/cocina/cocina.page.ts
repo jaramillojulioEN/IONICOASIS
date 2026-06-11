@@ -131,6 +131,7 @@ export class CocinaPage implements OnInit {
       componentProps: {
         mesa: data.mesas,
         ordenC: data,
+        tiempo: this.tiemposTranscurridos[data.id] || 0,
       },
     });
 

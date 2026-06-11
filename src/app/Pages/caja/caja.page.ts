@@ -69,7 +69,8 @@ export class CajaPage implements OnInit {
     });
 
     window.addEventListener('success', () => {
-      this.ModalController.dismiss();
+      this.ModalController.dismiss().catch(() => {});
+      this.start();
     })
   }
 
