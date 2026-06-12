@@ -27,6 +27,13 @@ export class CajaPage implements OnInit {
 
   filtered: boolean = false;
   fecha: any = this.fns.obtenerFechaHoraActual();
+
+  private getInicioDiaLocal(): string {
+    const ahora = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${ahora.getFullYear()}-${pad(ahora.getMonth() + 1)}-${pad(ahora.getDate())}T00:00:00.000`;
+  }
+
   caja: boolean = false;
   loaded: boolean = false;
   mensaje: any;
@@ -109,7 +116,7 @@ export class CajaPage implements OnInit {
     const id = this.userservice.gesucu();
     if (id) this.idsucursal = id;
     this.segmento = this.rol.id !== 1 ? 'pago' : 'hoy';
-    this.fechaActual = this.fns.obtenerFechaHoraActual();
+    this.fechaActual = this.getInicioDiaLocal();
 
     if (this.rol.id !== 1) {
       this.getordenes(4, true);
@@ -222,7 +229,7 @@ export class CajaPage implements OnInit {
 
   async getordenes(estado: number, load: boolean = true) {
     this.loaded = !load
-    this.pagina.Fecha = this.rol.id != 1 ? this.pagina.Fecha = this.fechaActual : "";
+    this.pagina.Fecha = (this.rol.id !== 1 && estado === 5) ? this.fechaActual : "";
     this.pagina.PaginationEnabled = estado === 4 ? false : true;
     try {
       (await this.os.OrdenesPendientesNuevo(estado, this.rol.id, this.idsucursal, this.pagina)).subscribe({
