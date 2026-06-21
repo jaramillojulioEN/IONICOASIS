@@ -20,6 +20,14 @@
             </ion-col>
         </ion-row>
     </ion-grid>
+    <ion-segment [value]="segmento" (ionChange)="cambioSegmento($event)">
+        <ion-segment-button value="activas">
+            <ion-label>Activas</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="cobradas">
+            <ion-label>Cobradas</ion-label>
+        </ion-segment-button>
+    </ion-segment>
     <div class="table-container ion-padding" *ngIf="caja">
         <table class="tabla" *ngIf="loaded">
             <thead>
@@ -52,5 +60,14 @@
             </tbody>
         </table>
         <app-skeleton [columns]="7" *ngIf="!loaded" type="tabla"></app-skeleton>
+        <ion-row *ngIf="segmento === 'cobradas' && loaded" class="ion-justify-content-center ion-align-items-center">
+            <ion-button fill="clear" [disabled]="paginaCobradas.PaginaActual <= 1" (click)="paginaAnteriorCobradas()">
+                <ion-icon name="chevron-back-outline"></ion-icon>
+            </ion-button>
+            <ion-label>{{ paginaCobradas.PaginaActual }} / {{ paginaCobradas.TotalPages }}</ion-label>
+            <ion-button fill="clear" [disabled]="paginaCobradas.PaginaActual >= paginaCobradas.TotalPages" (click)="paginaSiguienteCobradas()">
+                <ion-icon name="chevron-forward-outline"></ion-icon>
+            </ion-button>
+        </ion-row>
     </div>
 </ion-content>

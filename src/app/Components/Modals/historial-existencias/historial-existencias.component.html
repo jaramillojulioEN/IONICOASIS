@@ -1,0 +1,38 @@
+<app-main-header titulo="Historial de existencias"></app-main-header>
+<ion-content class="ion-padding" id="main-content">
+
+  <h3 style="margin: 0 0 12px 0; font-weight: 600;">{{ nombre }}</h3>
+
+  <div *ngIf="loaded">
+    <div *ngIf="historial.length === 0" style="text-align: center; padding: 32px; color: var(--ion-color-medium);">
+      <ion-icon name="time-outline" style="font-size: 48px;"></ion-icon>
+      <p>Sin historial registrado</p>
+    </div>
+
+    <div class="table-container" *ngIf="historial.length > 0">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Sucursal</th>
+            <th>Fecha</th>
+            <th>Cantidad</th>
+            <th>Vendidos</th>
+            <th>Disponibles</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let h of historial" class="option">
+            <td>{{ h.sucursal }}</td>
+            <td>{{ h.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ h.cantidad }}</td>
+            <td>{{ h.vendidos }}</td>
+            <td>{{ h.disponibles }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <app-skeleton *ngIf="!loaded" [columns]="5" type="tabla"></app-skeleton>
+
+</ion-content>

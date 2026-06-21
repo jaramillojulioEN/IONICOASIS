@@ -104,4 +104,8 @@ export class ProductoServiceService {
     } finally {
     }
   }
+
+  async HistorialProducto(id: number): Promise<Observable<any>> {
+    return this.http.get<any>(`${this.server}api/Productos/HistorialExistencias/${id}`);
+  }
 }

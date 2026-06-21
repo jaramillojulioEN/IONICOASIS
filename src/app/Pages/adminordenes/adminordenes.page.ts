@@ -17,6 +17,7 @@ export class AdminordenesPage implements OnInit {
   ordenes: any = [];
   intervalId: any;
   caja: boolean = true;
+  segmento: string = 'activas';
 
   constructor(
     private OrdenesService: OrdenesService,
@@ -82,26 +83,50 @@ export class AdminordenesPage implements OnInit {
     PaginationEnabled: false
   }
 
+  paginaCobradas = {
+    PaginaActual: 1,
+    TotalPorPagina: 10,
+    TotalPages: 1,
+    TotalItems: 0,
+    Fecha: "",
+    PaginationEnabled: true
+  }
+
+  cambioSegmento(event: any) {
+    this.segmento = event.detail.value;
+    this.ObtenerOrdenes();
+  }
+
+  paginaAnteriorCobradas() {
+    this.paginaCobradas.PaginaActual--;
+    this.ObtenerOrdenes();
+  }
+
+  paginaSiguienteCobradas() {
+    this.paginaCobradas.PaginaActual++;
+    this.ObtenerOrdenes();
+  }
+
   async ObtenerOrdenes(load: boolean = true): Promise<void> {
     try {
       if (load) {
         this.loaded = false;
       }
-      (await this.OrdenesService.OrdenesPendientesNuevo(0, 1, this.idu, this.pagina)).subscribe({
+      const esCobradas = this.segmento === 'cobradas';
+      const estado = esCobradas ? 5 : 0;
+      const pag = esCobradas ? this.paginaCobradas : this.pagina;
+      (await this.OrdenesService.OrdenesPendientesNuevo(estado, 1, this.idu, pag)).subscribe({
         next: (response: any) => {
           if (response && response.Ordenes) {
             this.ordenes = response.Ordenes;
           } else {
             console.error('Error: Respuesta inválida');
           }
+          if (response.Paginador && esCobradas) {
+            this.paginaCobradas = response.Paginador;
+          }
           if (response.message) {
-            if (response.message === "Caja cerrada")
-              this.caja = false
-            else {
-              this.caja = true
-            }
-          } else {
-            console.error('Error: Respuesta inválida');
+            this.caja = response.message !== "Caja cerrada";
           }
         },
         error: (error: any) => {

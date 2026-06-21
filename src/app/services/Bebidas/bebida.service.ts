@@ -93,4 +93,8 @@ export class BebidaService {
     } finally {
     }
   }
+
+  async HistorialBebida(id: number): Promise<Observable<any>> {
+    return this.http.get<any>(`${this.server}api/Bebidas/HistorialExistencias/${id}`);
+  }
 }

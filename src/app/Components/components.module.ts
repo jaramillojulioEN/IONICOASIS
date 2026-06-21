@@ -40,6 +40,7 @@ import { VentaEspecialComponent } from './Modals/venta-especial/venta-especial.c
 import { CrearLavadoComponent } from './Modals/crear-lavado/crear-lavado.component';
 import { SelectLavadoComponent } from './Modals/select-lavado/select-lavado.component';
 import { TestComponent } from './test/test.component';
+import { HistorialExistenciasComponent } from './Modals/historial-existencias/historial-existencias.component';
 @NgModule({
   declarations:
     [
@@ -80,7 +81,8 @@ import { TestComponent } from './test/test.component';
       PlatilloNuevoComponent,
       MainHeaderComponent,
       BebidaComponent,
-      TestComponent
+      TestComponent,
+      HistorialExistenciasComponent
     ],
   exports: [
     CardComponent,
@@ -119,7 +121,8 @@ import { TestComponent } from './test/test.component';
     SideMenuComponent,
     PlatilloNuevoComponent,
     BebidaComponent,
-    TestComponent
+    TestComponent,
+    HistorialExistenciasComponent
   ],
   imports: [
     CommonModule,
