@@ -9,12 +9,11 @@
         <ion-icon name="refresh-outline" color="light"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <!-- *ngIf="rol.id !== 2"
-    <div slot="end" *ngIf="rol.id !== 2">
+    <div slot="end" *ngIf="rol.id !== 4">
       <ion-icon style="width: 50px;" name="time-outline" color="light" slot="icon-only"></ion-icon>
-      <span *ngIf="orden.estado!==3" class="timer">{{ getElapsedTime(orden.id) | date:'mm:ss' }}</span>
-      <span *ngIf="orden.estado===3" class="timer">{{ formatTime(orden.tiempo) }} (Pausado hasta pedido nuevo)</span>
-    </div> -->
+      <span class="timer" *ngIf="orden.estado !== 3">{{ tiempo }}</span>
+      <span class="timer" *ngIf="orden.estado === 3">{{ tiempo }} (Pausado hasta pedido nuevo)</span>
+    </div>
   </ion-toolbar>
 </ion-header>
 

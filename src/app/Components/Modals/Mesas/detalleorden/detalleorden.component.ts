@@ -26,6 +26,7 @@ export class DetalleordenComponent implements OnInit {
   estimados: any;
   rol: any = [];
   @Input() tiempo: string = "";
+  @Input() tiempoSeg: number = 0;
 
   constructor(
     private ac: AlertServiceService,
@@ -220,7 +221,8 @@ export class DetalleordenComponent implements OnInit {
     if (this.orden.estado == 3) {
       this.orden.pausado = this.fn.obtenerFechaHoraActual()
       this.notifs(this.orden.id)
-      this.orden.tiempo = this.tiempo;
+      // Use numeric elapsed seconds when saving to backend
+      this.orden.tiempo = Math.floor(Number(this.tiempoSeg) || 0);
       this.orden.ordenesplatillos.forEach((element: any) => {
         element.estado = 2
       });

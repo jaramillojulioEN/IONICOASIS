@@ -34,10 +34,28 @@ export class InicioComponent implements OnInit {
 
   ngOnInit() {
 
-    let user = this.user.getUser()
-    let idsucursal = this.ids == 0 ? user.idsucursal : this.ids
-    this.model.idsucursal = idsucursal
-    this.model.fechainicio = this.funciones.obtenerFechaHoraActual()
+    const user = this.user.getUser();
+    const idsucursal = this.ids === 0 ? user.idsucursal : this.ids;
+    this.model.idsucursal = idsucursal;
+    this.model.fechainicio = this.obtenerFechaLocal();
+  }
+
+  private obtenerFechaLocal(): string {
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: 'America/Mexico_City',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+      hour12: false
+    };
+    const parts = new Intl.DateTimeFormat('es-MX', options).formatToParts(new Date());
+    const map = new Map(parts.map(p => [p.type, p.value]));
+    const yyyy = map.get('year') ?? '0000';
+    const mm = map.get('month') ?? '00';
+    const dd = map.get('day') ?? '00';
+    const hh = map.get('hour') ?? '00';
+    const min = map.get('minute') ?? '00';
+    const ss = map.get('second') ?? '00';
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
   }
 
   async Iniciar() {
