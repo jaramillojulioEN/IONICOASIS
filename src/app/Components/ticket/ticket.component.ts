@@ -209,13 +209,6 @@ export class TicketComponent implements OnInit {
     }
 
 
-    let body: any = {
-      tipoEntidad: "lavado",
-      entidad: this.lavado
-    };
-
-
-
     let load = this.lavadosSeleccionados.length > 0 ? false : true;
     (await this.lav.CobrarLIsta(this.lavado, load)).subscribe(
       async (response: any) => {

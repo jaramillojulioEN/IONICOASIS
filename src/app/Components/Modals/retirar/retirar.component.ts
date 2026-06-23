@@ -44,7 +44,8 @@ export class RetirarComponent implements OnInit {
 
   async obtenerCortesActivos(load: boolean = true): Promise<void> {
     try {
-      (await this.cortes.CortesActivos(1, load)).subscribe(
+      const paginadorTodos = { PaginaActual: 1, TotalPorPagina: 5, TotalItems: 0, PaginationEnabled: false };
+      (await this.cortes.CortesActivos(paginadorTodos, 1)).subscribe(
         async (response: any) => {
           if (response && response.Cortes) {
             this.caja = response.Cortes;

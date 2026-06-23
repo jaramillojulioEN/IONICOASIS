@@ -13,22 +13,11 @@
         </ion-item>
         
         <ion-item lines="none">
-          <ion-input labelPlacement="floating" label="Cantidad a agregar" name="Cantidad" placeholder="Cantidad"
+          <ion-input labelPlacement="floating" label="Cantidad a agregar" name="Cantidad Actual" placeholder="Cantidad"
             [(ngModel)]="existencias.cantidad" type="number" clearInput>
           </ion-input>
         </ion-item>
 
-        <ion-item lines="none">
-          <ion-input labelPlacement="floating" label="Vendidos" name="Vendidos" placeholder="Vendidos"
-            [(ngModel)]="existencias.vendidos" type="number" clearInput>
-          </ion-input>
-        </ion-item>
-
-        <ion-item lines="none">
-          <ion-input labelPlacement="floating" label="Disponibles" name="Disponibles" placeholder="Disponibles"
-            [(ngModel)]="existencias.disponibles" [value]="existencias.cantidad - existencias.vendidos" type="number" clearInput>
-          </ion-input>
-        </ion-item>
         <ion-button expand="full" (click)="confirmar()">Guardar</ion-button>
       </ion-list>
     </ion-card-content>

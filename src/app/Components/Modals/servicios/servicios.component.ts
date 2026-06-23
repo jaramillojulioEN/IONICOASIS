@@ -14,24 +14,23 @@ export class ServiciosComponent implements OnInit {
   constructor(private LavadoService: LavadoService, private ac: AlertServiceService) { }
 
   serviciorquest: any = {
-    tipoEntidad: "Servicios",
-    entidad: {
-      id: 0,
-      nombre_servicio: "",
-      descripcion: "",
-      precio: 0,
-    }
+    id: 0,
+    nombre_servicio: "",
+    descripcion: "",
+    precio: 0,
   }
+
   ngOnInit() {
     console.log(this.servicio)
     this.obtenerServicios()
     if (this.servicio != null && this.servicio.length != 0) {
-      this.serviciorquest.entidad = this.servicio
+      this.serviciorquest = this.servicio
     }
-    if (!this.isService) {
+    if (this.isService) {
+      this.nuevoservicio = true;
+    } else {
       this.marcarServiciosDisponibles()
     }
-
   }
 
   async obtenerServicios(load: boolean = false): Promise<void> {
@@ -51,27 +50,22 @@ export class ServiciosComponent implements OnInit {
 
   async AgregarServicio(): Promise<void> {
     if (!this.nuevoservicio) {
-      this.nuevoservicio = true
+      this.nuevoservicio = true;
     } else {
-      this.GotoBackEnd(this.serviciorquest)
-      this.nuevoservicio = false
-    }
-  }
-
-
-  async GotoBackEnd(data: any) {
-    (await this.LavadoService.CrearLavado(data)).subscribe(
-      (response: any) => {
-        if (response.message) {
-          this.ac.presentCustomAlert("Notificacion", response.message)
-          this.obtenerServicios()
-          window.dispatchEvent(new Event('success'));
+      (await this.LavadoService.CrearOActualizarServicio(this.serviciorquest)).subscribe(
+        (response: any) => {
+          if (response.message) {
+            this.ac.presentCustomAlert("Notificacion", response.message);
+            this.obtenerServicios();
+            window.dispatchEvent(new Event('success'));
+          }
+        },
+        (error: any) => {
+          console.error('Error en la solicitud:', error);
         }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
-      }
-    );
+      );
+      this.nuevoservicio = false;
+    }
   }
 
   async EliminarServicioVehiculo(data: any) {
@@ -95,8 +89,6 @@ export class ServiciosComponent implements OnInit {
     Servicio_Tipo_Vehiculo: []
   }
 
-
-
   serviciosSeleccionados: Set<number> = new Set();
   marcarServiciosDisponibles() {
     this.vehiculo.Servicio_Tipo_Vehiculo.forEach((st: any) => {
@@ -109,13 +101,9 @@ export class ServiciosComponent implements OnInit {
       this.serviciosSeleccionados.delete(id_servicio);
       const index = this.vehiculo.Servicio_Tipo_Vehiculo.findIndex((st: any) => st.id_servicio === id_servicio);
       if (index !== -1) {
-        this.vehiculo.Servicio_Tipo_Vehiculo[index].Servicios = null
-        console.log(this.vehiculo.Servicio_Tipo_Vehiculo[index])
-
-        this.EliminarServicioVehiculo(this.vehiculo.Servicio_Tipo_Vehiculo[index])
-
+        this.vehiculo.Servicio_Tipo_Vehiculo[index].Servicios = null;
+        this.EliminarServicioVehiculo(this.vehiculo.Servicio_Tipo_Vehiculo[index]);
         this.vehiculo.Servicio_Tipo_Vehiculo.splice(index, 1);
-        
       }
     } else {
       this.serviciosSeleccionados.add(id_servicio);
@@ -126,17 +114,23 @@ export class ServiciosComponent implements OnInit {
   async AgregarTipo(): Promise<void> {
     if (this.vehiculo.tipo_vehiculo != "") {
       if (this.vehiculo.Servicio_Tipo_Vehiculo.length != 0) {
-        let Tipos_Vehiculos: any = {
-          tipoEntidad: "Tipos_Vehiculos",
-          entidad: this.vehiculo
-        }
-        this.GotoBackEnd(Tipos_Vehiculos)
+        (await this.LavadoService.CrearOActualizarTipoVehiculo(this.vehiculo)).subscribe(
+          (response: any) => {
+            if (response.message) {
+              this.ac.presentCustomAlert("Notificacion", response.message);
+              this.obtenerServicios();
+              window.dispatchEvent(new Event('success'));
+            }
+          },
+          (error: any) => {
+            console.error('Error en la solicitud:', error);
+          }
+        );
       } else {
-        this.ac.presentCustomAlert("Error", "Debes seleccionar al menos 1 servicio para este vehiculo")
+        this.ac.presentCustomAlert("Error", "Debes seleccionar al menos 1 servicio para este vehiculo");
       }
     } else {
-      this.ac.presentCustomAlert("Error", "Debes especificar el tipo de vehiculo")
+      this.ac.presentCustomAlert("Error", "Debes especificar el tipo de vehiculo");
     }
-
   }
 }

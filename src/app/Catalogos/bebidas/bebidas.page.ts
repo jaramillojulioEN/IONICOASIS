@@ -13,6 +13,24 @@ export class BebidasPage implements OnInit {
   BebidaArry: any = [];
   loaded: boolean = false;
 
+  pagina = {
+    PaginaActual: 1,
+    TotalPorPagina: 10,
+    TotalPages: 1,
+    TotalItems: 0,
+    PaginationEnabled: true
+  };
+
+  paginaAnterior() {
+    this.pagina.PaginaActual = this.pagina.PaginaActual - 1;
+    this.ObtenerBebidas();
+  }
+
+  paginaSiguiente() {
+    this.pagina.PaginaActual = this.pagina.PaginaActual + 1;
+    this.ObtenerBebidas();
+  }
+
   constructor(
     private BebidaService: BebidaService,
     private ModalController: ModalController,
@@ -23,6 +41,7 @@ export class BebidasPage implements OnInit {
   ngOnInit() {
     this.ObtenerBebidas()
     window.addEventListener('success', () => {
+      this.pagina.PaginaActual = 1;
       this.ObtenerBebidas();
     })
   }
@@ -48,9 +67,10 @@ export class BebidasPage implements OnInit {
   async ObtenerBebidas(load: boolean = true): Promise<void> {
     this.loaded = false;
     try {
-      const response: any = await (await this.BebidaService.Bebidas(load)).toPromise();
+      const response: any = await (await this.BebidaService.Bebidas(this.pagina)).toPromise();
       if (response && response.bebidas) {
         this.BebidaArry = response.bebidas;
+        this.pagina = response.Paginador;
       } else {
         console.error('Error: Respuesta inválida');
       }

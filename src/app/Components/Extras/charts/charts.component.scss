@@ -1,6 +1,75 @@
-.employee, .family{padding: 5px; cursor: pointer;font-size: 15px;}
-
+.employee, .family { padding: 5px; cursor: pointer; font-size: 15px; }
 
 .active ion-icon {
-    color: #3116c9; /* Color de iluminación (ejemplo: amarillo) */
+  color: #3116c9;
+}
+
+/* ── Layout superior: gráfica + resumen ─────────────────── */
+.top-section {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.chart-wrap {
+  flex: 0 0 150px;
+  width: 150px;
+  height: 150px;
+
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+.resumen-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.resumen-item {
+  background: var(--ion-color-light, #f4f5f8);
+  border-radius: 8px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.resumen-label {
+  font-size: 0.62rem;
+  color: var(--ion-color-medium, #92949c);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.resumen-value {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ion-color-dark, #222428);
+}
+
+.resumen-value.success { color: var(--ion-color-success, #2dd36f); }
+.resumen-value.danger  { color: var(--ion-color-danger, #eb445a); }
+
+.empty-row {
+  padding: 12px;
+  color: var(--ion-color-medium, #92949c);
+  font-style: italic;
+}
+
+.resumen-skeleton {
+  background: var(--ion-color-light-shade, #d7d8da);
+  border-radius: 4px;
+  color: transparent;
+  min-width: 48px;
+  display: inline-block;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
 }

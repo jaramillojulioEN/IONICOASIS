@@ -91,12 +91,12 @@ export class PlatilloService {
     }
   }
 
-  async Platillos(loader: boolean = true, idsubcatego: number, idcatego: number = 0, criterio: string = ""): Promise<Observable<any>> {
+  async Platillos(paginador: any, idsubcatego: number, idcatego: number = 0, criterio: string = ""): Promise<Observable<any>> {
     try {
       if (criterio === "") {
-        criterio = "empty"
+        criterio = "empty";
       }
-      return this.http.get<any>(`${this.server}api/Platillos/TodosPlatillos/${idsubcatego}/${idcatego}/${criterio}`);
+      return this.http.post<any>(`${this.server}api/Platillos/TodosPlatillos/${idsubcatego}/${idcatego}/${criterio}`, paginador);
     } finally {
     }
   }

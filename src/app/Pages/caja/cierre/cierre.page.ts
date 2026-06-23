@@ -16,6 +16,25 @@ import { Calls } from 'src/functions/call';
 export class CierrePage implements OnInit {
   CorteActivo: any = [];
   segmento: string = "estado";
+
+  paginaPasados = {
+    PaginaActual: 1,
+    TotalPorPagina: 10,
+    TotalPages: 1,
+    TotalItems: 0,
+    PaginationEnabled: true
+  };
+
+  paginaAnteriorPasados() {
+    this.paginaPasados.PaginaActual--;
+    this.obtenerCortesPasados(true, this.idu);
+  }
+
+  paginaSiguientePasados() {
+    this.paginaPasados.PaginaActual++;
+    this.obtenerCortesPasados(true, this.idu);
+  }
+
   colores: string[] = [
     'rgba(255, 99, 132, 0.2)',
     'rgba(54, 162, 235, 0.2)',
@@ -90,10 +109,11 @@ export class CierrePage implements OnInit {
       this.loaded1 = false
     }
     try {
-      const response: any = await (await this.cortesService.CortesActivos(2, load, idu)).toPromise();
+      const response: any = await (await this.cortesService.CortesActivos(this.paginaPasados, 2, idu)).toPromise();
 
       if (response && response.Cortes) {
         this.CortePasado = response.Cortes;
+        this.paginaPasados = response.Paginador;
       } else {
         console.error('Error: Respuesta inválida');
       }
@@ -110,7 +130,8 @@ export class CierrePage implements OnInit {
       this.loaded2 = false
     }
     try {
-      const response: any = await (await this.cortesService.CortesActivos(1, load, ids)).toPromise();
+      const paginadorTodos = { PaginaActual: 1, TotalPorPagina: 5, TotalItems: 0, PaginationEnabled: false };
+      const response: any = await (await this.cortesService.CortesActivos(paginadorTodos, 1, ids)).toPromise();
       if (response && response.Cortes) {
         this.CorteActivo = response.Cortes;
         if (this.CorteActivo.length > 0) {
@@ -168,7 +189,7 @@ export class CierrePage implements OnInit {
 
   async recalcularCaja(caja: any): Promise<void> {
     const alert = await this.alertCtrl.create({
-      header: 'Recalcular caja',
+      header: 'Editar efectivo inicial',
       inputs: [
         {
           name: 'totalcaja',
@@ -182,31 +203,15 @@ export class CierrePage implements OnInit {
       buttons: [
         { text: 'Cancelar', role: 'cancel' },
         {
-          text: 'Recalcular',
+          text: 'Guardar',
           handler: (data) => {
-            this.confirmarRecalcular(caja.id, Number(data.totalcaja));
+            caja.totalcaja = Number(data.totalcaja);
+            this.confirmaratualizar(caja);
           }
         }
       ]
     });
     await alert.present();
-  }
-
-  async confirmarRecalcular(idcaja: number, totalcaja: number): Promise<void> {
-    (await this.cortesService.Recalcular({ idcaja, totalcaja })).subscribe(
-      async (response: any) => {
-        if (response && response.message) {
-          this.obtenerCortesActivos(true, this.idu);
-          this.obtenerCortesPasados(true, this.idu);
-          this.ac.presentCustomAlert("Éxito", response.message);
-        } else {
-          console.error('Error: Respuesta inválida');
-        }
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
-      }
-    );
   }
 
   reactivarOrden(cortepasado: any): void {

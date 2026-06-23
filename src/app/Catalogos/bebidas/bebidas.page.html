@@ -47,5 +47,15 @@
       </table>
       <app-skeleton [columns]="5" *ngIf="!loaded" type="tabla"></app-skeleton>
     </div>
+
+    <div class="pagination-container" *ngIf="pagina.PaginationEnabled && loaded">
+      <ion-button (click)="paginaAnterior()" [disabled]="pagina.PaginaActual === 1" fill="clear" color="primary">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+      <ion-label>{{ pagina.PaginaActual }} de {{ pagina.TotalPages }}</ion-label>
+      <ion-button (click)="paginaSiguiente()" [disabled]="pagina.PaginaActual === pagina.TotalPages" fill="clear" color="primary">
+        <ion-icon name="chevron-forward-outline"></ion-icon>
+      </ion-button>
+    </div>
   </div>
 </ion-content>

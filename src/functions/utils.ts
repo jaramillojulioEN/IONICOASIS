@@ -64,11 +64,31 @@ export class LoaderFunctions {
         return result;
     }
 
-    
+
 
 
     obtenerFechaHoraActual(): string {
         return new Date().toISOString();
+    }
+
+    obtenerHoraMexicoCentro(): string {
+        const ahora = new Date();
+
+        const formateador = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'America/Mexico_City',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        });
+
+        const partes = formateador.formatToParts(ahora);
+        const obtener = (tipo: string) => partes.find(p => p.type === tipo)?.value ?? '00';
+
+        return `${obtener('year')}-${obtener('month')}-${obtener('day')}T${obtener('hour')}:${obtener('minute')}:${obtener('second')}`;
     }
 
     private padNumber(num: number, length: number = 2): string {

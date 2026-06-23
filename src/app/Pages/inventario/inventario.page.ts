@@ -3,11 +3,12 @@ import { ModalController } from '@ionic/angular';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 import { BebidaService } from 'src/app/services/Bebidas/bebida.service';
 import { ProductoServiceService } from 'src/app/services/Prodcutos/producto-service.service';
-import { ExistenciasComponent } from 'src/app/Components/Modals/existencias/existencias.component'
+import { ExistenciasComponent } from 'src/app/Components/Modals/existencias/existencias.component';
 import { UserServiceService } from 'src/app/services/Users/user-service.service';
 import { CantidesComponent } from 'src/app/Components/Modals/cantides/cantides.component';
 import { HistorialExistenciasComponent } from 'src/app/Components/Modals/historial-existencias/historial-existencias.component';
 import { Calls } from 'src/functions/call';
+
 @Component({
   selector: 'app-inventario',
   templateUrl: './inventario.page.html',
@@ -16,9 +17,15 @@ import { Calls } from 'src/functions/call';
 export class InventarioPage implements OnInit {
   productos: any = [];
   BebidaArry: any = [];
-  loaded: boolean = false;
-  rol: any = []
+  loadedProductos = false;
+  loadedBebidas = false;
+  rol: any = [];
   sucursales: any = [];
+  segmento: string = 'productos';
+
+  paginadorProductos = { PaginaActual: 1, TotalPorPagina: 15, TotalItems: 0, PaginationEnabled: true };
+  paginadorBebidas   = { PaginaActual: 1, TotalPorPagina: 15, TotalItems: 0, PaginationEnabled: true };
+
   constructor(
     private ProductoService: ProductoServiceService,
     private BebidaService: BebidaService,
@@ -27,56 +34,89 @@ export class InventarioPage implements OnInit {
     private us: UserServiceService,
     private call: Calls
   ) { }
-  segmento: string = "productos";
+
   async ngOnInit() {
-    this.sucursales = await this.call.getsucus()
+    this.sucursales = await this.call.getsucus();
     this.rol = this.us.getRol();
     this.ObtenerProducutos();
     this.ObtenerBebidas();
     window.addEventListener('successb', () => {
-      this.ObtenerBebidas(false);
-      this.ModalController.dismiss()
-    })
+      this.ObtenerBebidas();
+      this.ModalController.dismiss();
+    });
     window.addEventListener('successp', () => {
-      this.ObtenerProducutos(false);
-      this.ModalController.dismiss()
-    })
+      this.ObtenerProducutos();
+      this.ModalController.dismiss();
+    });
   }
 
-
   async handleRefresh(event: any) {
-    await this.ObtenerProducutos();
-    await this.ObtenerBebidas();
+    this.paginadorProductos.PaginaActual = 1;
+    this.paginadorBebidas.PaginaActual = 1;
+    await Promise.all([this.ObtenerProducutos(), this.ObtenerBebidas()]);
     event.target.complete();
   }
 
+  // ── Paginación productos ──────────────────────────────────
+  totalPaginasProductos(): number {
+    return Math.ceil(this.paginadorProductos.TotalItems / this.paginadorProductos.TotalPorPagina) || 1;
+  }
+  anteriorProductos() {
+    if (this.paginadorProductos.PaginaActual > 1) {
+      this.paginadorProductos.PaginaActual--;
+      this.ObtenerProducutos();
+    }
+  }
+  siguienteProductos() {
+    if (this.paginadorProductos.PaginaActual < this.totalPaginasProductos()) {
+      this.paginadorProductos.PaginaActual++;
+      this.ObtenerProducutos();
+    }
+  }
 
+  // ── Paginación bebidas ────────────────────────────────────
+  totalPaginasBebidas(): number {
+    return Math.ceil(this.paginadorBebidas.TotalItems / this.paginadorBebidas.TotalPorPagina) || 1;
+  }
+  anteriorBebidas() {
+    if (this.paginadorBebidas.PaginaActual > 1) {
+      this.paginadorBebidas.PaginaActual--;
+      this.ObtenerBebidas();
+    }
+  }
+  siguienteBebidas() {
+    if (this.paginadorBebidas.PaginaActual < this.totalPaginasBebidas()) {
+      this.paginadorBebidas.PaginaActual++;
+      this.ObtenerBebidas();
+    }
+  }
+
+  // Devuelve la existencia de un item para una sucursal dada
+  getExistencia(item: any, idsucursal: number): any {
+    const lista = item.productosexitencias ?? item.bebidasexitencias ?? [];
+    return lista.find((e: any) => e.idsucursal === idsucursal);
+  }
+
+  // ── Acciones ──────────────────────────────────────────────
   Opciones(data: any) {
     this.ac.configureAndPresentActionSheet([
       { button: this.ac.btnAgregar, handler: () => this.agregarExistecias(data) },
-      { button: this.ac.btnCancelar, handler: () => { console.log('Cancel clicked'); } }
+      { button: this.ac.btnCancelar, handler: () => { } }
     ]);
   }
 
   async agregarExistecias(data: any) {
-
     const modal = await this.ModalController.create({
       component: ExistenciasComponent,
-      componentProps: {
-        data: data
-      },
+      componentProps: { data }
     });
     return await modal.present();
-
   }
 
   async vercantidades(data: any) {
-
     const modal = await this.ModalController.create({
       component: CantidesComponent,
-      componentProps: {
-        data: data
-      },
+      componentProps: { data }
     });
     return await modal.present();
   }
@@ -88,46 +128,39 @@ export class InventarioPage implements OnInit {
         id: data.id,
         nombre: data.nombre,
         isbebida: data.precioventa ? true : false
-      },
+      }
     });
     return await modal.present();
   }
 
-  async ObtenerBebidas(load: boolean = false): Promise<void> {
-    this.loaded = false;
+  // ── Carga de datos ────────────────────────────────────────
+  async ObtenerProducutos(): Promise<void> {
+    this.loadedProductos = false;
     try {
-      const response: any = await (await this.BebidaService.Bebidas(load)).toPromise();
-
-      if (response && response.bebidas) {
-        this.BebidaArry = response.bebidas;
-      } else {
-        console.error('Error: Respuesta inválida');
-      }
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-    } finally {
-      this.loaded = true;
-    }
-  }
-
-
-  async ObtenerProducutos(load: boolean = true): Promise<void> {
-    this.loaded = false;
-    try {
-      const response: any = await (await this.ProductoService.Productos(load)).toPromise();
-
-      if (response && response.productos) {
+      const response: any = await (await this.ProductoService.Productos(this.paginadorProductos)).toPromise();
+      if (response?.productos) {
         this.productos = response.productos;
-        console.log(this.productos)
-      } else {
-        console.error('Error: Respuesta inválida');
+        this.paginadorProductos.TotalItems = response.Paginador?.TotalItems ?? 0;
       }
     } catch (error) {
       console.error('Error en la solicitud:', error);
     } finally {
-      this.loaded = true;
+      this.loadedProductos = true;
     }
   }
 
-
+  async ObtenerBebidas(): Promise<void> {
+    this.loadedBebidas = false;
+    try {
+      const response: any = await (await this.BebidaService.Bebidas(this.paginadorBebidas)).toPromise();
+      if (response?.bebidas) {
+        this.BebidaArry = response.bebidas;
+        this.paginadorBebidas.TotalItems = response.Paginador?.TotalItems ?? 0;
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    } finally {
+      this.loadedBebidas = true;
+    }
+  }
 }

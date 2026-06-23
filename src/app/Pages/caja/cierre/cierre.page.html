@@ -140,6 +140,15 @@
                 <app-skeleton *ngIf="!loaded1" [columns]="11" type="tabla"></app-skeleton>
 
             </div>
+            <div class="pagination-container" *ngIf="paginaPasados.PaginationEnabled && loaded1">
+                <ion-button (click)="paginaAnteriorPasados()" [disabled]="paginaPasados.PaginaActual === 1" fill="clear" color="primary">
+                    <ion-icon name="chevron-back-outline"></ion-icon>
+                </ion-button>
+                <ion-label>{{ paginaPasados.PaginaActual }} de {{ paginaPasados.TotalPages }}</ion-label>
+                <ion-button (click)="paginaSiguientePasados()" [disabled]="paginaPasados.PaginaActual === paginaPasados.TotalPages" fill="clear" color="primary">
+                    <ion-icon name="chevron-forward-outline"></ion-icon>
+                </ion-button>
+            </div>
         </div>
 
     </div>

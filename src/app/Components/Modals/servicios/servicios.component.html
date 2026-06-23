@@ -16,15 +16,15 @@
           <ion-row *ngIf="nuevoservicio">
             <ion-col sm-size="12" lg-size="4">
               <ion-input labelPlacement="floating" label="Nombre del servicio" name="nombre_servicio" fill="outline"
-                [(ngModel)]="serviciorquest.entidad.nombre_servicio"></ion-input>
+                [(ngModel)]="serviciorquest.nombre_servicio"></ion-input>
             </ion-col>
             <ion-col sm-size="12" lg-size="4">
               <ion-input labelPlacement="floating" label="Descripcion" name="descripcion" fill="outline"
-                placeholder="Tipo de vehiculo" [(ngModel)]="serviciorquest.entidad.descripcion"></ion-input>
+                placeholder="Tipo de vehiculo" [(ngModel)]="serviciorquest.descripcion"></ion-input>
             </ion-col>
             <ion-col sm-size="12" lg-size="4">
               <ion-input labelPlacement="floating" label="Precio" name="precio" fill="outline"
-                placeholder="Tipo de vehiculo" [(ngModel)]="serviciorquest.entidad.precio"></ion-input>
+                placeholder="Tipo de vehiculo" [(ngModel)]="serviciorquest.precio"></ion-input>
             </ion-col>
           </ion-row>
           <ion-row>
@@ -52,21 +52,21 @@
       <ion-row>
         <ion-col sm-size="12" lg-size="4">
           <ion-input labelPlacement="floating" label="Nombre del servicio" name="nombre_servicio" fill="outline"
-            [(ngModel)]="serviciorquest.entidad.nombre_servicio"></ion-input>
+            [(ngModel)]="serviciorquest.nombre_servicio"></ion-input>
         </ion-col>
         <ion-col sm-size="12" lg-size="4">
           <ion-input labelPlacement="floating" label="Descripcion" name="descripcion" fill="outline"
-            placeholder="Tipo de vehiculo" [(ngModel)]="serviciorquest.entidad.descripcion"></ion-input>
+            placeholder="Tipo de vehiculo" [(ngModel)]="serviciorquest.descripcion"></ion-input>
         </ion-col>
         <ion-col sm-size="12" lg-size="4">
           <ion-input labelPlacement="floating" label="Precio" name="precio" fill="outline"
-            placeholder="Tipo de vehiculo" [(ngModel)]="serviciorquest.entidad.precio"></ion-input>
+            placeholder="Tipo de vehiculo" [(ngModel)]="serviciorquest.precio"></ion-input>
         </ion-col>
 
       </ion-row>
       <ion-row>
         <ion-col sm-size="12" lg-size="12">
-          <ion-button collapse="block" class="crear" (click)="GotoBackEnd(serviciorquest)">
+          <ion-button collapse="block" class="crear" (click)="AgregarServicio()">
             Agregar servicio
           </ion-button>
         </ion-col>

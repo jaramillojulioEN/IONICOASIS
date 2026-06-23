@@ -147,12 +147,49 @@ export class LavadoService {
 
 
 
-  async CrearLavado(data: object, load: boolean = true): Promise<Observable<any>> {
+  async CrearOActualizarServicio(data: any, load: boolean = true): Promise<Observable<any>> {
     return new Observable(observer => {
       const loaderPromise = load ? this.loaderFunctions.StartLoader() : Promise.resolve();
-      console.log(data)
       loaderPromise.then(() => {
-        this.http.post<any>(`${this.server}api/Servicios/AccionesServicio`, data).subscribe(
+        this.http.post<any>(`${this.server}api/Servicios/CrearOActualizarServicio`, data).subscribe(
+          async response => {
+            if (load) await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            if (load) await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+
+  async CrearOActualizarLavado(data: any, load: boolean = true): Promise<Observable<any>> {
+    return new Observable(observer => {
+      const loaderPromise = load ? this.loaderFunctions.StartLoader() : Promise.resolve();
+      loaderPromise.then(() => {
+        this.http.post<any>(`${this.server}api/Servicios/CrearOActualizarLavado`, data).subscribe(
+          async response => {
+            if (load) await this.loaderFunctions.StopLoader();
+            observer.next(response);
+            observer.complete();
+          },
+          async error => {
+            if (load) await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+
+  async CrearOActualizarTipoVehiculo(data: any, load: boolean = true): Promise<Observable<any>> {
+    return new Observable(observer => {
+      const loaderPromise = load ? this.loaderFunctions.StartLoader() : Promise.resolve();
+      loaderPromise.then(() => {
+        this.http.post<any>(`${this.server}api/Servicios/CrearOActualizarTipoVehiculo`, data).subscribe(
           async response => {
             if (load) await this.loaderFunctions.StopLoader();
             observer.next(response);

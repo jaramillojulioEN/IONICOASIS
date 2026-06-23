@@ -140,7 +140,8 @@ export class CortePage implements OnInit {
     this.loaded = false;
 
     try {
-      const response: any = await (await this.cortesService.RetirosActivos(load, activos, this.idu)).toPromise();
+      const paginadorTodos = { PaginaActual: 1, TotalPorPagina: 5, TotalItems: 0, PaginationEnabled: false };
+      const response: any = await (await this.cortesService.RetirosActivos(paginadorTodos, activos, this.idu)).toPromise();
 
       if (response && response.Cortes) {
         if (activos) {

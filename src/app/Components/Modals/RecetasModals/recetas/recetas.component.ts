@@ -248,7 +248,8 @@ export class RecetasComponent implements OnInit {
   async ObtenerProducutos(): Promise<void> {
     try {
       this.loaded = false;
-      const response: any = await (await this.ProductoService.Productos(true)).toPromise();
+      const paginadorTodos = { PaginaActual: 1, TotalPorPagina: 5, TotalItems: 0, PaginationEnabled: false };
+      const response: any = await (await this.ProductoService.Productos(paginadorTodos)).toPromise();
       if (response && response.productos) {
         this.productos = response.productos;
       } else {
@@ -345,7 +346,8 @@ export class RecetasComponent implements OnInit {
   async ObtenerBebidas(load: boolean = false): Promise<void> {
     try {
       this.loaded = false;
-      const response: any = await (await this.BebidaService.Bebidas(load)).toPromise();
+      const paginadorTodos = { PaginaActual: 1, TotalPorPagina: 5, TotalItems: 0, PaginationEnabled: false };
+      const response: any = await (await this.BebidaService.Bebidas(paginadorTodos)).toPromise();
       if (response && response.bebidas) {
         this.BebidaArry = response.bebidas;
       } else {

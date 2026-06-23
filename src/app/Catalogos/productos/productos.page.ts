@@ -11,7 +11,26 @@ import { AlertServiceService } from '../../services/Alerts/alert-service.service
 })
 export class ProductosPage implements OnInit {
   productos: any = [];
-  loaded: boolean = false
+  loaded: boolean = false;
+
+  pagina = {
+    PaginaActual: 1,
+    TotalPorPagina: 10,
+    TotalPages: 1,
+    TotalItems: 0,
+    PaginationEnabled: true
+  };
+
+  paginaAnterior() {
+    this.pagina.PaginaActual = this.pagina.PaginaActual - 1;
+    this.ObtenerProducutos();
+  }
+
+  paginaSiguiente() {
+    this.pagina.PaginaActual = this.pagina.PaginaActual + 1;
+    this.ObtenerProducutos();
+  }
+
   constructor(
     private AlertController: AlertController,
     private ProductoService: ProductoServiceService,
@@ -22,6 +41,7 @@ export class ProductosPage implements OnInit {
   ngOnInit() {
     this.ObtenerProducutos()
     window.addEventListener('success', () => {
+      this.pagina.PaginaActual = 1;
       this.ObtenerProducutos();
     })
   }
@@ -47,10 +67,10 @@ export class ProductosPage implements OnInit {
   async ObtenerProducutos(load: boolean = true): Promise<void> {
     this.loaded = false;
     try {
-      const response: any = await (await this.ProductoService.Productos(load)).toPromise();
+      const response: any = await (await this.ProductoService.Productos(this.pagina)).toPromise();
       if (response && response.productos) {
         this.productos = response.productos;
-        console.log(this.productos);
+        this.pagina = response.Paginador;
       } else {
         console.error('Error: Respuesta inválida');
       }

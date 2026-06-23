@@ -37,15 +37,12 @@ export class LavadoPage implements OnInit {
   servicios: any = [];
 
   lavado = {
-    tipoEntidad: "lavado",
-    entidad: {
-      id: 0,
-      fecha: this.funcs.obtenerFechaHoraActual(),
-      estado: 1,
-      idsucursal: 0,
-      total: 0,
-      lavadodet: []
-    }
+    id: 0,
+    fecha: this.funcs.obtenerFechaHoraActual(),
+    estado: 1,
+    idsucursal: 0,
+    total: 0,
+    lavadodet: [] as any[]
   }
   lavados: any = [];
 
@@ -157,11 +154,11 @@ export class LavadoPage implements OnInit {
   }
 
   async Guardar(): Promise<void> {
-    this.lavado.entidad.idsucursal = this.UserServiceService.getUser().idsucursal
-    this.lavado.entidad.lavadodet = this.servicios
-    this.lavado.entidad.fecha = this.fns.obtenerFechaHoraActual()
+    this.lavado.idsucursal = this.UserServiceService.getUser().idsucursal
+    this.lavado.lavadodet = this.servicios
+    this.lavado.fecha = this.fns.obtenerFechaHoraActual()
     if (this.ValidarLavado()) {
-      (await this.LavadoService.CrearLavado(this.lavado)).subscribe(
+      (await this.LavadoService.CrearOActualizarLavado(this.lavado)).subscribe(
         (response: any) => {
           if (response.message) {
             this.ac.presentCustomAlert("Exito", response.message)
@@ -209,7 +206,7 @@ export class LavadoPage implements OnInit {
 
   ValidarLavado(): boolean {
     let stt = true;
-    if (this.lavado.entidad.lavadodet.length == 0) {
+    if (this.lavado.lavadodet.length == 0) {
       stt = false
       this.message = "Debes seleccionar un tipo de vehiculo y sus servicios"
     }
@@ -218,7 +215,8 @@ export class LavadoPage implements OnInit {
 
   async obtenerCajaActiva(load: boolean = false): Promise<void> {
     try {
-      (await this.cortesService.CortesActivos(1, load)).subscribe(
+      const paginadorTodos = { PaginaActual: 1, TotalPorPagina: 5, TotalItems: 0, PaginationEnabled: false };
+      (await this.cortesService.CortesActivos(paginadorTodos, 1)).subscribe(
         async (response: any) => {
           if (response && response.Cortes) {
             if (response.Cortes.length > 0) {
@@ -280,9 +278,12 @@ export class LavadoPage implements OnInit {
   historial(): void {
     this.pagina.PaginaActual = 1;
     this.pagina.TotalPages = 1;
-    this.pagina.TotalPages = 0;
-    this.pagina.PaginationEnabled= true;
-    this.obtenerLavados(2)
+    this.pagina.TotalItems = 0;
+    this.pagina.PaginationEnabled = true;
+    if (this.rol.id !== 1) {
+      this.pagina.Fecha = this.funcs.obtenerFechaHoraActual();
+    }
+    this.obtenerLavados(2);
   }
 
   async Cobrar(lavado: any): Promise<void> {
@@ -389,10 +390,14 @@ export class LavadoPage implements OnInit {
   }
 
   deletefilter() {
-    this.filtered = false
-    this.pagina.Fecha = "";
-    this.fecha = ""
-    this.obtenerLavados(2)
+    this.filtered = false;
+    this.fecha = '';
+    if (this.rol.id !== 1) {
+      this.pagina.Fecha = this.funcs.obtenerFechaHoraActual();
+    } else {
+      this.pagina.Fecha = '';
+    }
+    this.obtenerLavados(2);
   }
 
 

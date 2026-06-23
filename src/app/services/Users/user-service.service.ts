@@ -40,6 +40,7 @@ export class UserServiceService {
     // server = "https://muddywatter26-001-site2.ntempurl.com/"
     server = "https://muddywatter26-001-site1.ftempurl.com/"
      server = "https://localhost:"+port
+    //  server = "http://10.0.0.109:44397"
 
     return `${server}/`
   }
@@ -76,7 +77,7 @@ export class UserServiceService {
   async ActulizarInasistencia(data: any): Promise<Observable<any>> {
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
-        this.http.put<any>(`${this.getServer()}api/Inasisencias/Editar`, data).subscribe(
+        this.http.put<any>(`${this.getServer()}api/Empleados/EditarInasistencia`, data).subscribe(
           async updatedResponse => {
             await this.loaderFunctions.StopLoader();
             observer.next(updatedResponse);
@@ -108,7 +109,7 @@ export class UserServiceService {
     };
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
-        this.http.delete<any>(`${this.getServer()}api/Inasisencias/Eliminar`, options).subscribe(
+        this.http.delete<any>(`${this.getServer()}api/Empleados/EliminarInasistencia`, options).subscribe(
           async response => {
             await this.loaderFunctions.StopLoader();
             observer.next(response);
@@ -132,7 +133,7 @@ export class UserServiceService {
     };
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
-        this.http.delete<any>(`${this.getServer()}api/Consumo/Eliminar`, options).subscribe(
+        this.http.delete<any>(`${this.getServer()}api/Empleados/RevertirConsumo`, options).subscribe(
           async response => {
             await this.loaderFunctions.StopLoader();
             observer.next(response);

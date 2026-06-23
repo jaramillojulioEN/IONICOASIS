@@ -118,18 +118,12 @@ export class ExistenciasComponent implements OnInit {
   }
 
   async confirmarupdate() {
-    this.data.fecha = this.fn.obtenerFechaHoraActual()
-    this.existencias.vendidos = 0
+    this.data.fecha = this.fn.obtenerHoraMexicoCentro()
     this.existencias.disponibles = this.existencias.cantidad
-    if (this.data.productosexitencias) {
-      this.data.productosexitencias.push(this.existencias)
-    } else {
-      this.data.bebidasexitencias.push(this.existencias)
-    }
-    let bebida = this.data.precioventa ? true : false
 
-    if (bebida) {
-      (await this.bs.ActulizarBebida(this.data)).subscribe(
+    if (this.isbebida) {
+      const payload = { ...this.data, bebidasexitencias: [this.existencias] };
+      ;(await this.bs.ActulizarExistenciasBebida(payload)).subscribe(
         (response: any) => {
           this.ac.presentCustomAlert("Exito", response.message)
           window.dispatchEvent(new Event('successb'));
@@ -139,11 +133,12 @@ export class ExistenciasComponent implements OnInit {
         }
       );
     } else {
-      (await this.pr.ActulizarProducto(this.data)).subscribe(
+      // Solo se envía la existencia de la sucursal seleccionada
+      const payload = { ...this.data, productosexitencias: [this.existencias] };
+      (await this.pr.ActulizarExistenciasProducto(payload)).subscribe(
         (response: any) => {
           this.ac.presentCustomAlert("Exito", response.message)
           window.dispatchEvent(new Event('successp'));
-
         },
         (error: any) => {
           console.error('Error en la solicitud:', error);

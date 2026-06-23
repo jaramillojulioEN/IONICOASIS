@@ -30,7 +30,7 @@ export class ConsumoComponent implements OnInit {
     idbebida: undefined,
     idplatillo: undefined,
     concepto: "",
-    fecha: this.fn.obtenerFechaHoraActual(),
+    fecha: this.fn.obtenerHoraMexicoCentro(),
     cantidad: 1,
     idempleado: this.data.id
   }
@@ -54,7 +54,7 @@ export class ConsumoComponent implements OnInit {
       idbebida: undefined,
       idplatillo: undefined,
       concepto: "",
-      fecha: this.fn.obtenerFechaHoraActual(),
+      fecha: this.fn.obtenerHoraMexicoCentro(),
       cantidad: 1,
       idempleado : this.data.id
     }

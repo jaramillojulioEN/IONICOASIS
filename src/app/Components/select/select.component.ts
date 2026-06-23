@@ -58,7 +58,8 @@ export class SelectComponent implements OnInit {
   async ObtenerPlatillos(load: boolean = false, criterio: string = ""): Promise<void> {
     try {
       this.loaded = false;
-      const response: any = await (await this.PlatilloService.Platillos(load, 2, 0, criterio)).toPromise();
+      const paginadorTodos = { PaginaActual: 1, TotalPorPagina: 5, TotalItems: 0, PaginationEnabled: false };
+      const response: any = await (await this.PlatilloService.Platillos(paginadorTodos, 2, 0, criterio)).toPromise();
 
       if (response && response.platillos) {
         this.PlatilloArry = response.platillos;
@@ -89,7 +90,8 @@ export class SelectComponent implements OnInit {
   async ObtenerBebidasPrp(load: boolean = false, criterio: string = ""): Promise<void> {
     try {
       this.loaded = false;
-      const response: any = await (await this.PlatilloService.Platillos(load, 1, 0, criterio)).toPromise();
+      const paginadorTodos = { PaginaActual: 1, TotalPorPagina: 5, TotalItems: 0, PaginationEnabled: false };
+      const response: any = await (await this.PlatilloService.Platillos(paginadorTodos, 1, 0, criterio)).toPromise();
 
       if (response && response.platillos) {
         this.bebsPrp = response.platillos;
@@ -168,7 +170,8 @@ export class SelectComponent implements OnInit {
   async ObtenerBebidas(load: boolean = false, criterio: string = ""): Promise<void> {
     try {
       this.loaded = false;
-      const response: any = await (await this.BebidaService.Bebidas(load, criterio)).toPromise();
+      const paginadorTodos = { PaginaActual: 1, TotalPorPagina: 5, TotalItems: 0, PaginationEnabled: false };
+      const response: any = await (await this.BebidaService.Bebidas(paginadorTodos, criterio)).toPromise();
 
       if (response && response.bebidas) {
         this.BebidaArry = response.bebidas;

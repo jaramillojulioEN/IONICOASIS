@@ -88,12 +88,29 @@ export class ProductoServiceService {
     });
   }
   
+    async ActulizarExistenciasProducto(data: object): Promise<Observable<any>> {
+    console.log(data);
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.put<any>(`${this.server}api/Productos/AlctualizarExistenciasProducto`, data).subscribe(
+          async updatedResponse => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(updatedResponse);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
 
-  async Productos(load : boolean): Promise<Observable<any>> {
+  async Productos(paginador: any): Promise<Observable<any>> {
     try {
-      return this.http.get<any>(`${this.server}api/Productos/TodosProductos`);
+      return this.http.post<any>(`${this.server}api/Productos/TodosProductos`, paginador);
     } finally {
-    
     }
   }
 

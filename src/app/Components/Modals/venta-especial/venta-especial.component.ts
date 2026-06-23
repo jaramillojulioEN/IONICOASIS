@@ -139,7 +139,7 @@ export class VentaEspecialComponent implements OnInit {
             cantidad: this.cantidad,
             idorden: this.orden.id,
             estado: 1,
-            fecha: this.fn.obtenerFechaHoraActual()
+            fecha: this.fn.obtenerHoraMexicoCentro()
           }
         } else {
           console.log("platillo o preparado")
@@ -150,7 +150,7 @@ export class VentaEspecialComponent implements OnInit {
             observaciones: "Venta especial",
             cantidad: this.cantidad,
             estado: 1,
-            fecha: this.fn.obtenerFechaHoraActual()
+            fecha: this.fn.obtenerHoraMexicoCentro()
           }
         }
 

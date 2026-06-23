@@ -18,6 +18,27 @@ export class PlatillosPage implements OnInit {
   filtrado: boolean = false;
   idcatego: number = 0;
   categorias: any = [];
+
+  pagina = {
+    PaginaActual: 1,
+    TotalPorPagina: 10,
+    TotalPages: 1,
+    TotalItems: 0,
+    PaginationEnabled: true
+  };
+
+  paginaAnterior() {
+    this.pagina.PaginaActual = this.pagina.PaginaActual - 1;
+    var idsubcatego = this.segmento === "p" ? 2 : 1;
+    this.ObtenerPlatillos(true, idsubcatego, this.idcatego);
+  }
+
+  paginaSiguiente() {
+    this.pagina.PaginaActual = this.pagina.PaginaActual + 1;
+    var idsubcatego = this.segmento === "p" ? 2 : 1;
+    this.ObtenerPlatillos(true, idsubcatego, this.idcatego);
+  }
+
   constructor(
     private PlatilloService: PlatilloService,
     private ModalController: ModalController,
@@ -28,12 +49,14 @@ export class PlatillosPage implements OnInit {
   ngOnInit() {
     this.ObtenerPlatillos(true, 2);
     window.addEventListener('success', () => {
+      this.pagina.PaginaActual = 1;
       this.ObtenerPlatillos(false, 2);
     })
   }
 
   filtrar(){
     var idsubcatego = this.segmento === "p" ? 2: 1
+    this.pagina.PaginaActual = 1;
     if(this.filtrado){
       this.filtrado = false
       this.ObtenerPlatillos(true, idsubcatego, 0);
@@ -45,11 +68,13 @@ export class PlatillosPage implements OnInit {
 
   cargarplatillos() {
     this.segmento == "p";
+    this.pagina.PaginaActual = 1;
     this.ObtenerPlatillos(true, 2);
   }
 
   cargarbebdias() {
     this.segmento == "b";
+    this.pagina.PaginaActual = 1;
     this.ObtenerPlatillos(true, 1);
   }
 
@@ -104,10 +129,11 @@ export class PlatillosPage implements OnInit {
     this.ObtenerCategorias(idsucatego);
     try {
       await new Promise<void>(async (resolve, reject) => {
-        (await this.PlatilloService.Platillos(load, idsucatego, idcatego)).subscribe(
+        (await this.PlatilloService.Platillos(this.pagina, idsucatego, idcatego)).subscribe(
           (response: any) => {
             if (response && response.platillos) {
               this.PlatilloArry = response.platillos;
+              this.pagina = response.Paginador;
               resolve();
             } else {
               console.error('Error: Respuesta inválida');
@@ -137,11 +163,9 @@ export class PlatillosPage implements OnInit {
     (await this.PlatilloService.EliminarPlatillo(id)).subscribe(
       async (response: any) => {
         if (response) {
-          if (this.segmento !== 'productos') {
-            this.ObtenerPlatillos(false, 1);
-          }else{
-            this.ObtenerPlatillos(false, 2);
-          }
+          var idsubcatego = this.segmento === "p" ? 2 : 1;
+          this.pagina.PaginaActual = 1;
+          this.ObtenerPlatillos(false, idsubcatego);
           this.ac.presentCustomAlert("Exito", response.message)
         } else {
           console.error('Error: Respuesta inválida');

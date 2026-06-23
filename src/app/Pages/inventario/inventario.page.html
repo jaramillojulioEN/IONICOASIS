@@ -3,6 +3,7 @@
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
+
   <ion-segment [(ngModel)]="segmento">
     <ion-segment-button (click)="ObtenerProducutos()" value="productos">
       <ion-label>Productos</ion-label>
@@ -12,15 +13,14 @@
     </ion-segment-button>
   </ion-segment>
   <br>
+
+  <!-- ── PRODUCTOS ── -->
   <div class="table-container" *ngIf="segmento === 'productos'">
-    <table class="tabla" *ngIf="loaded">
+    <table class="tabla" *ngIf="loadedProductos">
       <thead>
         <tr>
           <th>Producto</th>
-          <!-- <th>Cantidad</th> -->
-          <!-- <th>Vendidos</th> -->
           <th>Categoria</th>
-          <!-- <th>Disponibles</th> -->
           <th>Fecha de modificación</th>
           <th *ngFor="let suc of sucursales">Existencias {{suc.sucursal}}</th>
           <th>Historial</th>
@@ -28,56 +28,15 @@
         </tr>
       </thead>
       <tbody *ngIf="productos && productos.length !== 0">
-        <tr *ngFor="let producto of productos;" class="option">
-          <td>{{producto.nombre}}</td>
-          <!-- <td>{{producto.cantidad}}</td> -->
-          <!-- <td>{{producto.vendidos}}</td> -->
-          <td>{{producto.categorias.categoria}}</td>
-          <!-- <td>{{producto.cantidad}}</td> -->
-          <td>{{producto.fecha}}</td>
-          <!-- <td><ion-button class="crear ion-margin-top" style="margin-top: 8px;" (click)="vercantidades(producto.productosexitencias)">
-              Disponibles
-            </ion-button></td> -->
-          <td>
-            <table>
-              <thead>
-                <tr>
-                  <th>Sucursal</th>
-                  <th>Cantidad</th>
-                  <th>Vendidos</th>
-                  <th>Disponibles</th>
-                </tr>
-              </thead>
-              <tbody *ngFor="let d of producto.productosexitencias; let i = index">
-                <tr *ngIf="i === 0">
-                  <td>{{ d.sucursales.sucursal }}</td>
-                  <td>{{ d.cantidad }}</td>
-                  <td>{{ d.vendidos }}</td>
-                  <td>{{ d.disponibles }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </td>
-
-          <td>
-            <table>
-              <thead>
-                <tr>
-                  <th>Sucursal</th>
-                  <th>Cantidad</th>
-                  <th>Vendidos</th>
-                  <th>Disponibles</th>
-                </tr>
-              </thead>
-              <tbody *ngFor="let d of producto.productosexitencias; let i = index">
-                <tr *ngIf="i === 1">
-                  <td>{{ d.sucursales.sucursal }}</td>
-                  <td>{{ d.cantidad }}</td>
-                  <td>{{ d.vendidos }}</td>
-                  <td>{{ d.disponibles }}</td>
-                </tr>
-              </tbody>
-            </table>
+        <tr *ngFor="let producto of productos" class="option">
+          <td>{{ producto.nombre }}</td>
+          <td>{{ producto.categorias?.categoria }}</td>
+          <td>{{ producto.fecha }}</td>
+          <td *ngFor="let suc of sucursales">
+            <ng-container *ngIf="getExistencia(producto, suc.id) as ex">
+              C:{{ ex.cantidad }} &nbsp; V:{{ ex.vendidos }} &nbsp; D:{{ ex.disponibles }}
+            </ng-container>
+            <ng-container *ngIf="!getExistencia(producto, suc.id)">—</ng-container>
           </td>
           <td class="actions-cell">
             <ion-button fill="clear" (click)="verHistorial(producto)">
@@ -97,21 +56,27 @@
         </tr>
       </tbody>
     </table>
-    <app-skeleton *ngIf="!loaded" [columns]="8" type="tabla"></app-skeleton>
+    <app-skeleton *ngIf="!loadedProductos" [columns]="8" type="tabla"></app-skeleton>
 
+    <div class="pagination" *ngIf="loadedProductos && paginadorProductos.TotalItems > 0">
+      <ion-button fill="outline" size="small" [disabled]="paginadorProductos.PaginaActual <= 1" (click)="anteriorProductos()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+      <span>Pág. {{ paginadorProductos.PaginaActual }} / {{ totalPaginasProductos() }} &nbsp;({{ paginadorProductos.TotalItems }} registros)</span>
+      <ion-button fill="outline" size="small" [disabled]="paginadorProductos.PaginaActual >= totalPaginasProductos()" (click)="siguienteProductos()">
+        <ion-icon name="chevron-forward-outline"></ion-icon>
+      </ion-button>
+    </div>
   </div>
 
+  <!-- ── BEBIDAS ── -->
   <div class="table-container" *ngIf="segmento === 'bebidas'">
-    <table class="tabla" *ngIf="loaded">
+    <table class="tabla" *ngIf="loadedBebidas">
       <thead>
         <tr>
           <th>Bebida</th>
-          <!-- <th>Cantidad</th> -->
-          <!-- <th>Vendidos</th> -->
           <th>Categoria</th>
-          <!-- <th>Disponibles</th> -->
           <th>Fecha modificación</th>
-
           <th *ngFor="let suc of sucursales">Existencias {{suc.sucursal}}</th>
           <th>Historial</th>
           <th *ngIf="rol.id === 1" colspan="2">Acciones</th>
@@ -120,54 +85,13 @@
       <tbody *ngIf="BebidaArry && BebidaArry.length !== 0">
         <tr class="option" *ngFor="let bebida of BebidaArry">
           <td>{{ bebida.nombre }}</td>
-          <!-- <td>{{ bebida.cantidad }}</td> -->
-          <!-- <td>{{ bebida.vedidos }}</td> -->
-          <td>{{ bebida.categorias.categoria }}</td>
-          <!-- <td>{{ bebida.cantidad }}</td> -->
+          <td>{{ bebida.categorias?.categoria }}</td>
           <td>{{ bebida.fecha }}</td>
-          <!-- <td><ion-button class="crear ion-margin-top" style="margin-top: 8px;"
-              (click)="vercantidades(bebida.bebidasexitencias)">
-              Disponibles
-            </ion-button></td> -->
-          <td>
-            <table>
-              <thead>
-                <tr>
-                  <th>Sucursal</th>
-                  <th>Cantidad</th>
-                  <th>Vendidos</th>
-                  <th>Disponibles</th>
-                </tr>
-              </thead>
-              <tbody *ngFor="let d of bebida.bebidasexitencias; let i = index">
-                <tr *ngIf="i==0">
-                  <td>{{ d.sucursales.sucursal }}</td>
-                  <td>{{ d.cantidad }}</td>
-                  <td>{{ d.vendidos }}</td>
-                  <td>{{ d.disponibles }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </td>
-          <td>
-            <table>
-              <thead>
-                <tr>
-                  <th>Sucursal</th>
-                  <th>Cantidad</th>
-                  <th>Vendidos</th>
-                  <th>Disponibles</th>
-                </tr>
-              </thead>
-              <tbody *ngFor="let d of bebida.bebidasexitencias; let i = index">
-                <tr *ngIf="i==1">
-                  <td>{{ d.sucursales.sucursal }}</td>
-                  <td>{{ d.cantidad }}</td>
-                  <td>{{ d.vendidos }}</td>
-                  <td>{{ d.disponibles }}</td>
-                </tr>
-              </tbody>
-            </table>
+          <td *ngFor="let suc of sucursales">
+            <ng-container *ngIf="getExistencia(bebida, suc.id) as ex">
+              C:{{ ex.cantidad }} &nbsp; V:{{ ex.vendidos }} &nbsp; D:{{ ex.disponibles }}
+            </ng-container>
+            <ng-container *ngIf="!getExistencia(bebida, suc.id)">—</ng-container>
           </td>
           <td class="actions-cell">
             <ion-button fill="clear" (click)="verHistorial(bebida)">
@@ -187,6 +111,16 @@
         </tr>
       </tbody>
     </table>
-    <app-skeleton *ngIf="!loaded" [columns]="8" type="tabla"></app-skeleton>
+    <app-skeleton *ngIf="!loadedBebidas" [columns]="8" type="tabla"></app-skeleton>
+
+    <div class="pagination" *ngIf="loadedBebidas && paginadorBebidas.TotalItems > 0">
+      <ion-button fill="outline" size="small" [disabled]="paginadorBebidas.PaginaActual <= 1" (click)="anteriorBebidas()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+      <span>Pág. {{ paginadorBebidas.PaginaActual }} / {{ totalPaginasBebidas() }} &nbsp;({{ paginadorBebidas.TotalItems }} registros)</span>
+      <ion-button fill="outline" size="small" [disabled]="paginadorBebidas.PaginaActual >= totalPaginasBebidas()" (click)="siguienteBebidas()">
+        <ion-icon name="chevron-forward-outline"></ion-icon>
+      </ion-button>
+    </div>
   </div>
 </ion-content>

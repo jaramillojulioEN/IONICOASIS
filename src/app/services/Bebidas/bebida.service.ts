@@ -82,14 +82,29 @@ export class BebidaService {
     });
   }
 
-
-  async Bebidas(loader: boolean = true, criterio : string = ""): Promise<Observable<any>> {
+async ActulizarExistenciasBebida(data: object): Promise<Observable<any>> {
+    return new Observable(observer => {
+      this.loaderFunctions.StartLoader().then(() => {
+        this.http.put<any>(`${this.server}api/Bebidas/ActualizarExistenciasBebida`, data).subscribe(
+          async updatedResponse => {
+            await this.loaderFunctions.StopLoader();
+            observer.next(updatedResponse);
+            observer.complete();
+          },
+          async error => {
+            await this.loaderFunctions.StopLoader();
+            observer.error(error);
+          }
+        );
+      });
+    });
+  }
+  async Bebidas(paginador: any, criterio: string = ""): Promise<Observable<any>> {
     try {
-
-      if(criterio === ""){
-        criterio = "empty"
+      if (criterio === "") {
+        criterio = "empty";
       }
-      return this.http.get<any>(`${this.server}api/Bebidas/TodosBebidas/${criterio}`);
+      return this.http.post<any>(`${this.server}api/Bebidas/TodosBebidas/${criterio}`, paginador);
     } finally {
     }
   }

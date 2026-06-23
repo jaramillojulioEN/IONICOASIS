@@ -126,7 +126,7 @@ export class CortesService {
 
     return new Observable(observer => {
       this.loaderFunctions.StartLoader().then(() => {
-        this.http.delete<any>(`${this.server}api/Servicios/EliminarCorte`, options).subscribe(
+        this.http.delete<any>(`${this.server}api/Cortes/EliminarCorte`, options).subscribe(
           async deletedResponse => {
             await this.loaderFunctions.StopLoader();
             observer.next(deletedResponse);
@@ -141,13 +141,12 @@ export class CortesService {
     });
   }
 
-  async CortesActivos(estado: number, loader: boolean = true, ids = 0): Promise<Observable<any>> {
+  async CortesActivos(paginador: any, estado: number, ids = 0): Promise<Observable<any>> {
     try {
       var user = this.user.getUser();
-      let idsuc = ids == 0  ? user.sucursales.id : ids
-      return this.http.get<any>(`${this.server}api/Cortes/TodosCortes/${estado}/${idsuc}`);
+      let idsuc = ids == 0 ? user.sucursales.id : ids;
+      return this.http.post<any>(`${this.server}api/Cortes/TodosCortes/${estado}/${idsuc}`, paginador);
     } finally {
-
     }
   }
 
@@ -166,9 +165,9 @@ export class CortesService {
     }
   }
 
-  async RetirosActivos(loader: boolean = true, activos: boolean = true, idu : number): Promise<Observable<any>> {
+  async RetirosActivos(paginador: any, activos: boolean = true, idu: number = 0): Promise<Observable<any>> {
     try {
-      return this.http.get<any>(`${this.server}api/Cortes/TodosRetiros/${activos}/${idu}`);
+      return this.http.post<any>(`${this.server}api/Cortes/TodosRetiros/${activos}/${idu}`, paginador);
     } finally {
     }
   }
