@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DetalleordenComponent } from 'src/app/Components/Modals/Mesas/detalleorden/detalleorden.component'
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { ModalController } from '@ionic/angular';
@@ -20,7 +20,8 @@ interface Timer {
   templateUrl: './cocina.page.html',
   styleUrls: ['./cocina.page.scss'],
 })
-export class CocinaPage implements OnInit {
+export class CocinaPage implements OnInit, OnDestroy {
+  private onOrdenModificada = () => this.ObtenerOrdenes(false);
   ordenes: any[] = [];
   intervalId: any | undefined;
 
@@ -70,10 +71,7 @@ export class CocinaPage implements OnInit {
     this.signalRService.startConnection();
 
     // Añade un listener para escuchar el evento 'Modificaciones' desde el servidor
-    this.signalRService.addListener('OrdenesModificadasCocina', (ordenes: any[]) => {
-      console.log('Órdenes modificadas recibidas del servidor: ', ordenes);
-      this.ordenes = ordenes;  // Almacena las órdenes modificadas en el array
-    });
+    this.signalRService.addListener('OrdenModificada', this.onOrdenModificada);
 
     window.addEventListener('success', () => {
       this.ObtenerOrdenes();
@@ -226,5 +224,9 @@ export class CocinaPage implements OnInit {
   //     (fechaorden.getMinutes() <= 9 ? '0' + fechaorden.getMinutes() : fechaorden.getMinutes());
   //   return [tiempototal, horaEntrega];
   // }
+
+  ngOnDestroy() {
+    this.signalRService.removeListener('OrdenModificada', this.onOrdenModificada);
+  }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { LavadoService } from 'src/app/services/Lavado/lavado.service'
 import { UserServiceService } from 'src/app/services/Users/user-service.service'
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service'
@@ -13,12 +13,14 @@ import { CortesService } from 'src/app/services/cortes/cortes.service';
 import { Calls } from 'src/functions/call';
 import { CrearLavadoComponent } from 'src/app/Components/Modals/crear-lavado/crear-lavado.component';
 import { SelectLavadoComponent } from 'src/app/Components/Modals/select-lavado/select-lavado.component';
+import { SignalrService } from 'src/app/services/signalr.service';
 @Component({
   selector: 'app-lavado',
   templateUrl: './lavado.page.html',
   styleUrls: ['./lavado.page.scss'],
 })
-export class LavadoPage implements OnInit {
+export class LavadoPage implements OnInit, OnDestroy {
+  private onLavadoActualizado = () => this.zone.run(() => this.obtenerLavados(1, false));
 
   pagina = {
     PaginaActual: 1,
@@ -63,7 +65,9 @@ export class LavadoPage implements OnInit {
     private funcs: LoaderFunctions,
     private cortesService: CortesService,
     private md: ModalController,
-    private calls: Calls
+    private calls: Calls,
+    private signalRService: SignalrService,
+    private zone: NgZone
   ) {
     this.fecha = this.fns.obtenerFechaHoraActual();
   }
@@ -103,6 +107,9 @@ export class LavadoPage implements OnInit {
     this.sucursales = await this.calls.getsucus();
     var user = this.UserServiceService.getUser()
     this.idu = user.idsucursal
+
+    this.signalRService.startConnection();
+    this.signalRService.addListener('LavadoActualizado', this.onLavadoActualizado);
   }
 
   Opciones2(data: any) {
@@ -422,6 +429,10 @@ export class LavadoPage implements OnInit {
     this.pagina.PaginaActual = this.pagina.PaginaActual + 1
     var estado = this.segmento === "pago" ? 1 : 2;
     this.obtenerLavados(estado, true)
+  }
+
+  ngOnDestroy() {
+    this.signalRService.removeListener('LavadoActualizado', this.onLavadoActualizado);
   }
 
 }

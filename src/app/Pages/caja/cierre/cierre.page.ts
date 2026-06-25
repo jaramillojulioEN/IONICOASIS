@@ -1,4 +1,4 @@
-import { Component, OnInit, booleanAttribute } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, booleanAttribute } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 import { CortesService } from 'src/app/services/cortes/cortes.service';
@@ -8,12 +8,16 @@ import { LoaderFunctions } from 'src/functions/utils';
 import { UserServiceService } from 'src/app/services/Users/user-service.service';
 import { TicketcajaComponent } from 'src/app/Components/ticketcaja/ticketcaja.component'
 import { Calls } from 'src/functions/call';
+import { SignalrService } from 'src/app/services/signalr.service';
 @Component({
   selector: 'app-cierre',
   templateUrl: './cierre.page.html',
   styleUrls: ['./cierre.page.scss'],
 })
-export class CierrePage implements OnInit {
+export class CierrePage implements OnInit, OnDestroy {
+  private onCajaActualizada    = () => this.zone.run(() => { this.obtenerCortesActivos(false, this.idu); this.obtenerCortesPasados(false, this.idu); });
+  private onLavadoActualizado  = () => this.zone.run(() => this.obtenerCortesActivos(false, this.idu));
+  private onOrdenModificada    = () => this.zone.run(() => this.obtenerCortesActivos(false, this.idu));
   CorteActivo: any = [];
   segmento: string = "estado";
 
@@ -59,7 +63,9 @@ export class CierrePage implements OnInit {
     private us: UserServiceService,
     private call: Calls,
     private functiosn: LoaderFunctions,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private signalRService: SignalrService,
+    private zone: NgZone
   ) { }
 
   async ngOnInit() {
@@ -75,6 +81,11 @@ export class CierrePage implements OnInit {
       this.obtenerCortesActivos(true, this.idu);
       this.obtenerCortesPasados(true, this.idu);
     })
+
+    this.signalRService.startConnection();
+    this.signalRService.addListener('CajaActualizada',   this.onCajaActualizada);
+    this.signalRService.addListener('LavadoActualizado', this.onLavadoActualizado);
+    this.signalRService.addListener('OrdenModificada',   this.onOrdenModificada);
 
   }
 
@@ -281,6 +292,12 @@ export class CierrePage implements OnInit {
       }
     });
     return await modal.present();
+  }
+
+  ngOnDestroy() {
+    this.signalRService.removeListener('CajaActualizada',   this.onCajaActualizada);
+    this.signalRService.removeListener('LavadoActualizado', this.onLavadoActualizado);
+    this.signalRService.removeListener('OrdenModificada',   this.onOrdenModificada);
   }
 
 }

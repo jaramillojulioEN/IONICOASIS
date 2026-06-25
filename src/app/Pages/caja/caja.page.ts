@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { OrdenesService } from 'src/app/services/Ordenes/ordenes.service'
 import { TicketComponent } from 'src/app/Components/ticket/ticket.component'
 import { ModalController } from '@ionic/angular';
@@ -17,7 +17,8 @@ import { SignalrService } from 'src/app/services/signalr.service';
   templateUrl: './caja.page.html',
   styleUrls: ['./caja.page.scss'],
 })
-export class CajaPage implements OnInit {
+export class CajaPage implements OnInit, OnDestroy {
+  private onOrdenModificada = () => this.zone.run(() => this.getordenes(4, false));
   segmento: string = 'pago';
   rol: any;
   fechaActual: string = '';
@@ -71,9 +72,7 @@ export class CajaPage implements OnInit {
     this.start()
 
     this.signalRService.startConnection();
-    this.signalRService.addListener('OrdenesModificadasCocina', () => {
-      this.zone.run(() => this.getordenes(4, false));
-    });
+    this.signalRService.addListener('OrdenModificada', this.onOrdenModificada);
 
     window.addEventListener('success', () => {
       this.ModalController.dismiss().catch(() => {});
@@ -263,6 +262,10 @@ export class CajaPage implements OnInit {
     this.pagina.PaginaActual = 1
     this.getordenes(5);
 
+  }
+
+  ngOnDestroy() {
+    this.signalRService.removeListener('OrdenModificada', this.onOrdenModificada);
   }
 
 }

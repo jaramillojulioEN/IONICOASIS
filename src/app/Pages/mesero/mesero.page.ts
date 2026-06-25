@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { MesasService } from 'src/app/services/Mesas/mesas.service'
 import { OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.component'
@@ -10,7 +10,8 @@ import { SignalrService } from 'src/app/services/signalr.service';
   templateUrl: './mesero.page.html',
   styleUrls: ['./mesero.page.scss'],
 })
-export class MeseroPage implements OnInit {
+export class MeseroPage implements OnInit, OnDestroy {
+  private onOrdenModificada = () => this.zone.run(() => this.ObtenerMesas(false));
 
   images: string[] = [
     "https://i.imgur.com/rzaD9MO.png",
@@ -83,9 +84,7 @@ export class MeseroPage implements OnInit {
     this.ObtenerMesas()
 
     this.signalRService.startConnection();
-    this.signalRService.addListener('OrdenesModificadasCocina', () => {
-      this.zone.run(() => this.ObtenerMesas(false));
-    });
+    this.signalRService.addListener('OrdenModificada', this.onOrdenModificada);
 
     window.addEventListener('success', () => {
       this.ObtenerMesas(false)
@@ -138,6 +137,10 @@ export class MeseroPage implements OnInit {
         console.error('Error en la solicitud error:', error);
       }
     );
+  }
+
+  ngOnDestroy() {
+    this.signalRService.removeListener('OrdenModificada', this.onOrdenModificada);
   }
 
 }
