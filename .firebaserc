@@ -6,7 +6,7 @@
     "oasistest-485a4": {
       "hosting": {
         "prod": ["oasistest-485a4"],
-        "test": ["pruebasoasis"]
+        "test": ["pruebasoasis-73505"]
       }
     }
   },
