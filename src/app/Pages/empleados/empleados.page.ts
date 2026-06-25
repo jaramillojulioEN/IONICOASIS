@@ -156,7 +156,7 @@ export class EmpleadosPage implements OnInit {
 
 
   obtenerNumeroDiaDeHoy(): number {
-    const fechaActual = new Date(this.fn.obtenerFechaHoraActual());
+    const fechaActual = new Date(this.fn.obtenerHoraMexicoCentro());
     let numeroDia = fechaActual.getDay();
     if (numeroDia === 0) {
       numeroDia = 7;

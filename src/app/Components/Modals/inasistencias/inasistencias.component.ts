@@ -28,14 +28,14 @@ export class InasistenciasComponent implements OnInit {
   inasistencia: any = {
     id: 0,
     idempleado: this.data.id,
-    fecha: this.fn.obtenerFechaHoraActual(),
+    fecha: this.fn.obtenerHoraMexicoCentro(),
     Motivo: ''
   };
 
   ticket: any = {
     id: 0,
     idempleado: this.data.id,
-    fecha: this.fn.obtenerFechaHoraActual(),
+    fecha: this.fn.obtenerHoraMexicoCentro(),
     ntickets: 0
   };
 
@@ -288,7 +288,7 @@ export class InasistenciasComponent implements OnInit {
 
   verifi() {
     if (this.inasistencias.length > 0) {
-      const hoy = new Date(this.fn.obtenerFechaHoraActual());
+      const hoy = new Date(this.fn.obtenerHoraMexicoCentro());
       const found = this.inasistencias.some((ina: any) =>
         new Date(ina.Fecha).getDate() === hoy.getDate()
       );
@@ -302,7 +302,7 @@ export class InasistenciasComponent implements OnInit {
   async enviartckt(edit = false) {
 
     var flag = true
-    const hoy = new Date(this.fn.obtenerFechaHoraActual())
+    const hoy = new Date(this.fn.obtenerHoraMexicoCentro())
     this.tickets.forEach((element: any) => {
       var tktdate = new Date(element.Fecha)
       if (hoy.getDate() == tktdate.getDate()) {
@@ -315,12 +315,13 @@ export class InasistenciasComponent implements OnInit {
 
     if (flag || this.ticket.id != 0 || tkdtta.getDate() != hoy.getDate()) {
       this.ticket.idempleado = this.data.id;
+      this.ticket.fecha = this.fn.obtenerHoraMexicoCentro();
       (await this.empleadoservice.Registrartick(this.ticket)).subscribe(
         (response: any) => {
           this.ac.presentCustomAlert("Exito", response.message)
           this.obtenertkts()
           this.ticket.ntickets = 0
-          this.ticket.fecha = this.fn.obtenerFechaHoraActual()
+          this.ticket.fecha = this.fn.obtenerHoraMexicoCentro()
         },
         (error: any) => {
           console.error('Error en la solicitud:', error);
@@ -333,6 +334,7 @@ export class InasistenciasComponent implements OnInit {
 
   async confirmar() {
     this.inasistencia.idempleado = this.data.id
+    this.inasistencia.fecha = this.fn.obtenerHoraMexicoCentro()
     console.log(this.inasistencia);
 
     (await this.empleadoservice.RegistrarInasistencia(this.inasistencia)).subscribe(

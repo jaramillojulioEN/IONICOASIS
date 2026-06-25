@@ -43,7 +43,7 @@ export class BebidaComponent  implements OnInit {
     idcategoria: 0,
     precioventa: '',
     precioempleados: '',
-    fecha : this.fn.obtenerFechaHoraActual()
+    fecha : this.fn.obtenerHoraMexicoCentro()
   };
 
   ObtenerCategorias(id: number = 1): void {
@@ -72,6 +72,7 @@ export class BebidaComponent  implements OnInit {
     const { valido, mensaje } = this.validarBebida(this.bebidas);
     if (valido) {
       if (this.id == 0) {
+        this.bebidas.fecha = this.fn.obtenerHoraMexicoCentro();
         (await this.BebidaService.CrearBebida(this.bebidas)).subscribe(
           (response: any) => {
             window.dispatchEvent(new Event('success'));

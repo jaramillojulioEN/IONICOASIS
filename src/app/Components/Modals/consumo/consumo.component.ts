@@ -102,6 +102,7 @@ export class ConsumoComponent implements OnInit {
   }
 
   async crear (){
+    this.consumo.fecha = this.fn.obtenerHoraMexicoCentro();
     (await this.consumos.CrearConsumo(this.consumo)).subscribe(
       (response: any) => {
         window.dispatchEvent(new Event('success'));

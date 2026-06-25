@@ -21,6 +21,10 @@ interface Timer {
   styleUrls: ['./cocina.page.scss'],
 })
 export class CocinaPage implements OnInit, OnDestroy {
+  ionViewWillEnter() {
+    this.ObtenerOrdenes(false);
+    this.signalRService.ensureConnected();
+  }
   private onOrdenModificada = () => this.ObtenerOrdenes(false);
   ordenes: any[] = [];
   intervalId: any | undefined;
@@ -129,7 +133,7 @@ export class CocinaPage implements OnInit, OnDestroy {
       componentProps: {
         mesa: data.mesas,
         ordenC: data,
-        tiempo: this.tiemposTranscurridos[data.id] || 0,
+        tiempoSeg: this.tiemposTranscurridos[data.id] || 0,
       },
     });
 
@@ -154,12 +158,13 @@ export class CocinaPage implements OnInit, OnDestroy {
       this.mensaje = response.message;
       if (response && response.ordenes) {
         this.ordenes = response.ordenes;
+        console.log('[COCINA] ordenes:', this.ordenes.map((o: any) => ({ id: o.id, fecha: o.fecha, estado: o.estado })));
         if (this.ordeninicial.length !== this.ordenes.length) {
           this.ordeninicial = response.ordenes;
           console.log("Orden inicial respaldada");
         } else {
           for (let i = 0; i < this.ordenes.length; i++) {
-            if (this.ordenes[i].ordenesplatillos.length !== this.ordeninicial[i].ordenesplatillos.length) {
+            if (this.ordeninicial[i]?.ordenesplatillos && this.ordenes[i].ordenesplatillos.length !== this.ordeninicial[i].ordenesplatillos.length) {
               this.notificaciones[this.ordenes[i].id] = this.ordenes[i].ordenesplatillos.length - this.ordeninicial[i].ordenesplatillos.length;
               this.sound.play();
               localStorage.setItem("notificaciones", JSON.stringify(this.notificaciones));
@@ -190,7 +195,14 @@ export class CocinaPage implements OnInit, OnDestroy {
 
     const inicio = new Date(orden.fecha).getTime();
     const pausadoMs = this.convertirHorasAMilisegundos(orden.tiempoPausado || 0);
-    const diffInSeconds = (Date.now() - inicio - pausadoMs) / 1000;
+    if (!(orden.id in this.tiemposTranscurridos)) {
+      console.log('[TRANSCURRIDO] primera vez orden', orden.id, '| fecha DB:', orden.fecha, '| inicio ms:', inicio);
+    }
+    // El backend guarda hora México sin offset y la devuelve con Z (la trata como UTC).
+    // Para que el diff sea correcto, "ahora" debe estar en el mismo marco de referencia:
+    // tomamos la hora México actual y la forzamos a Z de la misma forma.
+    const ahoraMexicoFakeUtc = new Date(this.fn.obtenerHoraMexicoCentro() + 'Z').getTime();
+    const diffInSeconds = (ahoraMexicoFakeUtc - inicio - pausadoMs) / 1000;
     this.tiemposTranscurridos[orden.id] = diffInSeconds;
 
     const hours = Math.floor(diffInSeconds / 3600);

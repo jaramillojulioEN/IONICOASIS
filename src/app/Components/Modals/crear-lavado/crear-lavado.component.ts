@@ -12,7 +12,7 @@ export class CrearLavadoComponent  implements OnInit {
 
   constructor(private LavadoService : LavadoService, private funcs : LoaderFunctions) { }
 
-  fechaActual: string = this.funcs.obtenerFechaHoraActual();
+  fechaActual: string = this.funcs.obtenerHoraMexicoCentro();
   vehiculo: any = []
   vehiculos: any = []
   servicios: any = [];

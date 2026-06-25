@@ -23,7 +23,7 @@ export class VentaEspecialComponent implements OnInit {
   TipoVenta: number = 1;
   text: string = "Selecciona Platillo"
   orden: any = {
-    fecha: this.fn.obtenerFechaHoraActual(),
+    fecha: this.fn.obtenerHoraMexicoCentro(),
     idsucursal: this.usr.getUser().idsucursal,
     total: 0,
     estado: 7,
@@ -282,6 +282,7 @@ export class VentaEspecialComponent implements OnInit {
 
   async CrearOrden(): Promise<void> {
     try {
+      this.orden.fecha = this.fn.obtenerHoraMexicoCentro();
       const response = await (await this.OrdenesService.CrearOrden(this.orden, this.TipoVenta)).toPromise();
       this.orden.id = response.id
       this.detalle.idorden = response.id

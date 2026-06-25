@@ -52,7 +52,7 @@ export class EmpleadosComponent implements OnInit {
         cargo: "",
         salario: "",
         diapago: "",
-        fechacontrato: this.fn.obtenerFechaHoraActual(),
+        fechacontrato: this.fn.obtenerHoraMexicoCentro(),
       }
     } else {
       console.log(this.data.usuarios)
@@ -123,6 +123,7 @@ export class EmpleadosComponent implements OnInit {
   async Guardar() {
     this.Usuario.contraseña = this.contrasena
     if (this.Usuario.id == 0) {
+      this.Empleados.fechacontrato = this.fn.obtenerHoraMexicoCentro()
       this.Empleados.nombrecompleto = this.Usuario.nombre
       this.Usuario.empleados = [this.Empleados]
       console.log(this.Usuario);

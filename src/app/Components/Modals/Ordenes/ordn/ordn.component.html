@@ -126,7 +126,7 @@
         <div *ngIf="OrdenDetalles.ordenesplatillos && OrdenDetalles.ordenesplatillos.length !== 0">
           <h3 class="section-header">Detalles de los Platillos</h3>
           <div class="order-item" *ngFor="let platillo of OrdenDetalles.ordenesplatillos">
-            <div class="info" *ngIf="platillo.estado !=2">
+            <div class="info" *ngIf="OrdenDetalles.estado !== 2 || platillo.estado !== 2">
 
               <p><strong>{{platillo.platillos.nombre}}</strong></p>
               <p>Cantidad: {{platillo.cantidad}}</p>

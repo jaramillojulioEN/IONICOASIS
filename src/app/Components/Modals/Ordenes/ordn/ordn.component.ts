@@ -52,7 +52,7 @@ export class OrdnComponent implements OnInit {
     idorden: 0,
     observaciones: '',
     estado: 0,
-    fecha: this.funcs.obtenerFechaHoraActual()
+    fecha: this.funcs.obtenerHoraMexicoCentro()
   };
 
   DetalleBebida = {
@@ -61,18 +61,17 @@ export class OrdnComponent implements OnInit {
     cantidad: 1,
     idorden: 0,
     estado: 0,
-    fecha: this.funcs.obtenerFechaHoraActual()
+    fecha: this.funcs.obtenerHoraMexicoCentro()
   };
   ngOnInit() {
     console.log(this.ordenold)
     this.user = this.UserServiceService.getUser()
     this.NewOrden.idmesero = this.user.id
     this.NewOrden.idsucursal = this.user.sucursales.id
-    this.NewOrden.fecha = this.funcs.obtenerFechaHoraActual()
     this.NewOrden.idmesa = this.idmesa
     if (this.ordenold.id != null) {
       this.OrdenDetalles = this.ordenold
-      if (this.ordenold.estado === 2) {
+      if (this.ordenold.estado === 2 || this.ordenold.estado === 3) {
         this.DetalleBebida.estado = 1
         this.detallePlatillo.estado = 1
       }
@@ -109,6 +108,7 @@ export class OrdnComponent implements OnInit {
     }
 
     console.log(detalle);
+    detalle.fecha = this.funcs.obtenerHoraMexicoCentro();
     if (this.ordenold.id) {
       detalle.idorden = this.ordenold.id;
       await this.procesarDetalle(detalle);
@@ -128,6 +128,10 @@ export class OrdnComponent implements OnInit {
 
   async alterstate(estado: number): Promise<void> {
     this.OrdenDetalles.estado = estado;
+    if (estado == 2) {
+      this.OrdenDetalles.fecha = this.funcs.obtenerHoraMexicoCentro();
+      console.log('[ENVIAR COCINA] id:', this.OrdenDetalles.id, '| fecha enviada:', this.OrdenDetalles.fecha);
+    }
     (await this.OrdenesService.ActualizarOrden(this.OrdenDetalles)).subscribe(
       async (response: any) => {
         if (response && response.message) {
@@ -200,6 +204,7 @@ export class OrdnComponent implements OnInit {
 
   async CrearOrden(): Promise<void> {
     this.NewOrden.estado = -1
+    this.NewOrden.fecha = this.funcs.obtenerHoraMexicoCentro()
     try {
       const response = await (await this.OrdenesService.CrearOrden(this.NewOrden)).toPromise();
       this.ordenold.id = response.id;

@@ -29,7 +29,7 @@ export class RetirarComponent implements OnInit {
     monto: 0,
     concepto: "",
     idcaja: 0,
-    fecha: this.functions.obtenerFechaHoraActual()
+    fecha: this.functions.obtenerHoraMexicoCentro()
   }
 
   ngOnInit() {
@@ -66,8 +66,11 @@ export class RetirarComponent implements OnInit {
 
 
   async confirmar() {
+    if (!this.skip) {
+      this.retiro.fecha = this.functions.obtenerHoraMexicoCentro();
+    }
     console.log(this.retiro);
-    
+
     if ((this.caja[0].ganancias) >= this.retiro.monto || this.skip) {
       (await this.cortes.Retirar(this.retiro)).subscribe(
         (response: any) => {

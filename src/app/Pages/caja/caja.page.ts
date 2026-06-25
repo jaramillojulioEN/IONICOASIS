@@ -27,7 +27,7 @@ export class CajaPage implements OnInit, OnDestroy {
   ordenesagruapdas: any = []
 
   filtered: boolean = false;
-  fecha: any = this.fns.obtenerFechaHoraActual();
+  fecha: any = this.fns.obtenerHoraMexicoCentro();
 
   private getInicioDiaLocal(): string {
     const ahora = new Date();

@@ -23,7 +23,7 @@ export class DetalleordenComponent implements OnInit {
   @Input() mesa: any = [];
   @Input() ordenC: any = [];
   @Input() orden: any = [];
-  estimados: any;
+  estimados: any = [0, '--'];
   rol: any = [];
   @Input() tiempo: string = "";
   @Input() tiempoSeg: number = 0;
@@ -89,8 +89,8 @@ export class DetalleordenComponent implements OnInit {
   cargaactiva: boolean = true;
   ngOnInit() {
     this.rol = this.userService.getRol();
-    if (this.mesa.length !== 0) {
-      this.orden = this.mesa.ordenes[0]
+    if (this.mesa && this.mesa.id) {
+      this.orden = (this.mesa.ordenes && this.mesa.ordenes[0]) || this.ordenC;
     } else {
       this.orden = this.ordenC;
     }
@@ -216,10 +216,11 @@ export class DetalleordenComponent implements OnInit {
   async alterstate(estado: number): Promise<void> {
     this.orden.estado = estado;
     if (estado == 2) {
-      this.orden.fecha = this.fn.obtenerFechaHoraActual()
+      this.orden.fecha = this.fn.obtenerHoraMexicoCentro()
+      console.log('[DETALLEORDEN ENVIAR] id:', this.orden.id, '| fecha enviada:', this.orden.fecha);
     }
     if (this.orden.estado == 3) {
-      this.orden.pausado = this.fn.obtenerFechaHoraActual()
+      this.orden.pausado = this.fn.obtenerHoraMexicoCentro()
       this.notifs(this.orden.id)
       // Use numeric elapsed seconds when saving to backend
       this.orden.tiempo = Math.floor(Number(this.tiempoSeg) || 0);

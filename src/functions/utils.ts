@@ -67,10 +67,6 @@ export class LoaderFunctions {
 
 
 
-    obtenerFechaHoraActual(): string {
-        return new Date().toISOString();
-    }
-
     obtenerHoraMexicoCentro(): string {
         const ahora = new Date();
 

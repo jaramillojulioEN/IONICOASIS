@@ -62,7 +62,7 @@ export class CortePage implements OnInit {
   currentPage: number = 1;
   totalRegistros: number = 0;
   totalPages: number = 0;
-  filterdate: string = this.funcions.obtenerFechaHoraActual();
+  filterdate: string = this.funcions.obtenerHoraMexicoCentro();
   filtered: boolean = false;
   retiroshistorial: any = []
   retiroshistorialnofiltrado: any = []

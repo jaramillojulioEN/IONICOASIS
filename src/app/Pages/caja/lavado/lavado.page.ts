@@ -33,14 +33,14 @@ export class LavadoPage implements OnInit, OnDestroy {
 
 
   segmento: string = "pago"
-  fechaActual: string = this.funcs.obtenerFechaHoraActual();
+  fechaActual: string = this.funcs.obtenerHoraMexicoCentro();
   vehiculo: any = []
   vehiculos: any = []
   servicios: any = [];
 
   lavado = {
     id: 0,
-    fecha: this.funcs.obtenerFechaHoraActual(),
+    fecha: this.funcs.obtenerHoraMexicoCentro(),
     estado: 1,
     idsucursal: 0,
     total: 0,
@@ -69,7 +69,7 @@ export class LavadoPage implements OnInit, OnDestroy {
     private signalRService: SignalrService,
     private zone: NgZone
   ) {
-    this.fecha = this.fns.obtenerFechaHoraActual();
+    this.fecha = this.fns.obtenerHoraMexicoCentro();
   }
 
 
@@ -157,13 +157,13 @@ export class LavadoPage implements OnInit, OnDestroy {
     this.intervalId = setInterval(() => {
       this.obtenerCajaActiva()
     }, 5000);
-    this.fechaActual = this.funcs.obtenerFechaHoraActual()
+    this.fechaActual = this.funcs.obtenerHoraMexicoCentro()
   }
 
   async Guardar(): Promise<void> {
     this.lavado.idsucursal = this.UserServiceService.getUser().idsucursal
     this.lavado.lavadodet = this.servicios
-    this.lavado.fecha = this.fns.obtenerFechaHoraActual()
+    this.lavado.fecha = this.fns.obtenerHoraMexicoCentro()
     if (this.ValidarLavado()) {
       (await this.LavadoService.CrearOActualizarLavado(this.lavado)).subscribe(
         (response: any) => {
@@ -288,7 +288,7 @@ export class LavadoPage implements OnInit, OnDestroy {
     this.pagina.TotalItems = 0;
     this.pagina.PaginationEnabled = true;
     if (this.rol.id !== 1) {
-      this.pagina.Fecha = this.funcs.obtenerFechaHoraActual();
+      this.pagina.Fecha = this.funcs.obtenerHoraMexicoCentro();
     }
     this.obtenerLavados(2);
   }
@@ -400,7 +400,7 @@ export class LavadoPage implements OnInit, OnDestroy {
     this.filtered = false;
     this.fecha = '';
     if (this.rol.id !== 1) {
-      this.pagina.Fecha = this.funcs.obtenerFechaHoraActual();
+      this.pagina.Fecha = this.funcs.obtenerHoraMexicoCentro();
     } else {
       this.pagina.Fecha = '';
     }

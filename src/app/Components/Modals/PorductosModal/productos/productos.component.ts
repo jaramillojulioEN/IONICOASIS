@@ -27,7 +27,7 @@ export class ProductosComponent implements OnInit {
     this.nombre = "";
     this.cantidad = 0;
     this.categoria = 0;
-    this.fecha = this.ultil.obtenerFechaHoraActual()
+    this.fecha = this.ultil.obtenerHoraMexicoCentro()
   }
 
   @Input() idcategoria: number = 0;
@@ -77,6 +77,7 @@ export class ProductosComponent implements OnInit {
   async guardarProducto(): Promise<void> {
 
     if (this.id == 0) {
+      this.fecha = this.ultil.obtenerHoraMexicoCentro();
       (await this.ProductosService.CrearProducto(this.cantidad, this.nombre, this.categoria, this.fecha)).subscribe(
         (response: any) => {
           console.log(response);

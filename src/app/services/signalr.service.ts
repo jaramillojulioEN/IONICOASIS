@@ -98,6 +98,25 @@ export class SignalrService {
     }
   }
 
+  public ensureConnected(): void {
+    if (!this.hubConnection) {
+      this.startConnection();
+      return;
+    }
+    // state 4 = disconnected: trigger manual reconnect
+    if (this.hubConnection.state === 4) {
+      this.tryReconnect();
+    }
+    // state 1 = connected: re-join group in case membership was lost
+    if (this.hubConnection.state === 1) {
+      const user = this.us.getUser();
+      if (user) {
+        this.proxy.invoke('unirseASucursal', user.idsucursal)
+          .fail((err: any) => console.error('Error al re-unirse al grupo:', err));
+      }
+    }
+  }
+
   public stopConnection(): void {
     if (this.hubConnection) {
       clearTimeout(this.reconnectTimeoutId);

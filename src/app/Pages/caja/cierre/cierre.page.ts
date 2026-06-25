@@ -161,7 +161,7 @@ export class CierrePage implements OnInit, OnDestroy {
 
   cerracaja(caja: any): void {
     caja.estado = 2
-    caja.fechacierre = this.functiosn.obtenerFechaHoraActual()
+    caja.fechacierre = this.functiosn.obtenerHoraMexicoCentro()
     this.ac.presentCustomAlert("¿Seguro?", "¿Estas seguro de querer cerrar la caja?", () => this.confirmaratualizar(caja))
   }
 

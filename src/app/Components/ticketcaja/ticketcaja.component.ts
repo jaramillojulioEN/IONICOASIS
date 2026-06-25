@@ -26,7 +26,7 @@ export class TicketcajaComponent implements OnInit {
     private ModalController : ModalController
   ) { }
   usuario: any = this.UserServiceService.getUser()
-  fecha: string = this.fn.obtenerFechaHoraActual()
+  fecha: string = this.fn.obtenerHoraMexicoCentro()
   imprimirTicket: boolean = true
   @Input() caja: any = []
   @Input() isrev: boolean = false
@@ -64,6 +64,7 @@ export class TicketcajaComponent implements OnInit {
 
   cerracaja(caja: any): void {
     caja.estado = 2
+    this.fecha = this.fn.obtenerHoraMexicoCentro()
     caja.fechacierre = this.fecha
     this.ac.presentCustomAlert("¿Seguro?", "¿Estas seguro de querer cerrar la caja?", () => this.confirmaratualizar(caja))
   }
