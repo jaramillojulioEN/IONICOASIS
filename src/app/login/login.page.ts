@@ -46,6 +46,7 @@ export class LoginPage implements OnInit {
         },
         (error: any) => {
           console.error('Error en la solicitud:', error);
+          this.message[2] = "Error de conexión. Verifica tu red e intenta de nuevo.";
         }
       );
     }

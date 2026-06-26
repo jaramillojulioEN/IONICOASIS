@@ -102,11 +102,12 @@ export class CategoriasPage implements OnInit {
           this.ObtenerCategorias();
           this.ac.presentCustomAlert("Exito", response.message)
         } else {
-          console.error('Error: Respuesta inválida');
+          this.ac.presentCustomAlert("Error", "No se pudo eliminar la categoría.");
         }
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);
+        this.ac.presentCustomAlert("Error", "No se pudo eliminar la categoría. Verifica tu conexión.");
       }
     );
   }

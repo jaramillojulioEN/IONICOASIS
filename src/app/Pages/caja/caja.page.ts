@@ -240,7 +240,8 @@ export class CajaPage implements OnInit, OnDestroy {
           this.pagina = response.Paginador
         },
         error: (errro: any) => {
-          console.log(errro)
+          console.log(errro);
+          this.ac.presentCustomAlert("Error", "No se pudieron cargar las órdenes. Verifica tu conexión.");
         },
         complete: () => {
           this.loaded = true;

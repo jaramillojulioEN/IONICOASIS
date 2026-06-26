@@ -1,28 +1,24 @@
 <app-main-header titulo="Ordenes"></app-main-header>
-<ion-content id="main-content" *ngIf="mensaje != error">
+<ion-content id="main-content" *ngIf="!loaded || mensaje != error">
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-grid>
+  <ion-grid *ngIf="!loaded">
+    <ion-row>
+      <ion-col size="4"><app-skeleton [columns]="4" type="cards"></app-skeleton></ion-col>
+      <ion-col size="4"><app-skeleton [columns]="4" type="cards"></app-skeleton></ion-col>
+      <ion-col size="4"><app-skeleton [columns]="4" type="cards"></app-skeleton></ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid *ngIf="loaded">
     <ion-row>
       <ion-col size-lg="4" size-sm="6" size-md="4" *ngFor="let mesa of mesas">
         <div class="image-container" style="cursor: pointer;" (click)="VerOrden(mesa)">
-
           <img [src]="colorin(mesa.ordenes)" alt="Imagen de fondo">
-          <!-- verde -->
-          <!-- <img *ngIf="mesa.ordenes[0].estado === 1" [src]="images[0]" alt="Imagen de fondo"> -->
-          <!-- negro -->
-          <!-- <img *ngIf="mesa.ordenes.length === 0 " [src]="images[1]" alt="Imagen de fondo"> -->
-          <!-- rojo -->
-          <!-- <img *ngIf="mesa.ordenes[0].estado === 2" [src]="images[2]" alt="Imagen de fondo"> -->
-          <!-- azul -->
-          <!-- <img *ngIf="mesa.ordenes[0].estado === 4" [src]="images[3]" alt="Imagen de fondo"> -->
-
           <div class="text-overlay">
             <p class="ion-text-center">{{mesa.descripcion}}</p>
             <p color="success" *ngIf="mesa.ordenes.length !== 0">{{getEstado(mesa.ordenes[0].estado)}}</p>
             <p color="success" *ngIf="mesa.ordenes.length === 0">Libre</p>
-
           </div>
         </div>
       </ion-col>
@@ -30,7 +26,7 @@
   </ion-grid>
 </ion-content>
 
-<ion-content id="main-content" *ngIf="mensaje == error">
+<ion-content id="main-content" *ngIf="loaded && mensaje == error">
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>

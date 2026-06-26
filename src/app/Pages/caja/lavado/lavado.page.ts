@@ -174,6 +174,7 @@ export class LavadoPage implements OnInit, OnDestroy {
         },
         (error: any) => {
           console.error('Error en la solicitud:', error);
+          this.ac.presentCustomAlert("Error", "No se pudo guardar el lavado. Verifica tu conexión.");
         }
       );
     } else {
@@ -374,6 +375,7 @@ export class LavadoPage implements OnInit, OnDestroy {
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);
+        this.ac.presentCustomAlert("Error", "No se pudo eliminar el lavado. Verifica tu conexión.");
       }
     );
   }

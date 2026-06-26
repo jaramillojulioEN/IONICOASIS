@@ -1,0 +1,21 @@
+/* Oculta columnas menos críticas en pantallas pequeñas */
+@media (max-width: 576px) {
+  .tabla {
+    font-size: 0.78rem;
+
+    th, td {
+      padding: 8px 6px;
+      white-space: nowrap;
+    }
+
+    /* Oculta Mesero y Fecha en móvil */
+    th:nth-child(3), td:nth-child(3),
+    th:nth-child(4), td:nth-child(4) {
+      display: none;
+    }
+  }
+
+  ion-segment-button {
+    font-size: 0.8rem;
+  }
+}

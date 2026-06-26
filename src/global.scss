@@ -51,7 +51,11 @@ ion-toolbar {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 110px;
+  height: 64px;
+
+  @media (min-width: 768px) {
+    height: 80px;
+  }
 }
 
 .negrita {
@@ -70,12 +74,20 @@ ion-content{
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 110px;
+  height: 64px;
+
+  @media (min-width: 768px) {
+    height: 80px;
+  }
 }
 
 ion-toolbar ion-title {
-  font-size: 24px;
+  font-size: 18px;
   color: #fff;
+
+  @media (min-width: 768px) {
+    font-size: 22px;
+  }
 }
 
 .crear {
@@ -296,5 +308,43 @@ ion-toolbar ion-title {
 
   ion-label {
     margin: 0 10px;
+  }
+}
+
+/* ── Responsive tables ── */
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 576px) {
+  .tabla th,
+  .tabla td {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  ion-card-content {
+    padding: 10px 8px;
+  }
+
+  ion-card-header {
+    padding: 10px 12px 4px;
+  }
+}
+
+/* ── Ion select responsive ── */
+@media (max-width: 576px) {
+  ion-select {
+    font-size: 0.85rem;
+  }
+
+  ion-segment-button {
+    --padding-start: 8px;
+    --padding-end: 8px;
+    font-size: 0.8rem;
   }
 }

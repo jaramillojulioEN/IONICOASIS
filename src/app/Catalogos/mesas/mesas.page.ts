@@ -86,11 +86,12 @@ export class MesasPage implements OnInit {
           this.ObtenerMesas(false);
           this.ac.presentCustomAlert("Exito", response.message)
         } else {
-          console.error('Error: Respuesta inválida');
+          this.ac.presentCustomAlert("Error", "No se pudo eliminar la mesa.");
         }
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);
+        this.ac.presentCustomAlert("Error", "No se pudo eliminar la mesa. Verifica tu conexión.");
       }
     );
   }

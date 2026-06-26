@@ -94,11 +94,12 @@ export class ProductosPage implements OnInit {
           this.ObtenerProducutos(false);
           this.ac.presentCustomAlert("Exito", response.message)
         } else {
-          console.error('Error: Respuesta inválida');
+          this.ac.presentCustomAlert("Error", "No se pudo eliminar el producto.");
         }
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);
+        this.ac.presentCustomAlert("Error", "No se pudo eliminar el producto. Verifica tu conexión.");
       }
     );
   }

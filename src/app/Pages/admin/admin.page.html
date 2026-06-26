@@ -1,45 +1,48 @@
 <app-main-header titulo="Panel de control"></app-main-header>
 <ion-content [fullscreen]="true" id="main-content">
-  <div class="container">
+  <div class="admin-container">
+
+    <div class="section-header">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <h2>Órdenes</h2>
+    </div>
     <ion-grid>
       <ion-row>
         <ion-col size="12">
-          <h2>Ordenes</h2>
-          <app-card titulo="Ordenes" subtitulo="Gestiona las ordenes" pagina="/adminordenes"></app-card>
+          <app-card titulo="Órdenes" subtitulo="Gestiona las órdenes" pagina="/adminordenes"></app-card>
         </ion-col>
-        <ion-col size="12">
-          <h2>Catalogos y Inventario</h2>
+      </ion-row>
+    </ion-grid>
+
+    <div class="section-header">
+      <ion-icon name="albums-outline"></ion-icon>
+      <h2>Catálogos e Inventario</h2>
+    </div>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-sm="6">
+          <app-card titulo="Catálogos" subtitulo="Gestiona los catálogos" pagina="/inicio"></app-card>
         </ion-col>
-        <ion-col size-lg="6" size-sm="12">
-          <app-card titulo="Catalogos" subtitulo="Gestiona los Catalogos" pagina="/inicio"></app-card>
-        </ion-col>
-        <ion-col size-lg="6" size-sm="12">
+        <ion-col size="12" size-sm="6">
           <app-card titulo="Inventario" subtitulo="Gestiona el inventario" pagina="/inventario"></app-card>
         </ion-col>
       </ion-row>
+    </ion-grid>
+
+    <div class="section-header">
+      <ion-icon name="people-outline"></ion-icon>
+      <h2>Personal y Ventas</h2>
+    </div>
+    <ion-grid>
       <ion-row>
-        <ion-col size="12">
-          <h2>Personal y Ventas</h2>
+        <ion-col size="12" size-sm="6">
+          <app-card titulo="Empleados" subtitulo="Gestiona a tus empleados" pagina="/empleados"></app-card>
         </ion-col>
-        <ion-col size-lg="6" size-sm="12">
-          <app-card titulo="Empleados" subtitulo="Gestiona a tus Empleados" pagina="/empleados"></app-card>
-        </ion-col>
-        <ion-col size-lg="6" size-sm="12">
+        <ion-col size="12" size-sm="6">
           <app-card titulo="Ventas" subtitulo="Gestiona las ventas" pagina="/dashboard"></app-card>
         </ion-col>
       </ion-row>
     </ion-grid>
+
   </div>
 </ion-content>
-
-<style>
-  .container {
-    padding: 16px;
-  }
-  h2 {
-    margin-top: 16px;
-    margin-bottom: 16px;
-    font-size: 1.1rem;
-    font-weight: bold;
-  }
-</style>

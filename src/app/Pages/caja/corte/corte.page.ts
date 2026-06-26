@@ -191,11 +191,12 @@ export class CortePage implements OnInit {
           this.obtenerCortesActivos(false);
           this.ac.presentCustomAlert("Exito", response.message)
         } else {
-          console.error('Error: Respuesta inválida');
+          this.ac.presentCustomAlert("Error", "No se pudo eliminar el retiro. Respuesta inesperada.");
         }
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);
+        this.ac.presentCustomAlert("Error", "No se pudo eliminar el retiro. Verifica tu conexión.");
       }
     );
   }

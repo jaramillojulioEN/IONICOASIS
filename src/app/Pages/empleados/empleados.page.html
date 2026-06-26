@@ -21,7 +21,8 @@
         </ion-col>
       </ion-row>
     </div>
-    <div class="table-container" *ngIf="empleados">
+    <app-skeleton *ngIf="!loaded" [columns]="6" type="tabla"></app-skeleton>
+    <div class="table-container" *ngIf="loaded">
       <table class="tabla">
         <thead>
           <tr>

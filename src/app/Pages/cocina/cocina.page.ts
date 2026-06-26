@@ -177,6 +177,7 @@ export class CocinaPage implements OnInit, OnDestroy {
       }
     } catch (error) {
       console.error('Error en la solicitud:', error);
+      if (load) this.ac.presentCustomAlert("Error", "No se pudieron cargar las órdenes. Verifica tu conexión.");
     } finally {
       this.loaded = true;
       this.updateTimers();

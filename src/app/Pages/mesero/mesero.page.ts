@@ -4,6 +4,7 @@ import { MesasService } from 'src/app/services/Mesas/mesas.service'
 import { OrdnComponent } from 'src/app/Components/Modals/Ordenes/ordn/ordn.component'
 import { DetalleordenComponent } from 'src/app/Components/Modals/Mesas/detalleorden/detalleorden.component'
 import { CortesService } from 'src/app/services/cortes/cortes.service';
+import { AlertServiceService } from 'src/app/services/Alerts/alert-service.service';
 import { SignalrService } from 'src/app/services/signalr.service';
 @Component({
   selector: 'app-mesero',
@@ -23,11 +24,13 @@ export class MeseroPage implements OnInit, OnDestroy {
   mesas: any = [];
   error: any = "Caja cerrada"
   mensaje: any;
+  loaded: boolean = false;
 
   constructor(
     private MesasService: MesasService,
     private cortesService: CortesService,
     private ModalController: ModalController,
+    private ac: AlertServiceService,
     private signalRService: SignalrService,
     private zone: NgZone) { }
 
@@ -126,17 +129,26 @@ export class MeseroPage implements OnInit, OnDestroy {
   }
 
   async ObtenerMesas(load: boolean = true): Promise<void> {
-    (await this.MesasService.Mesas(load)).subscribe(
-      async (response: any) => {
-        this.mensaje = response.message;
-        if (response && response.mesas) {
-          this.mesas = response.mesas;
-        } 
-      },
-      (error: any) => {
-        console.error('Error en la solicitud error:', error);
-      }
-    );
+    if (load) this.loaded = false;
+    try {
+      (await this.MesasService.Mesas(load)).subscribe(
+        async (response: any) => {
+          this.mensaje = response.message;
+          if (response && response.mesas) {
+            this.mesas = response.mesas;
+          }
+          this.loaded = true;
+        },
+        (error: any) => {
+          console.error('Error en la solicitud error:', error);
+          this.loaded = true;
+          if (load) this.ac.presentCustomAlert("Error", "No se pudieron cargar las mesas. Verifica tu conexión.");
+        }
+      );
+    } catch (error) {
+      console.error('Error:', error);
+      this.loaded = true;
+    }
   }
 
   ngOnDestroy() {

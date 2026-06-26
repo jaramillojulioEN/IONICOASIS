@@ -175,11 +175,12 @@ export class CierrePage implements OnInit, OnDestroy {
           this.obtenerCortesPasados(true, this.idu)
           this.ac.presentCustomAlert("Alerta", response.message)
         } else {
-          console.error('Error: Respuesta inválida');
+          this.ac.presentCustomAlert("Error", "Respuesta inesperada del servidor al actualizar la caja.");
         }
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);
+        this.ac.presentCustomAlert("Error", "No se pudo actualizar la caja. Verifica tu conexión e intenta de nuevo.");
       }
     );
   }

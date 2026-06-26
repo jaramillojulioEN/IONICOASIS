@@ -44,18 +44,21 @@
                                             <ion-label>Hora de inicio:</ion-label>
                                             <ion-label slot="end">{{ getpart(corte.fechainicio, 1) }}</ion-label>
                                         </ion-item>
-                                        <ion-item>
+                                        <div class="cierre-actions">
                                             <ion-button class="crear" *ngIf="roles.id === 1 || roles.id === 5"
-                                                (click)="CerarCaja(corte)" expand="full">Cerrar
-                                                la caja</ion-button>
+                                                (click)="CerarCaja(corte)" expand="block">
+                                                Cerrar la caja
+                                            </ion-button>
                                             <ion-button class="crear" (click)="vergraficopasado(corte)"
-                                                expand="full">Ver gráfico</ion-button>
+                                                expand="block">
+                                                Ver gráfico
+                                            </ion-button>
                                             <ion-button class="crear" *ngIf="roles.id === 1" color="secondary"
-                                                (click)="recalcularCaja(corte)" expand="full">
+                                                (click)="recalcularCaja(corte)" expand="block">
                                                 <ion-icon slot="start" name="refresh-circle-outline"></ion-icon>
                                                 Recalcular
                                             </ion-button>
-                                        </ion-item>
+                                        </div>
                                     </ion-list>
                                 </ion-card-content>
                             </ion-card>
@@ -88,7 +91,7 @@
                 </ion-grid>
             </ion-card-content>
         </ion-card>
-        <ion-card class="custom-card" *ngIf="CorteActivo.length === 0">
+        <ion-card class="custom-card" *ngIf="CorteActivo.length === 0 && loaded2">
             <ion-card-content>
                 <ion-text>La caja fue cerrada, contacta con el administrador para activar la caja o volver a activar la
                     pasada</ion-text>

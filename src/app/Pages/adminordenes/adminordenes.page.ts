@@ -65,11 +65,12 @@ export class AdminordenesPage implements OnInit {
           this.ObtenerOrdenes()
           this.ac.presentCustomAlert("Exito", response.message)
         } else {
-          console.error('Error: Respuesta inválida');
+          this.ac.presentCustomAlert("Error", "No se pudo cancelar la orden. Respuesta inesperada.");
         }
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);
+        this.ac.presentCustomAlert("Error", "No se pudo cancelar la orden. Verifica tu conexión.");
       }
     );
   }

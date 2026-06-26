@@ -19,6 +19,7 @@ import { firstValueFrom } from 'rxjs';
 })
 export class EmpleadosPage implements OnInit {
   empleados: any = []
+  loaded: boolean = false;
   rol: any;
   sucursales: any = [];
 
@@ -76,20 +77,23 @@ export class EmpleadosPage implements OnInit {
   }
 
   async ObtenerEmpleados(load: boolean = true, ids: any = 0): Promise<void> {
+    if (load) this.loaded = false;
     (await this.EmpleadosService.Empleados(load, ids)).subscribe(
       async (response: any) => {
         if (response && response.empleados) {
           this.empleados = response.empleados;
-          console.log(this.empleados)
         } else {
           console.error('Error: Respuesta inválida');
         }
+        this.loaded = true;
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);
+        this.loaded = true;
+        if (load) this.ac.presentCustomAlert("Error", "No se pudieron cargar los empleados. Verifica tu conexión.");
       }
     );
-    this.ModalController.dismiss()
+    this.ModalController.dismiss().catch(() => {});
   }
 
   async EliminarEmpleados(empleado: any) {
@@ -171,12 +175,12 @@ export class EmpleadosPage implements OnInit {
           this.ObtenerEmpleados(true);
           this.ac.presentCustomAlert("Exito", response.message)
         } else {
-          this.ac.presentCustomAlert("Error", response.message)
-          console.error('Error: Respuesta inválida');
+          this.ac.presentCustomAlert("Error", response?.message || "No se pudo eliminar el empleado.");
         }
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);
+        this.ac.presentCustomAlert("Error", "No se pudo eliminar el empleado. Verifica tu conexión.");
       }
     );
   }
@@ -196,11 +200,12 @@ export class EmpleadosPage implements OnInit {
           this.ObtenerEmpleados(false);
           this.ac.presentCustomAlert("Exito", response.message)
         } else {
-          console.error('Error: Respuesta inválida');
+          this.ac.presentCustomAlert("Error", "No se pudo eliminar el consumo.");
         }
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);
+        this.ac.presentCustomAlert("Error", "No se pudo eliminar el consumo. Verifica tu conexión.");
       }
     );
   }

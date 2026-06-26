@@ -110,7 +110,8 @@ export class ServiciosPage implements OnInit {
           }
         },
         error: (error: any) => {
-          console.log(error)
+          console.log(error);
+          this.ac.presentCustomAlert("Error", "No se pudo eliminar el servicio. Verifica tu conexión.");
         },
         complete: () => {
           this.obtenerServicios(false);
@@ -125,7 +126,8 @@ export class ServiciosPage implements OnInit {
           }
         },
         error: (error: any) => {
-          console.log(error)
+          console.log(error);
+          this.ac.presentCustomAlert("Error", "No se pudo eliminar el tipo de vehículo. Verifica tu conexión.");
         },
         complete: () => {
           this.obtenerServicios(false);

@@ -168,11 +168,12 @@ export class PlatillosPage implements OnInit {
           this.ObtenerPlatillos(false, idsubcatego);
           this.ac.presentCustomAlert("Exito", response.message)
         } else {
-          console.error('Error: Respuesta inválida');
+          this.ac.presentCustomAlert("Error", "No se pudo eliminar el platillo.");
         }
       },
       (error: any) => {
         console.error('Error en la solicitud:', error);
+        this.ac.presentCustomAlert("Error", "No se pudo eliminar el platillo. Verifica tu conexión.");
       }
     );
   }
