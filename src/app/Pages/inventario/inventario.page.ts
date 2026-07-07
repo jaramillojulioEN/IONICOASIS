@@ -139,9 +139,7 @@ export class InventarioPage implements OnInit {
     try {
       const response: any = await (await this.ProductoService.Productos(this.paginadorProductos)).toPromise();
       if (response?.productos) {
-        this.productos = response.productos.sort((a: any, b: any) =>
-          (a.nombre ?? '').localeCompare(b.nombre ?? '', 'es', { sensitivity: 'base' })
-        );
+        this.productos = response.productos;
         this.paginadorProductos.TotalItems = response.Paginador?.TotalItems ?? 0;
       }
     } catch (error) {
@@ -156,9 +154,7 @@ export class InventarioPage implements OnInit {
     try {
       const response: any = await (await this.BebidaService.Bebidas(this.paginadorBebidas)).toPromise();
       if (response?.bebidas) {
-        this.BebidaArry = response.bebidas.sort((a: any, b: any) =>
-          (a.nombre ?? '').localeCompare(b.nombre ?? '', 'es', { sensitivity: 'base' })
-        );
+        this.BebidaArry = response.bebidas;
         this.paginadorBebidas.TotalItems = response.Paginador?.TotalItems ?? 0;
       }
     } catch (error) {
