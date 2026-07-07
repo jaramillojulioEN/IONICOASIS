@@ -119,7 +119,7 @@ export class ExistenciasComponent implements OnInit {
 
   async confirmarupdate() {
     this.data.fecha = this.fn.obtenerHoraMexicoCentro()
-    this.existencias.disponibles = this.existencias.cantidad
+    this.existencias.disponibles = this.existencias.cantidad - this.existencias.vendidos
 
     if (this.isbebida) {
       const payload = { ...this.data, bebidasexitencias: [this.existencias] };
