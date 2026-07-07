@@ -35,18 +35,21 @@ export class TicketcajaComponent implements OnInit {
   loading: boolean = true;
 
   async ngOnInit() {
+    console.log(this.caja);
     (await this.cortesService.AccionesPendientes(this.caja)).subscribe({
       next: (response: any) => {
         this.loading = false;
         this.pendientes = response
-        console.log(this.pendientes.Lavados.length);
 
-        if (this.pendientes.Lavados.length > 0 || this.pendientes.Ordenes.length > 0) {
-          this.canclose = false
-        }
-        else {
-          this.canclose = true
-        }
+        const lavados = this.pendientes?.Lavados?.length ?? 0;
+        const ordenes = this.pendientes?.Ordenes?.length ?? 0;
+        this.canclose = !(lavados > 0 || ordenes > 0);
+      },
+      error: (error: any) => {
+        this.loading = false;
+        this.canclose = false;
+        console.error('Error al obtener acciones pendientes:', error);
+        this.ac.presentCustomAlert("Error", "No se pudieron obtener las acciones pendientes de la caja.");
       }
     });
   }

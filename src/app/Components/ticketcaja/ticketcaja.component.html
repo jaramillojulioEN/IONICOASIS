@@ -9,7 +9,7 @@
 
     <!-- Ordenes pendientes -->
     <div class="ordens ion-margin-top ion-padding ion-border"
-      *ngIf="pendientes.Ordenes && pendientes.Ordenes.length > 0">
+      *ngIf="pendientes?.Ordenes && pendientes.Ordenes.length > 0">
       <ion-item lines="none" class="ion-no-padding">
         <ion-icon name="warning-outline" slot="start" color="warning"></ion-icon>
         <ion-label>
@@ -25,7 +25,7 @@
 
     <!-- Lavados pendientes -->
     <div class="ordens ion-margin-top ion-padding ion-border"
-      *ngIf="pendientes.Lavados && pendientes.Lavados.length > 0">
+      *ngIf="pendientes?.Lavados && pendientes.Lavados.length > 0">
       <ion-item lines="none" class="ion-no-padding">
         <ion-icon name="warning-outline" slot="start" color="warning"></ion-icon>
         <ion-label>
