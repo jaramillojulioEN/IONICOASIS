@@ -54,13 +54,17 @@
         <!-- Inasistencias -->
         <table class="tabla" *ngIf="periodo && periodo.inasistencias">
           <thead>
-            <th>Numero de inasistencias</th>
-            <th>Descuento</th>
+            <th>Fecha</th>
+            <th>Motivo</th>
           </thead>
           <tbody>
+            <tr *ngFor="let ina of periodo.inasistencias">
+              <td>{{ina.Fecha.split("T")[0]}}</td>
+              <td>{{ina.Motivo}}</td>
+            </tr>
             <tr>
-              <td>{{periodo.inasistencias.length}}</td>
-              <td>{{totaldescuento(periodo.inasistencias)}}</td>
+              <td class="ion-text-end negrita">Total: {{periodo.inasistencias.length}}</td>
+              <td class="ion-text-end negrita">Descuento: {{totaldescuento(periodo.inasistencias)}}</td>
             </tr>
           </tbody>
         </table>
@@ -69,12 +73,14 @@
         <!-- Consumos -->
         <table class="tabla" *ngIf="periodo && periodo.consumos">
           <thead>
+            <th>Fecha</th>
             <th>Concepto</th>
             <th>Cantidad</th>
             <th>Monto</th>
           </thead>
           <tbody>
             <tr *ngFor="let consumo of periodo.consumos">
+              <td>{{consumo.fecha.split("T")[0]}}</td>
               <td>{{consumo.concepto || consumo.bebidas?.nombre || consumo.platillos?.nombre}}</td>
               <td>{{consumo.concepto !== "" ? 1 : consumo.cantidad }}</td>
               <td>
@@ -84,7 +90,7 @@
               </td>
             </tr>
             <tr>
-              <td colspan="3" class="ion-text-end negrita">Consumos: ${{periodo.totalconsumo}}</td>
+              <td colspan="4" class="ion-text-end negrita">Consumos: ${{periodo.totalconsumo}}</td>
             </tr>
           </tbody>
         </table>

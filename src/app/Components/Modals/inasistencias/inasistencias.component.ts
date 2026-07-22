@@ -169,7 +169,6 @@ export class InasistenciasComponent implements OnInit {
       async (response: any) => {
         if (response && response.salario) {
           this.salariorestante = response.salario;
-          console.log(this.salariorestante)
           this.loaded = true;
         } else {
           console.error('Error: Respuesta inválida');
@@ -186,10 +185,8 @@ export class InasistenciasComponent implements OnInit {
   periodo: any = undefined
   change() {
 
-    console.log(this.periodoindex)
     this.periodo = this.messalario[this.periodoindex]
     this.tickets = this.periodo.tickets
-    console.log(this.periodo.tickets)
   }
 
   meschange(){
